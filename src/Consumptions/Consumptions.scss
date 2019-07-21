@@ -1,0 +1,77 @@
+.consumptions-table {
+    display: grid;
+    grid-template-columns:
+        35%
+        11%
+        11%
+        11%
+        11%
+        11%
+        10%;
+
+    &__row {
+        display: contents;
+    }
+
+    &__cell {
+        padding: $table-cell-padding;
+        border-bottom: $table-border-width solid $table-border-color;
+
+        &--header {
+            font-weight: bold;
+            border-width: (2 * $table-border-width);
+        }
+        &--sums {
+            font-weight: bold;
+            // border will look like double-thickness because of border-bottom from second-to-last row
+            border-top: $table-border-width solid $table-border-color;
+            border-bottom: (4 * $table-border-width) double $table-border-color;
+        }
+    }
+
+    &__value {
+        line-height: $input-height;
+    }
+
+    .input-group-append input,
+    .input-group-append select {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        z-index: 0;
+    }
+
+    .input-group-text--no-bg {
+        background: transparent;
+        border-color: transparent;
+    }
+}
+
+.combo {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    margin-top: -$input-border-width;
+    background: $input-bg;
+    border: $input-border-width solid $input-border-color;
+    border-bottom-left-radius: $input-border-radius;
+    border-bottom-right-radius: $input-border-radius;
+    list-style: none;
+    padding: 0;
+
+    &--item {
+        padding: $input-padding-y $input-padding-x;
+
+        &__highlighted {
+            background: $input-group-addon-bg;
+        }
+
+        &__selected {
+            font-weight: bold;
+        }
+    }
+}
+
+.input-group--combo > .form-control:not(:last-child) {
+    border-top-right-radius: $input-border-radius;
+    border-bottom-left-radius: 0;
+}

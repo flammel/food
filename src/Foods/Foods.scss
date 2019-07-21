@@ -1,0 +1,72 @@
+.foods-table {
+    display: grid;
+    grid-template-columns:
+        19%
+        15%
+        11%
+        11%
+        11%
+        11%
+        11%
+        11%;
+
+    &__row {
+        display: contents;
+    }
+
+    &__cell {
+        padding: $table-cell-padding;
+        border-bottom: $table-border-width solid $table-border-color;
+        &--header {
+            font-weight: bold;
+            border-width: (2 * $table-border-width);
+        }
+    }
+
+    &__value {
+        line-height: $input-height;
+    }
+
+    .input-group-append input,
+    .input-group-append select {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        z-index: 0;
+    }
+}
+
+.foods-table__cell--actions .btn {
+    display: none;
+}
+
+.foods-table__row--form .foods-table__cell--actions .btn,
+.foods-table__row--hovered .foods-table__cell--actions .btn {
+    display: inline-block;
+
+    &.btn--cancel {
+        display: none;
+    }
+}
+
+.foods-table__row--editing .foods-table__cell--actions .btn.btn--cancel {
+    display: inline-block;
+}
+
+.button-group {
+    display: flex;
+    align-content: space-between;
+
+    .btn {
+        flex-basis: 1;
+        flex-grow: 1;
+        margin-left: $table-cell-padding;
+    }
+
+    .btn:first-child {
+        margin-left: 0;
+    }
+}
+
+.flex-larger {
+    flex-grow: 100 !important;
+}

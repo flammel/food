@@ -7071,3 +7071,96 @@ a.text-dark:hover, a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6; } }
 
+.foods-table {
+  display: grid;
+  grid-template-columns: 19% 15% 11% 11% 11% 11% 11% 11%; }
+  .foods-table__row {
+    display: contents; }
+  .foods-table__cell {
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6; }
+    .foods-table__cell--header {
+      font-weight: bold;
+      border-width: 2px; }
+  .foods-table__value {
+    line-height: calc(1.5em + 0.75rem + 2px); }
+  .foods-table .input-group-append input,
+  .foods-table .input-group-append select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    z-index: 0; }
+
+.foods-table__cell--actions .btn {
+  display: none; }
+
+.foods-table__row--form .foods-table__cell--actions .btn,
+.foods-table__row--hovered .foods-table__cell--actions .btn {
+  display: inline-block; }
+  .foods-table__row--form .foods-table__cell--actions .btn.btn--cancel,
+  .foods-table__row--hovered .foods-table__cell--actions .btn.btn--cancel {
+    display: none; }
+
+.foods-table__row--editing .foods-table__cell--actions .btn.btn--cancel {
+  display: inline-block; }
+
+.button-group {
+  display: flex;
+  align-content: space-between; }
+  .button-group .btn {
+    flex-basis: 1;
+    flex-grow: 1;
+    margin-left: 0.75rem; }
+  .button-group .btn:first-child {
+    margin-left: 0; }
+
+.flex-larger {
+  flex-grow: 100 !important; }
+
+.consumptions-table {
+  display: grid;
+  grid-template-columns: 35% 11% 11% 11% 11% 11% 10%; }
+  .consumptions-table__row {
+    display: contents; }
+  .consumptions-table__cell {
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6; }
+    .consumptions-table__cell--header {
+      font-weight: bold;
+      border-width: 2px; }
+    .consumptions-table__cell--sums {
+      font-weight: bold;
+      border-top: 1px solid #dee2e6;
+      border-bottom: 4px double #dee2e6; }
+  .consumptions-table__value {
+    line-height: calc(1.5em + 0.75rem + 2px); }
+  .consumptions-table .input-group-append input,
+  .consumptions-table .input-group-append select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    z-index: 0; }
+  .consumptions-table .input-group-text--no-bg {
+    background: transparent;
+    border-color: transparent; }
+
+.combo {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  margin-top: -1px;
+  background: #fff;
+  border: 1px solid #ced4da;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+  list-style: none;
+  padding: 0; }
+  .combo--item {
+    padding: 0.375rem 0.75rem; }
+    .combo--item__highlighted {
+      background: #e9ecef; }
+    .combo--item__selected {
+      font-weight: bold; }
+
+.input-group--combo > .form-control:not(:last-child) {
+  border-top-right-radius: 0.25rem;
+  border-bottom-left-radius: 0; }
+
