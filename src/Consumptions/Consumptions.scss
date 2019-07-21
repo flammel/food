@@ -1,0 +1,31 @@
+.consumptions-table {
+    grid-template-columns:
+        32%
+        11%
+        11%
+        11%
+        11%
+        11%
+        13%;
+    .consumptions-table__cell--sums {
+        font-weight: bold;
+        // border will look like double-thickness because of border-bottom from second-to-last row
+        border-top: $table-border-width solid $table-border-color;
+        border-bottom: (4 * $table-border-width) double $table-border-color;
+    }
+}
+
+.consumptions-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1rem;
+
+    &__current-date {
+        margin: 0 1rem;
+    }
+
+    &__nav-link {
+        display: block;
+    }
+}

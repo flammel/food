@@ -9,7 +9,7 @@
         "lint": "eslint --ext .js,.jsx,.ts,.tsx src test",
         "watch": "webpack --watch --mode=development",
         "build": "webpack --mode=production",
-        "prettier": "prettier --write src/*.{ts,tsx,js,css,scss} test/*.{ts,tsx,js,css,scss} package.json .eslintrc .prettierrc tsconfig.json webpack.config.js .babelrc"
+        "prettier": "prettier --write src/**/*.{ts,tsx,js,css,scss} test/**/*.{ts,tsx,js,css,scss} package.json .eslintrc .prettierrc tsconfig.json webpack.config.js .babelrc"
     },
     "author": "Florian Lammel",
     "license": "MIT",
@@ -46,6 +46,8 @@
     },
     "dependencies": {
         "bootstrap": "^4.3.1",
+        "downshift": "^3.2.10",
+        "fuse.js": "^3.4.5",
         "jquery": "^3.4.1",
         "popper.js": "^1.15.0",
         "react": "^16.8.6",

@@ -1,0 +1,55 @@
+.data-table {
+    display: grid;
+
+    &__row {
+        display: contents;
+    }
+
+    &__cell {
+        padding: $table-cell-padding;
+        border-bottom: $table-border-width solid $table-border-color;
+
+        &--header {
+            font-weight: bold;
+            border-width: (2 * $table-border-width);
+        }
+
+        &--full-width {
+            grid-column: 1 / -1;
+        }
+
+        &--actions {
+            display: flex;
+            align-content: space-between;
+
+            .action {
+                display: none;
+                flex-grow: 1;
+                margin-left: $table-cell-padding;
+
+                &.action--visible {
+                    display: inline-block;
+                }
+
+                &.action--larger {
+                    flex-grow: 100;
+                }
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+
+    &__value {
+        line-height: $input-height;
+    }
+
+    .input-group-append input,
+    .input-group-append select {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        z-index: 0;
+    }
+}
