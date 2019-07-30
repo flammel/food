@@ -27,9 +27,11 @@ export default function Consumptions(props: ConsumptionsProps) {
     nextDay.setDate(nextDay.getDate() + 1);
     return (
         <>
-            <Link to={"/log/" + dateToString(previousDay)}>prev</Link>
-            <h1>{dateToString(date)}</h1>
-            <Link to={"/log/" + dateToString(nextDay)}>next</Link>
+            <div className="consumptions-header">
+                <Link className="consumptions-header__nav-link" to={"/log/" + dateToString(previousDay)}>prev</Link>
+                <h1 className="consumptions-header__current-date">{dateToString(date)}</h1>
+                <Link className="consumptions-header__nav-link" to={"/log/" + dateToString(nextDay)}>next</Link>
+            </div>
             <ConsumptionsTable consumptions={consumptions} foods={loadFoods()} onSave={onSave} />
         </>
     );

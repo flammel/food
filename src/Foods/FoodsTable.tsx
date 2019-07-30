@@ -10,9 +10,9 @@ interface FoodsTableProps {
 
 interface FoodsTableRowProps {
     food: Food;
-    onSave: (newFood: Food) => void;
     form: boolean;
     isEditing: boolean;
+    onSave: (newFood: Food) => void;
     onEditStart: () => void;
     onEditStop: () => void;
     onDelete: () => void;

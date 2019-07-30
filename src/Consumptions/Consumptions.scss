@@ -46,6 +46,22 @@
     }
 }
 
+.consumptions-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1rem;
+
+    &__current-date {
+        margin: 0 1rem;
+    }
+
+    &__nav-link {
+        display: block;
+    }
+    
+}
+
 .combo {
     position: absolute;
     top: 100%;
