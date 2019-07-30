@@ -1,14 +1,5 @@
 .data-table {
     display: grid;
-    grid-template-columns:
-        19%
-        15%
-        11%
-        11%
-        11%
-        11%
-        11%
-        11%;
 
     &__row {
         display: contents;
@@ -17,30 +8,28 @@
     &__cell {
         padding: $table-cell-padding;
         border-bottom: $table-border-width solid $table-border-color;
+
         &--header {
             font-weight: bold;
             border-width: (2 * $table-border-width);
         }
+
         &--actions {
             display: flex;
             align-content: space-between;
-        
-            .btn {
-                flex-basis: 1;
-                flex-grow: 1;
-                margin-left: $table-cell-padding;
-            }
-        
-            .btn:first-child {
-                margin-left: 0;
-            }
 
             .btn {
                 display: none;
-            }
+                flex-grow: 1;
+                margin-left: $table-cell-padding;
 
-            .btn--larger {
-                flex-grow: 100 !important;
+                &.btn--larger {
+                    flex-grow: 100;
+                }
+
+                &:first-child {
+                    margin-left: 0;
+                }
             }
         }
     }

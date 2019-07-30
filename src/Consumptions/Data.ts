@@ -36,7 +36,7 @@ export function consumptionDateString(consumption: Consumption): string {
 }
 
 export function dateToString(date: Date): string {
-    return date.toISOString().substr(0,10);
+    return date.toISOString().substr(0, 10);
 }
 
 function fromJson(json: any): Consumption | null {
@@ -46,13 +46,19 @@ function fromJson(json: any): Consumption | null {
     };
 }
 
-function datesEqual(d1: Date, d2: Date): boolean{
-    return new Date(d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), 0, 0, 0, 0).getTime() === new Date(d2.getUTCFullYear(), d2.getUTCMonth(), d2.getUTCDate(), 0, 0, 0, 0).getTime()
+function datesEqual(d1: Date, d2: Date): boolean {
+    return (
+        new Date(d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), 0, 0, 0, 0).getTime() ===
+        new Date(d2.getUTCFullYear(), d2.getUTCMonth(), d2.getUTCDate(), 0, 0, 0, 0).getTime()
+    );
 }
 
 export function loadConsumptions(date?: Date): Consumption[] {
     const items: Consumption[] = JSON.parse(window.localStorage.getItem("consumptions")) || [];
-    return items.map(fromJson).filter((item) => item !== null).filter(item => !date || datesEqual(item.date, date));
+    return items
+        .map(fromJson)
+        .filter((item) => item !== null)
+        .filter((item) => !date || datesEqual(item.date, date));
 }
 
 export function saveConsumption(consumption: Consumption) {

@@ -7117,30 +7117,11 @@ a.text-dark:hover, a.text-dark:focus {
   flex-grow: 100 !important; }
 
 .consumptions-table {
-  display: grid;
-  grid-template-columns: 35% 11% 11% 11% 11% 11% 10%; }
-  .consumptions-table__row {
-    display: contents; }
-  .consumptions-table__cell {
-    padding: 0.75rem;
-    border-bottom: 1px solid #dee2e6; }
-    .consumptions-table__cell--header {
-      font-weight: bold;
-      border-width: 2px; }
-    .consumptions-table__cell--sums {
-      font-weight: bold;
-      border-top: 1px solid #dee2e6;
-      border-bottom: 4px double #dee2e6; }
-  .consumptions-table__value {
-    line-height: calc(1.5em + 0.75rem + 2px); }
-  .consumptions-table .input-group-append input,
-  .consumptions-table .input-group-append select {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    z-index: 0; }
-  .consumptions-table .input-group-text--no-bg {
-    background: transparent;
-    border-color: transparent; }
+  grid-template-columns: 32% 11% 11% 11% 11% 11% 13%; }
+  .consumptions-table .consumptions-table__cell--sums {
+    font-weight: bold;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 4px double #dee2e6; }
 
 .consumptions-header {
   display: flex;
@@ -7175,8 +7156,7 @@ a.text-dark:hover, a.text-dark:focus {
   border-bottom-left-radius: 0; }
 
 .data-table {
-  display: grid;
-  grid-template-columns: 19% 15% 11% 11% 11% 11% 11% 11%; }
+  display: grid; }
   .data-table__row {
     display: contents; }
   .data-table__cell {
@@ -7189,15 +7169,13 @@ a.text-dark:hover, a.text-dark:focus {
       display: flex;
       align-content: space-between; }
       .data-table__cell--actions .btn {
-        flex-basis: 1;
+        display: none;
         flex-grow: 1;
         margin-left: 0.75rem; }
-      .data-table__cell--actions .btn:first-child {
-        margin-left: 0; }
-      .data-table__cell--actions .btn {
-        display: none; }
-      .data-table__cell--actions .btn--larger {
-        flex-grow: 100 !important; }
+        .data-table__cell--actions .btn.btn--larger {
+          flex-grow: 100; }
+        .data-table__cell--actions .btn:first-child {
+          margin-left: 0; }
   .data-table__value {
     line-height: calc(1.5em + 0.75rem + 2px); }
   .data-table .input-group-append input,
