@@ -1,30 +1,24 @@
-import React, { useState, useRef } from "react";
-import { Consumption, consumptionLabel, withFood, withQuantity } from "./Data";
-import { emptyFood, Food } from "../Foods/Data";
+import React from "react";
+import { Consumption, consumptionLabel } from "./Data";
+import { Food } from "../Foods/Data";
 import { formatQuantity, formatNutritionValue, formatCalories } from "../Types";
 import DataTable, { DataTableColumn, ItemSetter } from "../DataTable/DataTable";
-import FoodCombo from "./FoodCombo";
+import FoodCombo from "../FoodCombo/FoodCombo";
+import { withFood, withQuantity } from "../QuantifiedsFood/Data";
 
 interface ConsumptionsTableProps {
     consumptions: Consumption[];
     foods: Food[];
-    onSave: (newConsumption: Consumption, oldConsumption?: Consumption) => void;
+    emptyConsumption: Consumption;
+    onCreate: (newItem: Consumption) => void;
+    onUpdate: (newItem: Consumption) => void;
+    onDelete: (item: Consumption) => void;
+    onUndoDelete: (item: Consumption) => void;
 }
 
 interface ConsumptionsTableSumsProps {
     consumptions: Consumption[];
 }
-
-const emptyConsumption: Consumption = {
-    id: 0,
-    date: new Date(),
-    food: emptyFood,
-    quantity: 100,
-    calories: 0,
-    fat: 0,
-    carbs: 0,
-    protein: 0,
-};
 
 function ConsumptionsTableSums(props: ConsumptionsTableSumsProps) {
     let calories = 0;
@@ -59,18 +53,15 @@ function ConsumptionsTableSums(props: ConsumptionsTableSumsProps) {
 }
 
 export default function ConsumptionsTable(props: ConsumptionsTableProps) {
-    const foodInput = useRef<HTMLInputElement>();
-    const quantityInput = useRef<HTMLInputElement>();
-    const [foodInputValue, setFoodInputValue] = useState("");
-
     const onFoodSelect = (setItem: ItemSetter<Consumption>) => (selection: Food) => {
         setItem((prev) => withFood(prev, selection));
-        quantityInput.current.focus();
     };
 
     const onQuantityChange = (setItem: ItemSetter<Consumption>) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const quantity = parseInt(e.target.value);
-        setItem((prev) => withQuantity(prev, quantity));
+        if (quantity >= 0) {
+            setItem((prev) => withQuantity(prev, quantity));
+        }
     };
 
     const columns: Array<DataTableColumn<Consumption>> = [
@@ -82,9 +73,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
                 <FoodCombo
                     foods={props.foods}
                     onFoodSelect={onFoodSelect(setItem)}
-                    foodInputRef={foodInput}
-                    inputValue={foodInputValue}
-                    setInputValue={setFoodInputValue}
+                    selectedFood={c.food}
                 />
             ),
         },
@@ -102,7 +91,6 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
                         placeholder="Quantity"
                         value={formatQuantity(c.quantity)}
                         onChange={onQuantityChange(setItem)}
-                        ref={quantityInput}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">{c.food.unit}</div>
@@ -131,15 +119,18 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
             value: (c: Consumption) => formatNutritionValue(c.protein) + " g",
         },
     ];
-    return <DataTable
-        columns={columns}
-        className={"consumptions-table"}
-        items={props.consumptions}
-        emptyItem={emptyConsumption}
-        idGetter={(item: Consumption) => item.id + ""}
-        onCreate={(newItem: Consumption) => props.onSave(newItem)}
-        onUpdate={(newItem: Consumption, oldItem: Consumption) => props.onSave(newItem, oldItem)}
-        onDelete={(item: Consumption) => {}}
-        append={<ConsumptionsTableSums consumptions={props.consumptions} />}
-    />;
+    return (
+        <DataTable
+            columns={columns}
+            className={"consumptions-table"}
+            items={props.consumptions}
+            emptyItem={props.emptyConsumption}
+            idGetter={(item: Consumption) => item.id + ""}
+            onCreate={props.onCreate}
+            onUpdate={props.onUpdate}
+            onDelete={props.onDelete}
+            onUndoDelete={props.onUndoDelete}
+            append={<ConsumptionsTableSums consumptions={props.consumptions} />}
+        />
+    );
 }
