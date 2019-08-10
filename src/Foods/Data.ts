@@ -7,6 +7,7 @@ export interface Food extends NutritionData {
     readonly name: string;
     readonly brand: Brand;
     readonly quantity: Quantity;
+    readonly servingSize: Quantity;
     readonly unit: Unit;
     readonly next?: FoodId;
     readonly isDeleted: boolean;
@@ -17,6 +18,7 @@ export const emptyFood: Food = {
     name: "",
     brand: "",
     quantity: 100,
+    servingSize: 100,
     unit: "g",
     calories: 0,
     fat: 0,

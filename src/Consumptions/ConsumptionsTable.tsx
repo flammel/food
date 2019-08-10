@@ -1,6 +1,6 @@
 import React from "react";
-import { Consumption, Consumable, consumableUnit, consumableLabel, nutritionData } from "./Data";
-import { formatCalories, formatNutritionValue, formatQuantity } from "../Types";
+import { Consumption, Consumable, consumableUnit, consumableLabel, nutritionData, consumableIsFood } from "./Data";
+import { formatCalories, formatNutritionValue, formatQuantity, Quantity } from "../Types";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
@@ -24,8 +24,25 @@ function search(consumables: Consumable[], search: string | null): Consumable[] 
     return result;
 }
 
+function consumableServingSize(consumable: Consumable): Quantity {
+    if (consumableIsFood(consumable) && consumable.servingSize > 0) {
+        return consumable.servingSize;
+    } else {
+        return 100;
+    }
+}
+
+function consumptionIsNew(consumption: Consumption): boolean {
+    return consumption.id === 0;
+}
+
 function onSelect(setItem: ItemSetter<Consumption>) {
-    return (consumable: Consumable) => setItem((prev) => ({ ...prev, consumable }));
+    return (consumable: Consumable) =>
+        setItem((prev) => ({
+            ...prev,
+            consumable,
+            quantity: consumptionIsNew(prev) ? consumableServingSize(consumable) : prev.quantity,
+        }));
 }
 
 function onQuantityChange(setItem: ItemSetter<Consumption>) {

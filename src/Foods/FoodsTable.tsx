@@ -67,8 +67,33 @@ export default function FoodsTable(props: FoodsTableProps) {
             ),
         },
         {
+            id: "servingSize",
+            label: "Serving Size",
+            value: (f: Food) => formatQuantity(f.servingSize) + " " + f.unit,
+            form: (f: Food, setItem: ItemSetter<Food>) => (
+                <div className="input-group">
+                    <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        className="form-control"
+                        placeholder="Serving Size"
+                        onChange={(e) =>
+                            parseInt(e.target.value) > 0
+                                ? onChange(setItem, { servingSize: parseInt(e.target.value) })
+                                : null
+                        }
+                        value={f.servingSize}
+                    />
+                    <div className="input-group-append">
+                        <div className="input-group-text">{f.unit}</div>
+                    </div>
+                </div>
+            ),
+        },
+        {
             id: "quantity",
-            label: "Quantity",
+            label: "Base Quantity",
             value: (f: Food) => formatQuantity(f.quantity) + " " + f.unit,
             form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
