@@ -1,7 +1,7 @@
 import React from "react";
 import { emptyRecipe, Recipe, nutritionData } from "./Data";
 import { formatNutritionValue, formatCalories } from "../Types";
-import DataTable, { DataTableColumn } from "../DataTable/DataTable";
+import DataTable, { ColumnDefinition } from "../DataTable/DataTable";
 import { Link } from "react-router-dom";
 
 interface RecipesTableProps {
@@ -10,6 +10,7 @@ interface RecipesTableProps {
     onUpdate: (newItem: Recipe) => void;
     onDelete: (item: Recipe) => void;
     onUndoDelete: (item: Recipe) => void;
+    goToEdit: (item: Recipe) => void;
 }
 
 function CreateForm() {
@@ -25,7 +26,7 @@ function CreateForm() {
 }
 
 export default function RecipesTable(props: RecipesTableProps) {
-    const columns: Array<DataTableColumn<Recipe>> = [
+    const columns: ColumnDefinition<Recipe> = [
         {
             id: "food",
             label: "Recipe",
@@ -68,7 +69,11 @@ export default function RecipesTable(props: RecipesTableProps) {
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
-            createForm={<CreateForm />}
+            rows={{ subHeader: <CreateForm /> }}
+            editUrl={{
+                url: (item: Recipe) => "/recipes/" + item.id,
+                redirect: props.goToEdit,
+            }}
         />
     );
 }

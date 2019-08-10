@@ -2,7 +2,7 @@ import React from "react";
 import { Ingredient, ingredientNutritionData } from "./Data";
 import { Food, foodLabel } from "../Foods/Data";
 import { formatCalories, formatNutritionValue, formatQuantity } from "../Types";
-import DataTable, { ItemSetter, DataTableColumn } from "../DataTable/DataTable";
+import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
 
@@ -39,7 +39,7 @@ function onQuantityChange(setItem: ItemSetter<Ingredient>) {
 }
 
 export default function IngredientsTable(props: IngredientsTableProps) {
-    const columns: Array<DataTableColumn<Ingredient>> = [
+    const columns: ColumnDefinition<Ingredient> = [
         {
             id: "food",
             label: "Ingredients",
@@ -109,9 +109,7 @@ export default function IngredientsTable(props: IngredientsTableProps) {
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
-            additionalRows={{
-                first: props.footer,
-            }}
+            rows={{ first: props.footer }}
             createButtonLabel="Add"
         />
     );

@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import NavItem from "./Nav/NavItem";
 import Foods from "./Foods/Foods";
 import Consumptions from "./Consumptions/Consumptions";
@@ -26,7 +26,10 @@ ReactDOM.render(
             <Route path="/" exact component={Consumptions} />
             <Route path="/foods/" component={Foods} />
             <Route path="/recipes/" exact component={Recipes} />
-            <Route path="/recipes/new" component={RecipeForm} />
+            <Switch>
+                <Route path="/recipes/new" component={RecipeForm} />
+                <Route path="/recipes/:id" component={RecipeForm} />
+            </Switch>
             <Route path="/log/:date" component={Consumptions} />
         </div>
     </Router>,

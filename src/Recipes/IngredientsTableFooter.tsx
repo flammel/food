@@ -70,7 +70,7 @@ export default function IngredientsTableFooter(props: IngredientsTableFooterProp
                     <span className="data-table__value">{formatNutritionValue(sums.protein)} g</span>
                 </div>
                 <div className="data-table__cell data-table__cell--actions ingredients-table__cell--sums">
-                    <button className="btn btn-primary action action--larger action--visible" type="submit">
+                    <button className="btn btn-primary action action--visible" type="submit">
                         Save
                     </button>
                 </div>

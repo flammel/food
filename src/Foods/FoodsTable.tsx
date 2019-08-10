@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { emptyFood, Food, Brand } from "./Data";
 import { isUnit, formatQuantity, formatNutritionValue, formatCalories } from "../Types";
-import DataTable, { ItemSetter, DataTableColumn } from "../DataTable/DataTable";
+import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import Fuse from "fuse.js";
 import ComboBox from "../ComboBox/ComboBox";
 
@@ -30,7 +30,7 @@ export default function FoodsTable(props: FoodsTableProps) {
     const onChange = (setFood: ItemSetter<Food>, newField: Partial<Food>) =>
         setFood((prev) => ({ ...prev, ...newField }));
 
-    const columns: Array<DataTableColumn<Food>> = [
+    const columns: ColumnDefinition<Food> = [
         {
             id: "food",
             label: "Food",

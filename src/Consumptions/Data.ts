@@ -43,5 +43,5 @@ export function nutritionData(consumption: Consumption): NutritionData {
 }
 
 export function consumableIsFood(consumable: Consumable): consumable is Food {
-    return consumable.hasOwnProperty("brand");
+    return consumable && consumable.hasOwnProperty("brand");
 }

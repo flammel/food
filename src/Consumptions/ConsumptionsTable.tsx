@@ -1,7 +1,7 @@
 import React from "react";
 import { Consumption, Consumable, consumableUnit, consumableLabel, nutritionData } from "./Data";
 import { formatCalories, formatNutritionValue, formatQuantity } from "../Types";
-import DataTable, { DataTableColumn, ItemSetter } from "../DataTable/DataTable";
+import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
 import ConsumptionsTableSumsRow from "./ConsumptionsTableSumsRow";
@@ -38,7 +38,7 @@ function onQuantityChange(setItem: ItemSetter<Consumption>) {
 }
 
 export default function ConsumptionsTable(props: ConsumptionsTableProps) {
-    const columns: Array<DataTableColumn<Consumption>> = [
+    const columns: ColumnDefinition<Consumption> = [
         {
             id: "consumable",
             label: "Food or Recipe",
@@ -110,9 +110,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
-            additionalRows={{
-                last: <ConsumptionsTableSumsRow consumptions={props.consumptions} />,
-            }}
+            rows={{ footer: <ConsumptionsTableSumsRow consumptions={props.consumptions} /> }}
         />
     );
 }
