@@ -1,14 +1,28 @@
 import React, { useRef } from "react";
-import { emptyFood, Food } from "./Data";
+import { emptyFood, Food, Brand } from "./Data";
 import { isUnit, formatQuantity, formatNutritionValue, formatCalories } from "../Types";
 import DataTable, { ItemSetter, DataTableColumn } from "../DataTable/DataTable";
+import Fuse from "fuse.js";
+import ComboBox from "../ComboBox/ComboBox";
 
 interface FoodsTableProps {
     foods: Food[];
+    brands: Brand[];
     onCreate: (newItem: Food) => void;
     onUpdate: (newItem: Food) => void;
     onDelete: (item: Food) => void;
     onUndoDelete: (item: Food) => void;
+}
+
+function search(brands: Brand[], search: string | null): Brand[] {
+    // Fuse needs an array of objects, but the brands parameter is an array
+    // of strings. So we first transform to an array of objects and
+    // in the return statement extract the brand name.
+    const fuse = new Fuse(brands.map((brand) => ({ brand })), {
+        keys: ["brand"],
+    });
+    const result = fuse.search(search);
+    return result.map((brand) => brand.brand);
 }
 
 export default function FoodsTable(props: FoodsTableProps) {
@@ -40,15 +54,16 @@ export default function FoodsTable(props: FoodsTableProps) {
             label: "Brand",
             value: (f: Food) => f.brand,
             form: (f: Food, setItem: ItemSetter<Food>) => (
-                <div className="input-group">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Brand"
-                        onChange={(e) => onChange(setItem, { brand: e.target.value })}
-                        value={f.brand}
-                    />
-                </div>
+                <ComboBox
+                    items={props.brands}
+                    onSelect={(brand) => onChange(setItem, { brand })}
+                    onChange={(brand) => onChange(setItem, { brand })}
+                    selected={f.brand}
+                    placeholder="Brand"
+                    itemLabel={(brand) => brand}
+                    itemKey={(brand) => brand}
+                    search={search}
+                />
             ),
         },
         {

@@ -1,10 +1,11 @@
 import { NutritionData, Quantity, Unit } from "../Types";
 
 export type FoodId = number;
+export type Brand = string;
 export interface Food extends NutritionData {
     readonly id: FoodId;
     readonly name: string;
-    readonly brand: string;
+    readonly brand: Brand;
     readonly quantity: Quantity;
     readonly unit: Unit;
     readonly next?: FoodId;

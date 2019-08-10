@@ -25,7 +25,7 @@ function search(consumables: Consumable[], search: string | null): Consumable[] 
 }
 
 function onSelect(setItem: ItemSetter<Consumption>) {
-    return (consumable: Consumable) => setItem((prev) => ({ ...prev, consumable}));
+    return (consumable: Consumable) => setItem((prev) => ({ ...prev, consumable }));
 }
 
 function onQuantityChange(setItem: ItemSetter<Consumption>) {

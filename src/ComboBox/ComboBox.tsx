@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Downshift, { GetItemPropsOptions } from "downshift";
-import { foodLabel } from "../Foods/Data";
 
 interface ComboBoxProps<ItemType> {
     items: ItemType[];
     onSelect: (item: ItemType) => void;
+    onChange?: (value: string) => void;
     selected: ItemType;
     placeholder: string;
     itemLabel: (item: ItemType) => string;
     itemKey: (item: ItemType) => string;
     search: (items: ItemType[], search: string | null) => ItemType[];
-    autoFocus?: boolean
+    autoFocus?: boolean;
 }
 
 export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
@@ -22,6 +22,9 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentInputValue(e.target.value);
+        if (props.onChange) {
+            props.onChange(e.target.value);
+        }
     };
 
     const onSelectChange = (item: ItemType | null) => {
@@ -65,7 +68,7 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
     return (
         <Downshift
             onChange={onSelectChange}
-            itemToString={(item) => (item ? foodLabel(item) : "")}
+            itemToString={(item) => (item ? props.itemLabel(item) : "")}
             inputValue={currentInputValue}
         >
             {({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, highlightedIndex, selectedItem }) => (
@@ -76,7 +79,7 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
                             className: "form-control",
                             placeholder: props.placeholder,
                             onChange: onInputChange,
-                            autoFocus: props.autoFocus
+                            autoFocus: props.autoFocus,
                         })}
                     />
                     {isOpen ? (

@@ -17,7 +17,7 @@ function fromJson(json: any): SerializedConsumption {
 }
 
 function toJson(consumption: Consumption): SerializedConsumption {
-    const json: any = {...consumption};
+    const json: any = { ...consumption };
     if (consumableIsFood(consumption.consumable)) {
         json.foodId = consumption.consumable.id;
     } else {
@@ -44,7 +44,7 @@ function addConsumable(consumption: SerializedConsumption): Consumption {
         consumable = emptyFood;
     }
 
-    return {...consumption, consumable};
+    return { ...consumption, consumable };
 }
 
 function load(date?: Date): Consumption[] {
@@ -71,18 +71,14 @@ function update(consumption: Consumption) {
 function remove(consumption: Consumption) {
     window.localStorage.setItem(
         "consumptions",
-        JSON.stringify(
-            load().map((c) => (c.id === consumption.id ? toJson({ ...consumption, isDeleted: true }) : c)),
-        ),
+        JSON.stringify(load().map((c) => (c.id === consumption.id ? toJson({ ...consumption, isDeleted: true }) : c))),
     );
 }
 
 function undoDelete(consumption: Consumption) {
     window.localStorage.setItem(
         "consumptions",
-        JSON.stringify(
-            load().map((c) => (c.id === consumption.id ? toJson({ ...consumption, isDeleted: false }) : c)),
-        ),
+        JSON.stringify(load().map((c) => (c.id === consumption.id ? toJson({ ...consumption, isDeleted: false }) : c))),
     );
 }
 
@@ -92,4 +88,4 @@ export default {
     update: update,
     delete: remove,
     undoDelete: undoDelete,
-}
+};

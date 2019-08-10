@@ -15,6 +15,7 @@ export default function Foods() {
         <>
             <FoodsTable
                 foods={foods}
+                brands={Array.from(new Set(foods.map((f) => f.brand)))}
                 onCreate={repoAction(Repository.create)}
                 onUpdate={repoAction(Repository.update)}
                 onDelete={repoAction(Repository.delete)}

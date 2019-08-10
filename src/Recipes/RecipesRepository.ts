@@ -16,10 +16,7 @@ function update(recipe: Recipe) {
     const newRecipe = { ...recipe, id };
     window.localStorage.setItem(
         "recipes",
-        JSON.stringify([
-            ...load().map((i) => (i.id === recipe.id ? { ...i, next: newRecipe.id } : i)),
-            newRecipe,
-        ]),
+        JSON.stringify([...load().map((i) => (i.id === recipe.id ? { ...i, next: newRecipe.id } : i)), newRecipe]),
     );
 }
 
@@ -52,5 +49,5 @@ export default {
     update: update,
     delete: remove,
     undoDelete: undoDelete,
-    byId: byId
-}
+    byId: byId,
+};

@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-    Recipe,
-    emptyRecipe,
-    Ingredient,
-    emptyIngredient,
-} from "./Data";
+import { Recipe, emptyRecipe, Ingredient, emptyIngredient } from "./Data";
 import FoodsRepository from "../Foods/FoodsRepository";
 import RecipesRepository from "./RecipesRepository";
 import IngredientsRepository from "./IngredientsRepository";

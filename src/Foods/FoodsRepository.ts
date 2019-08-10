@@ -50,5 +50,4 @@ export default {
     delete: remove,
     undoDelete: undoDelete,
     byId: byId,
-}
-
+};
