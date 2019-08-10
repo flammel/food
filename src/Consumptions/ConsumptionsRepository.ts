@@ -47,38 +47,52 @@ function addConsumable(consumption: SerializedConsumption): Consumption {
     return { ...consumption, consumable };
 }
 
-function load(date?: Date): Consumption[] {
+function loadIncludingDeleted(date?: Date): Consumption[] {
     const items: SerializedConsumption[] = JSON.parse(window.localStorage.getItem("consumptions")) || [];
     return items
         .map(fromJson)
         .filter((item) => !date || datesEqual(item.date, date))
-        .filter((item) => !item.isDeleted)
         .map(addConsumable);
+}
+
+function load(date?: Date): Consumption[] {
+    return loadIncludingDeleted(date).filter((item) => !item.isDeleted);
 }
 
 function create(consumption: Consumption) {
     const id = Math.floor(Math.random() * 1000000);
-    window.localStorage.setItem("consumptions", JSON.stringify([...load(), toJson({ ...consumption, id })]));
+    window.localStorage.setItem(
+        "consumptions",
+        JSON.stringify([...loadIncludingDeleted(), toJson({ ...consumption, id })]),
+    );
 }
 
 function update(consumption: Consumption) {
     window.localStorage.setItem(
         "consumptions",
-        JSON.stringify(load().map((c) => (c.id === consumption.id ? consumption : c))),
+        JSON.stringify(loadIncludingDeleted().map((c) => (c.id === consumption.id ? consumption : c))),
     );
 }
 
 function remove(consumption: Consumption) {
     window.localStorage.setItem(
         "consumptions",
-        JSON.stringify(load().map((c) => (c.id === consumption.id ? toJson({ ...consumption, isDeleted: true }) : c))),
+        JSON.stringify(
+            loadIncludingDeleted().map((c) =>
+                c.id === consumption.id ? toJson({ ...consumption, isDeleted: true }) : c,
+            ),
+        ),
     );
 }
 
 function undoDelete(consumption: Consumption) {
     window.localStorage.setItem(
         "consumptions",
-        JSON.stringify(load().map((c) => (c.id === consumption.id ? toJson({ ...consumption, isDeleted: false }) : c))),
+        JSON.stringify(
+            loadIncludingDeleted().map((c) =>
+                c.id === consumption.id ? toJson({ ...consumption, isDeleted: false }) : c,
+            ),
+        ),
     );
 }
 

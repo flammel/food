@@ -6,6 +6,7 @@ export interface Ingredient {
     readonly id: IngredientId;
     readonly food: Food;
     readonly quantity: Quantity;
+    readonly isDeleted: boolean;
 }
 
 type Servings = number;
@@ -64,4 +65,5 @@ export const emptyIngredient: Ingredient = {
     id: 0,
     food: emptyFood,
     quantity: 100,
+    isDeleted: false,
 };

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { emptyFood, Food, Brand } from "./Data";
+import { emptyFood, Food, Brand, foodLabel } from "./Data";
 import { isUnit, formatQuantity, formatNutritionValue, formatCalories } from "../Types";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import Fuse from "fuse.js";
@@ -206,10 +206,11 @@ export default function FoodsTable(props: FoodsTableProps) {
             items={props.foods}
             emptyItem={emptyFood}
             idGetter={(item: Food) => item.id + ""}
+            labelGetter={(item: Food) => foodLabel(item)}
             onCreate={props.onCreate}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
-            onUndoDelete={props.onDelete}
+            onUndoDelete={props.onUndoDelete}
         />
     );
 }

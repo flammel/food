@@ -3,6 +3,10 @@
 
     &__row {
         display: contents;
+
+        &--deleted {
+            text-align: center;
+        }
     }
 
     &__cell {
@@ -51,5 +55,16 @@
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         z-index: 0;
+    }
+
+    a.undo-delete-link {
+        color: $link-color;
+        font-weight: bold;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: $link-hover-decoration;
+            color: $link-hover-color;
+        }
     }
 }

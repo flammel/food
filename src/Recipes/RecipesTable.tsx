@@ -65,6 +65,7 @@ export default function RecipesTable(props: RecipesTableProps) {
             items={props.recipes}
             emptyItem={emptyRecipe}
             idGetter={(item: Recipe) => item.id + ""}
+            labelGetter={(item: Recipe) => item.name}
             onCreate={props.onCreate}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}

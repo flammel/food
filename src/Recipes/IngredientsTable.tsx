@@ -105,6 +105,7 @@ export default function IngredientsTable(props: IngredientsTableProps) {
             items={props.ingredients}
             emptyItem={props.emptyItem}
             idGetter={(ingredient) => ingredient.id.toString()}
+            labelGetter={(ingredient) => foodLabel(ingredient.food)}
             onCreate={props.onCreate}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}

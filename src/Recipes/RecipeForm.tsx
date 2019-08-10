@@ -70,7 +70,7 @@ function RecipeForm(props: RecipeFormProps) {
             <h1>{editing ? "Editing Recipe" : "New Recipe"}</h1>
             <IngredientsTable
                 emptyItem={emptyIngredient}
-                ingredients={recipe.ingredients}
+                ingredients={recipe.ingredients.filter((ingredient) => !ingredient.isDeleted)}
                 foods={FoodsRepository.load()}
                 onCreate={repoAction(IngredientsRepository.create)}
                 onUpdate={repoAction(IngredientsRepository.update)}

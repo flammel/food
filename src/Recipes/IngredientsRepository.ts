@@ -17,12 +17,19 @@ function update(ingredient: Ingredient, recipe: Recipe): Recipe {
 function remove(ingredient: Ingredient, recipe: Recipe): Recipe {
     return {
         ...recipe,
-        ingredients: recipe.ingredients.filter((current) => current.id !== ingredient.id),
+        ingredients: recipe.ingredients.map((current) =>
+            current.id === ingredient.id ? { ...current, isDeleted: true } : current,
+        ),
     };
 }
 
 function undoDelete(ingredient: Ingredient, recipe: Recipe): Recipe {
-    return recipe;
+    return {
+        ...recipe,
+        ingredients: recipe.ingredients.map((current) =>
+            current.id === ingredient.id ? { ...current, isDeleted: false } : current,
+        ),
+    };
 }
 
 export default {

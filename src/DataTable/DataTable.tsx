@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 export type ItemSetter<ItemType> = React.Dispatch<React.SetStateAction<ItemType>>;
@@ -20,6 +20,7 @@ interface TableProps<ItemType> {
     items: ItemType[];
     emptyItem: ItemType;
     idGetter: (item: ItemType) => ItemId;
+    labelGetter: (item: ItemType) => string;
     onCreate: (newItem: ItemType) => void;
     onUpdate: (newItem: ItemType) => void;
     onDelete: (item: ItemType) => void;
@@ -105,6 +106,26 @@ interface ShowRowProps<ItemType> extends GenericRowProps<ItemType> {
 
 function ShowRow<ItemType>(props: ShowRowProps<ItemType>) {
     const [isHovering, setHovering] = useState(false);
+    let editButton;
+    if (props.editUrl) {
+        editButton = (
+            <Link
+                className={"btn btn-info action action--larger" + (isHovering ? " action--visible" : "")}
+                to={props.editUrl(props.item)}
+            >
+                Edit
+            </Link>
+        );
+    } else {
+        editButton = (
+            <button
+                className={"btn btn-info action action--larger" + (isHovering ? " action--visible" : "")}
+                onClick={() => props.onEditStart(props.item)}
+            >
+                Edit
+            </button>
+        );
+    }
     return (
         <div
             className="data-table__row"
@@ -118,21 +139,7 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>) {
                 </div>
             ))}
             <div className="data-table__cell data-table__cell--actions">
-                {props.editUrl ? (
-                    <Link
-                        className={"btn btn-info action action--larger" + (isHovering ? " action--visible" : "")}
-                        to={props.editUrl(props.item)}
-                    >
-                        Edit
-                    </Link>
-                ) : (
-                    <button
-                        className={"btn btn-info action action--larger" + (isHovering ? " action--visible" : "")}
-                        onClick={() => props.onEditStart(props.item)}
-                    >
-                        Edit
-                    </button>
-                )}
+                {editButton}
                 <button
                     className={"btn btn-danger action" + (isHovering ? " action--visible" : "")}
                     onClick={() => props.onDelete(props.item)}
@@ -198,22 +205,47 @@ function EditRow<ItemType>(props: EditRowProps<ItemType>) {
 
 interface DeletedRowProps<ItemType> extends GenericRowProps<ItemType> {
     item: ItemType;
+    onUndoDelete: (item: ItemType) => void;
+    labelGetter: (item: ItemType) => string;
 }
 
 function DeletedRow<ItemType>(props: DeletedRowProps<ItemType>) {
-    return <></>;
+    const onUndo = (e: React.MouseEvent) => {
+        e.preventDefault();
+        props.onUndoDelete(props.item);
+    };
+    return (
+        <div className="data-table__row data-table__row--deleted">
+            <div className="data-table__cell data-table__cell--full-width">
+                <span className="data-table__value">
+                    {props.labelGetter(props.item)} deleted.&nbsp;
+                    <a className="undo-delete-link" onClick={onUndo}>
+                        Undo
+                    </a>
+                </span>
+            </div>
+        </div>
+    );
 }
 
 export default function DataTable<ItemType>(props: TableProps<ItemType>) {
     const [editing, setEditing] = useState<ItemId>();
-    const [deleted, setDeleted] = useState<ItemId>();
+    const [deleted, setDeleted] = useState<[number, ItemType]>();
+    const deletedTimeout = useRef(-1);
     const onUpdate = (item: ItemType) => {
         props.onUpdate(item);
         setEditing(null);
     };
     const onDelete = (item: ItemType) => {
+        clearTimeout(deletedTimeout.current);
         props.onDelete(item);
-        setDeleted(props.idGetter(item));
+        setDeleted([props.items.indexOf(item), item]);
+        deletedTimeout.current = setTimeout(() => setDeleted(null), 4000);
+    };
+    const onUndoDelete = (item: ItemType) => {
+        clearTimeout(deletedTimeout.current);
+        props.onUndoDelete(item);
+        setDeleted(null);
     };
     const onEditStart = (item: ItemType) => {
         if (props.editUrl) {
@@ -235,7 +267,6 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>) {
         ),
         show: (item: ItemType) => (
             <ShowRow
-                key={props.idGetter(item)}
                 columns={props.columns}
                 item={item}
                 onDelete={onDelete}
@@ -244,34 +275,37 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>) {
             />
         ),
         edit: (item: ItemType) => (
-            <EditRow
-                key={props.idGetter(item)}
+            <EditRow columns={props.columns} item={item} onSave={onUpdate} onCancel={() => setEditing(null)} />
+        ),
+        deleted: (item: ItemType) => (
+            <DeletedRow
                 columns={props.columns}
                 item={item}
-                onSave={onUpdate}
-                onCancel={() => setEditing(null)}
+                onUndoDelete={onUndoDelete}
+                labelGetter={props.labelGetter}
             />
         ),
-        deleted: (item: ItemType) => <DeletedRow key={props.idGetter(item)} columns={props.columns} item={item} />,
         footer: null,
     };
     const rows = { ...defaultRows, ...props.rows };
+    const allItemsDeleted = deleted && props.items.length === 0 && deleted[0] >= 0;
+    const lastItemDeleted = deleted && props.items.length === deleted[0];
     return (
         <div className={"data-table " + props.className}>
             {rows.first}
             {rows.header}
             {rows.subHeader}
             {props.items.map(
-                (item: ItemType): React.ReactElement => {
-                    if (props.idGetter(item) === editing) {
-                        return rows.edit(item);
-                    }
-                    if (props.idGetter(item) === deleted) {
-                        return rows.deleted(item);
-                    }
-                    return rows.show(item);
+                (item: ItemType, idx: number): React.ReactElement => {
+                    return (
+                        <React.Fragment key={props.idGetter(item)}>
+                            {deleted && deleted[0] >= 0 && idx === deleted[0] ? rows.deleted(deleted[1]) : null}
+                            {props.idGetter(item) === editing ? rows.edit(item) : rows.show(item)}
+                        </React.Fragment>
+                    );
                 },
             )}
+            {allItemsDeleted || lastItemDeleted ? rows.deleted(deleted[1]) : null}
             {rows.footer}
         </div>
     );

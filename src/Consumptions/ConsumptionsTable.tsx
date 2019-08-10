@@ -106,6 +106,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
             items={props.consumptions}
             emptyItem={props.emptyItem}
             idGetter={(consumption) => consumption.id.toString()}
+            labelGetter={(consumption) => consumableLabel(consumption.consumable)}
             onCreate={props.onCreate}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
