@@ -3,6 +3,13 @@ export type Calories = number;
 export type NutritionValue = number;
 export type Unit = "ml" | "g";
 
+export interface NutritionData {
+    readonly calories: Calories;
+    readonly fat: NutritionValue;
+    readonly carbs: NutritionValue;
+    readonly protein: NutritionValue;
+}
+
 export function formatQuantity(quantity: Quantity): string {
     if (isNaN(quantity)) {
         return "";
@@ -20,12 +27,4 @@ export function formatNutritionValue(value: NutritionValue): string {
 
 export function isUnit(value: string): value is Unit {
     return value === "g" || value === "ml";
-}
-
-export interface NutritionData {
-    readonly quantity: Quantity;
-    readonly calories: Calories;
-    readonly fat: NutritionValue;
-    readonly carbs: NutritionValue;
-    readonly protein: NutritionValue;
 }

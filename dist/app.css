@@ -7071,50 +7071,41 @@ a.text-dark:hover, a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6; } }
 
-.foods-table {
-  display: grid;
-  grid-template-columns: 19% 15% 11% 11% 11% 11% 11% 11%; }
-  .foods-table__row {
+.data-table {
+  display: grid; }
+  .data-table__row {
     display: contents; }
-  .foods-table__cell {
+  .data-table__cell {
     padding: 0.75rem;
     border-bottom: 1px solid #dee2e6; }
-    .foods-table__cell--header {
+    .data-table__cell--header {
       font-weight: bold;
       border-width: 2px; }
-  .foods-table__value {
+    .data-table__cell--full-width {
+      grid-column: 1 / -1; }
+    .data-table__cell--actions {
+      display: flex;
+      align-content: space-between; }
+      .data-table__cell--actions .action {
+        display: none;
+        flex-grow: 1;
+        margin-left: 0.75rem; }
+        .data-table__cell--actions .action.action--visible {
+          display: inline-block; }
+        .data-table__cell--actions .action.action--larger {
+          flex-grow: 100; }
+        .data-table__cell--actions .action:first-child {
+          margin-left: 0; }
+  .data-table__value {
     line-height: calc(1.5em + 0.75rem + 2px); }
-  .foods-table .input-group-append input,
-  .foods-table .input-group-append select {
+  .data-table .input-group-append input,
+  .data-table .input-group-append select {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     z-index: 0; }
 
-.foods-table__cell--actions .btn {
-  display: none; }
-
-.foods-table__row--form .foods-table__cell--actions .btn,
-.foods-table__row--hovered .foods-table__cell--actions .btn {
-  display: inline-block; }
-  .foods-table__row--form .foods-table__cell--actions .btn.btn--cancel,
-  .foods-table__row--hovered .foods-table__cell--actions .btn.btn--cancel {
-    display: none; }
-
-.foods-table__row--editing .foods-table__cell--actions .btn.btn--cancel {
-  display: inline-block; }
-
-.button-group {
-  display: flex;
-  align-content: space-between; }
-  .button-group .btn {
-    flex-basis: 1;
-    flex-grow: 1;
-    margin-left: 0.75rem; }
-  .button-group .btn:first-child {
-    margin-left: 0; }
-
-.flex-larger {
-  flex-grow: 100 !important; }
+.foods-table {
+  grid-template-columns: 19% 15% 11% 11% 11% 11% 11% 11%; }
 
 .consumptions-table {
   grid-template-columns: 32% 11% 11% 11% 11% 11% 13%; }
@@ -7143,7 +7134,8 @@ a.text-dark:hover, a.text-dark:focus {
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
   list-style: none;
-  padding: 0; }
+  padding: 0;
+  z-index: 2; }
   .combo--item {
     padding: 0.375rem 0.75rem; }
     .combo--item__highlighted {
@@ -7155,42 +7147,15 @@ a.text-dark:hover, a.text-dark:focus {
   border-top-right-radius: 0.25rem;
   border-bottom-left-radius: 0; }
 
-.data-table {
-  display: grid; }
-  .data-table__row {
-    display: contents; }
-  .data-table__cell {
-    padding: 0.75rem;
-    border-bottom: 1px solid #dee2e6; }
-    .data-table__cell--header {
-      font-weight: bold;
-      border-width: 2px; }
-    .data-table__cell--actions {
-      display: flex;
-      align-content: space-between; }
-      .data-table__cell--actions .btn {
-        display: none;
-        flex-grow: 1;
-        margin-left: 0.75rem; }
-        .data-table__cell--actions .btn.btn--larger {
-          flex-grow: 100; }
-        .data-table__cell--actions .btn:first-child {
-          margin-left: 0; }
-  .data-table__value {
-    line-height: calc(1.5em + 0.75rem + 2px); }
-  .data-table .input-group-append input,
-  .data-table .input-group-append select {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    z-index: 0; }
+.recipes-table {
+  grid-template-columns: 32% 11% 11% 11% 11% 11% 13%; }
+  .recipes-table .recipes-table__row--create-link .data-table__cell {
+    background-color: #f4f5f6;
+    text-align: center; }
+  .recipes-table .recipes-table__row--create-link .btn {
+    padding-left: 3rem;
+    padding-right: 3rem; }
 
-.data-table__row--form .data-table__cell--actions .btn,
-.data-table__row--hovered .data-table__cell--actions .btn {
-  display: inline-block; }
-  .data-table__row--form .data-table__cell--actions .btn.btn--cancel,
-  .data-table__row--hovered .data-table__cell--actions .btn.btn--cancel {
-    display: none; }
-
-.data-table__row--editing .data-table__cell--actions .btn.btn--cancel {
-  display: inline-block; }
+.ingredients-table {
+  grid-template-columns: 32% 11% 11% 11% 11% 11% 13%; }
 

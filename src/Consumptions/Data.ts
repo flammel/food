@@ -1,71 +1,47 @@
-import { NutritionData, Quantity } from "../Types";
-import { Food } from "../Foods/Data";
+import { Quantity, NutritionData } from "../Types";
+import { Recipe, recipeLabel, nutritionData as recipeNutritionData } from "../Recipes/Data";
+import { Food, foodLabel } from "../Foods/Data";
 
-export type ConsumptionId = number;
+export type Consumable = Food | Recipe;
 
-export interface Consumption extends NutritionData {
+type ConsumptionId = number;
+export interface Consumption {
     readonly id: ConsumptionId;
+    readonly consumable: Consumable;
+    readonly quantity: Quantity;
     readonly date: Date;
-    readonly food: Food;
+    readonly isDeleted: boolean;
 }
 
-export function withFood(consumption: Consumption, food: Food): Consumption {
-    return {
-        ...consumption,
-        food,
-        calories: (food.calories / food.quantity) * consumption.quantity,
-        fat: (food.fat / food.quantity) * consumption.quantity,
-        carbs: (food.carbs / food.quantity) * consumption.quantity,
-        protein: (food.protein / food.quantity) * consumption.quantity,
-    };
+export function consumableLabel(consumable: Consumable): string {
+    if (consumableIsFood(consumable)) {
+        return foodLabel(consumable);
+    } else {
+        return recipeLabel(consumable);
+    }
 }
 
-export function withQuantity(consumption: Consumption, quantity: Quantity): Consumption {
-    return {
-        ...consumption,
-        quantity,
-        calories: (consumption.food.calories / consumption.food.quantity) * (quantity || 0),
-        fat: (consumption.food.fat / consumption.food.quantity) * (quantity || 0),
-        carbs: (consumption.food.carbs / consumption.food.quantity) * (quantity || 0),
-        protein: (consumption.food.protein / consumption.food.quantity) * (quantity || 0),
-    };
+export function consumableUnit(consumable: Consumable): string {
+    if (consumableIsFood(consumable)) {
+        return consumable.unit;
+    } else {
+        return "servings";
+    }
 }
 
-export function consumptionDateString(consumption: Consumption): string {
-    return dateToString(consumption.date);
+export function nutritionData(consumption: Consumption): NutritionData {
+    if (consumableIsFood(consumption.consumable)) {
+        return {
+            calories: (consumption.consumable.calories / consumption.consumable.quantity) * consumption.quantity,
+            fat: (consumption.consumable.fat / consumption.consumable.quantity) * consumption.quantity,
+            carbs: (consumption.consumable.carbs / consumption.consumable.quantity) * consumption.quantity,
+            protein: (consumption.consumable.protein / consumption.consumable.quantity) * consumption.quantity,
+        };
+    } else {
+        return recipeNutritionData(consumption.consumable);
+    }
 }
 
-export function dateToString(date: Date): string {
-    return date.toISOString().substr(0, 10);
-}
-
-function fromJson(json: any): Consumption | null {
-    return {
-        ...json,
-        date: new Date(json.date),
-    };
-}
-
-function datesEqual(d1: Date, d2: Date): boolean {
-    return (
-        new Date(d1.getUTCFullYear(), d1.getUTCMonth(), d1.getUTCDate(), 0, 0, 0, 0).getTime() ===
-        new Date(d2.getUTCFullYear(), d2.getUTCMonth(), d2.getUTCDate(), 0, 0, 0, 0).getTime()
-    );
-}
-
-export function loadConsumptions(date?: Date): Consumption[] {
-    const items: Consumption[] = JSON.parse(window.localStorage.getItem("consumptions")) || [];
-    return items
-        .map(fromJson)
-        .filter((item) => item !== null)
-        .filter((item) => !date || datesEqual(item.date, date));
-}
-
-export function saveConsumption(consumption: Consumption) {
-    const id = Math.floor(Math.random() * 1000000);
-    window.localStorage.setItem("consumptions", JSON.stringify([...loadConsumptions(), { ...consumption, id }]));
-}
-
-export function consumptionLabel(consumption: Consumption): string {
-    return consumption.food.name + " (" + consumption.food.brand + ")";
+export function consumableIsFood(consumable: Consumable): consumable is Food {
+    return consumable.hasOwnProperty("brand");
 }

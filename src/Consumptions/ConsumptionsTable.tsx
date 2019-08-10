@@ -1,87 +1,67 @@
 import React from "react";
-import { Consumption, consumptionLabel } from "./Data";
-import { Food } from "../Foods/Data";
-import { formatQuantity, formatNutritionValue, formatCalories } from "../Types";
+import { Consumption, Consumable, consumableUnit, consumableLabel, nutritionData } from "./Data";
+import { formatCalories, formatNutritionValue, formatQuantity } from "../Types";
 import DataTable, { DataTableColumn, ItemSetter } from "../DataTable/DataTable";
-import FoodCombo from "../FoodCombo/FoodCombo";
-import { withFood, withQuantity } from "../QuantifiedsFood/Data";
+import ComboBox from "../ComboBox/ComboBox";
+import Fuse from "fuse.js";
+import ConsumptionsTableSumsRow from "./ConsumptionsTableSumsRow";
 
 interface ConsumptionsTableProps {
     consumptions: Consumption[];
-    foods: Food[];
-    emptyConsumption: Consumption;
-    onCreate: (newItem: Consumption) => void;
-    onUpdate: (newItem: Consumption) => void;
-    onDelete: (item: Consumption) => void;
-    onUndoDelete: (item: Consumption) => void;
+    consumables: Consumable[];
+    emptyItem: Consumption;
+    onCreate: (consumption: Consumption) => void;
+    onUpdate: (consumption: Consumption) => void;
+    onDelete: (consumption: Consumption) => void;
+    onUndoDelete: (consumption: Consumption) => void;
 }
 
-interface ConsumptionsTableSumsProps {
-    consumptions: Consumption[];
+function search(consumables: Consumable[], search: string | null): Consumable[] {
+    const fuse = new Fuse(consumables, {
+        keys: ["name", "brand"],
+    });
+    const result = fuse.search(search);
+    return result;
 }
 
-function ConsumptionsTableSums(props: ConsumptionsTableSumsProps) {
-    let calories = 0;
-    let fat = 0.0;
-    let carbs = 0.0;
-    let protein = 0.0;
-    for (const consumption of props.consumptions) {
-        calories += consumption.calories;
-        fat += consumption.fat;
-        carbs += consumption.carbs;
-        protein += consumption.protein;
-    }
-    return (
-        <div className="data-table__row">
-            <div className="data-table__cell data-table__cell--food consumptions-table__cell--sums"></div>
-            <div className="data-table__cell data-table__cell--quantity consumptions-table__cell--sums"></div>
-            <div className="data-table__cell data-table__cell--calories consumptions-table__cell--sums">
-                {formatCalories(calories)}
-            </div>
-            <div className="data-table__cell data-table__cell--fat consumptions-table__cell--sums">
-                {formatNutritionValue(fat)} g
-            </div>
-            <div className="data-table__cell data-table__cell--carbs consumptions-table__cell--sums">
-                {formatNutritionValue(carbs)} g
-            </div>
-            <div className="data-table__cell data-table__cell--protein consumptions-table__cell--sums">
-                {formatNutritionValue(protein)} g
-            </div>
-            <div className="data-table__cell data-table__cell--actions consumptions-table__cell--sums"></div>
-        </div>
-    );
+function onSelect(setItem: ItemSetter<Consumption>) {
+    return (consumable: Consumable) => setItem((prev) => ({ ...prev, consumable}));
+}
+
+function onQuantityChange(setItem: ItemSetter<Consumption>) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+        const quantity = parseInt(e.target.value);
+        if (quantity >= 0) {
+            setItem((prev) => ({ ...prev, quantity }));
+        }
+    };
 }
 
 export default function ConsumptionsTable(props: ConsumptionsTableProps) {
-    const onFoodSelect = (setItem: ItemSetter<Consumption>) => (selection: Food) => {
-        setItem((prev) => withFood(prev, selection));
-    };
-
-    const onQuantityChange = (setItem: ItemSetter<Consumption>) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        const quantity = parseInt(e.target.value);
-        if (quantity >= 0) {
-            setItem((prev) => withQuantity(prev, quantity));
-        }
-    };
-
     const columns: Array<DataTableColumn<Consumption>> = [
         {
-            id: "food",
-            label: "Food",
-            value: consumptionLabel,
-            form: (c: Consumption, setItem: ItemSetter<Consumption>) => (
-                <FoodCombo
-                    foods={props.foods}
-                    onFoodSelect={onFoodSelect(setItem)}
-                    selectedFood={c.food}
+            id: "consumable",
+            label: "Food or Recipe",
+            value: (consumption: Consumption) => consumableLabel(consumption.consumable),
+            form: (consumption: Consumption, setItem: ItemSetter<Consumption>) => (
+                <ComboBox
+                    items={props.consumables}
+                    onSelect={onSelect(setItem)}
+                    selected={consumption.consumable}
+                    placeholder="Food or Recipe"
+                    itemLabel={(consumable) => consumableLabel(consumable)}
+                    itemKey={(consumable) => consumable.id.toString()}
+                    search={search}
+                    autoFocus={true}
                 />
             ),
         },
         {
             id: "quantity",
             label: "Quantity",
-            value: (c: Consumption) => formatQuantity(c.quantity) + " " + c.food.unit,
-            form: (c: Consumption, setItem: ItemSetter<Consumption>) => (
+            value: (consumption: Consumption) =>
+                formatQuantity(consumption.quantity) + " " + consumableUnit(consumption.consumable),
+            form: (consumption: Consumption, setItem: ItemSetter<Consumption>) => (
                 <div className="input-group">
                     <input
                         type="number"
@@ -89,11 +69,11 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
                         step="1"
                         className="form-control"
                         placeholder="Quantity"
-                        value={formatQuantity(c.quantity)}
+                        value={formatQuantity(consumption.quantity)}
                         onChange={onQuantityChange(setItem)}
                     />
                     <div className="input-group-append">
-                        <div className="input-group-text">{c.food.unit}</div>
+                        <div className="input-group-text">{consumableUnit(consumption.consumable)}</div>
                     </div>
                 </div>
             ),
@@ -101,22 +81,22 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
         {
             id: "calories",
             label: "Calories",
-            value: (c: Consumption) => formatCalories(c.calories),
+            value: (consumption: Consumption) => formatCalories(nutritionData(consumption).calories),
         },
         {
             id: "fat",
             label: "Fat",
-            value: (c: Consumption) => formatNutritionValue(c.fat) + " g",
+            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).fat) + " g",
         },
         {
             id: "carbs",
             label: "Carbs",
-            value: (c: Consumption) => formatNutritionValue(c.carbs) + " g",
+            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).carbs) + " g",
         },
         {
             id: "protein",
             label: "Protein",
-            value: (c: Consumption) => formatNutritionValue(c.protein) + " g",
+            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).protein) + " g",
         },
     ];
     return (
@@ -124,13 +104,15 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
             columns={columns}
             className={"consumptions-table"}
             items={props.consumptions}
-            emptyItem={props.emptyConsumption}
-            idGetter={(item: Consumption) => item.id + ""}
+            emptyItem={props.emptyItem}
+            idGetter={(consumption) => consumption.id.toString()}
             onCreate={props.onCreate}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
-            append={<ConsumptionsTableSums consumptions={props.consumptions} />}
+            additionalRows={{
+                last: <ConsumptionsTableSumsRow consumptions={props.consumptions} />,
+            }}
         />
     );
 }

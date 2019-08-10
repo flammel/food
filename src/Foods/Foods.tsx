@@ -1,20 +1,25 @@
 import React, { useState } from "react";
 import FoodsTable from "./FoodsTable";
-import { Food, loadFoods, saveFood, deleteFood } from "./Data";
+import { Food } from "./Data";
+import Repository from "./FoodsRepository";
 
 export default function Foods() {
-    const [foods, setFoods] = useState(loadFoods());
-    const onSave = (newFood: Food, oldFood?: Food) => {
-        saveFood(newFood, oldFood);
-        setFoods(loadFoods());
-    };
-    const onDelete = (food: Food) => {
-        deleteFood(food);
-        setFoods(loadFoods());
+    const [foods, setFoods] = useState(Repository.load());
+    const repoAction = (action: (food: Food) => void) => {
+        return (food: Food) => {
+            action(food);
+            setFoods(Repository.load());
+        };
     };
     return (
         <>
-            <FoodsTable foods={foods} onSave={onSave} onDelete={onDelete} />
+            <FoodsTable
+                foods={foods}
+                onCreate={repoAction(Repository.create)}
+                onUpdate={repoAction(Repository.update)}
+                onDelete={repoAction(Repository.delete)}
+                onUndoDelete={repoAction(Repository.undoDelete)}
+            />
         </>
     );
 }

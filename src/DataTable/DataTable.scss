@@ -14,16 +14,24 @@
             border-width: (2 * $table-border-width);
         }
 
+        &--full-width {
+            grid-column: 1 / -1;
+        }
+
         &--actions {
             display: flex;
             align-content: space-between;
 
-            .btn {
+            .action {
                 display: none;
                 flex-grow: 1;
                 margin-left: $table-cell-padding;
 
-                &.btn--larger {
+                &.action--visible {
+                    display: inline-block;
+                }
+
+                &.action--larger {
                     flex-grow: 100;
                 }
 
@@ -44,17 +52,4 @@
         border-bottom-left-radius: 0;
         z-index: 0;
     }
-}
-
-.data-table__row--form .data-table__cell--actions .btn,
-.data-table__row--hovered .data-table__cell--actions .btn {
-    display: inline-block;
-
-    &.btn--cancel {
-        display: none;
-    }
-}
-
-.data-table__row--editing .data-table__cell--actions .btn.btn--cancel {
-    display: inline-block;
 }

@@ -1,43 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Downshift, { GetItemPropsOptions } from "downshift";
-import { foodSearch, foodLabel, Food } from "../Foods/Data";
+import { foodLabel } from "../Foods/Data";
 
-interface FoodComboProps {
-    foods: Food[];
-    onFoodSelect: (food: Food) => void;
-    foodInputRef: React.MutableRefObject<HTMLInputElement>;
-    inputValue: string;
-    setInputValue: (value: string) => void;
+interface ComboBoxProps<ItemType> {
+    items: ItemType[];
+    onSelect: (item: ItemType) => void;
+    selected: ItemType;
+    placeholder: string;
+    itemLabel: (item: ItemType) => string;
+    itemKey: (item: ItemType) => string;
+    search: (items: ItemType[], search: string | null) => ItemType[];
+    autoFocus?: boolean
 }
 
-export default function FoodCombo(props: FoodComboProps) {
+export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
+    const [currentInputValue, setCurrentInputValue] = useState<string>(props.itemLabel(props.selected));
+
+    useEffect(() => {
+        setCurrentInputValue(props.itemLabel(props.selected));
+    }, [props.itemKey(props.selected)]);
+
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.setInputValue(e.target.value);
+        setCurrentInputValue(e.target.value);
     };
 
-    const onSelectChange = (item: Food | null) => {
+    const onSelectChange = (item: ItemType | null) => {
         if (item !== null) {
-            props.onFoodSelect(item);
-            props.setInputValue(foodLabel(item));
+            props.onSelect(item);
+            setCurrentInputValue(props.itemLabel(item));
         } else {
-            props.setInputValue("");
+            setCurrentInputValue("");
         }
     };
 
     const comboItems = (
         inputValue: string | null,
-        getItemProps: (options: GetItemPropsOptions<Food>) => any,
+        getItemProps: (options: GetItemPropsOptions<ItemType>) => any,
         highlightedIndex: number | null,
-        selectedItem: Food,
+        selectedItem: ItemType,
     ) => {
-        const items = foodSearch(props.foods, inputValue);
+        const items = props.search(props.items, inputValue);
         if (items.length === 0) {
             return <li className="combo--item">No matching food found.</li>;
         } else {
             return items.map((item, index) => (
                 <li
                     {...getItemProps({
-                        key: item.id,
+                        key: props.itemKey(item),
                         index,
                         item,
                         className: [
@@ -47,7 +56,7 @@ export default function FoodCombo(props: FoodComboProps) {
                         ].join(" "),
                     })}
                 >
-                    {foodLabel(item)}
+                    {props.itemLabel(item)}
                 </li>
             ));
         }
@@ -57,7 +66,7 @@ export default function FoodCombo(props: FoodComboProps) {
         <Downshift
             onChange={onSelectChange}
             itemToString={(item) => (item ? foodLabel(item) : "")}
-            inputValue={props.inputValue}
+            inputValue={currentInputValue}
         >
             {({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, highlightedIndex, selectedItem }) => (
                 <div className="input-group input-group--combo">
@@ -65,10 +74,9 @@ export default function FoodCombo(props: FoodComboProps) {
                         {...getInputProps({
                             type: "text",
                             className: "form-control",
-                            placeholder: "Food",
-                            ref: props.foodInputRef,
-                            autoFocus: true,
+                            placeholder: props.placeholder,
                             onChange: onInputChange,
+                            autoFocus: props.autoFocus
                         })}
                     />
                     {isOpen ? (

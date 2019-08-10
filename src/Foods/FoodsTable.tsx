@@ -1,148 +1,61 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Food, FoodId, emptyFood } from "./Data";
+import React, { useRef } from "react";
+import { emptyFood, Food } from "./Data";
 import { isUnit, formatQuantity, formatNutritionValue, formatCalories } from "../Types";
+import DataTable, { ItemSetter, DataTableColumn } from "../DataTable/DataTable";
 
 interface FoodsTableProps {
     foods: Food[];
-    onSave: (newFood: Food, oldFood?: Food) => void;
-    onDelete: (food: Food) => void;
+    onCreate: (newItem: Food) => void;
+    onUpdate: (newItem: Food) => void;
+    onDelete: (item: Food) => void;
+    onUndoDelete: (item: Food) => void;
 }
 
-interface FoodsTableRowProps {
-    food: Food;
-    form: boolean;
-    isEditing: boolean;
-    onSave: (newFood: Food) => void;
-    onEditStart: () => void;
-    onEditStop: () => void;
-    onDelete: () => void;
-}
-
-function FoodsTableHeader() {
-    return (
-        <div className="foods-table__row foods-table__row--form">
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--name">Food</div>
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--brand">Brand</div>
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--quantity">Quantity</div>
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--calories">Calories</div>
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--fat">Fat</div>
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--carbs">Carbs</div>
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--protein">Protein</div>
-            <div className="foods-table__cell foods-table__cell--header foods-table__cell--actions"></div>
-        </div>
-    );
-}
-
-function FoodsTableRow(props: FoodsTableRowProps) {
-    if (props.form) {
-        return <FoodsTableFormRow {...props} />;
-    } else {
-        return <FoodsTableDataRow {...props} />;
-    }
-}
-
-function FoodsTableDataRow(props: FoodsTableRowProps) {
-    const [isHovering, setHovering] = useState(false);
-    return (
-        <div
-            className={"foods-table__row" + (isHovering ? " foods-table__row--hovered" : "")}
-            onDoubleClick={props.onEditStart}
-            onMouseOver={() => setHovering(true)}
-            onMouseOut={() => setHovering(false)}
-        >
-            <div className="foods-table__cell foods-table__cell--name">
-                <span className="foods-table__value">{props.food.name}</span>
-            </div>
-            <div className="foods-table__cell foods-table__cell--brand">
-                <span className="foods-table__value">{props.food.brand}</span>
-            </div>
-            <div className="foods-table__cell foods-table__cell--quantity">
-                <span className="foods-table__value">
-                    {formatQuantity(props.food.quantity)} {props.food.unit}
-                </span>
-            </div>
-            <div className="foods-table__cell foods-table__cell--calories">
-                <span className="foods-table__value">{formatCalories(props.food.calories)}</span>
-            </div>
-            <div className="foods-table__cell foods-table__cell--fat">
-                <span className="foods-table__value">{formatNutritionValue(props.food.fat)} g</span>
-            </div>
-            <div className="foods-table__cell foods-table__cell--carbs">
-                <span className="foods-table__value">{formatNutritionValue(props.food.carbs)} g</span>
-            </div>
-            <div className="foods-table__cell foods-table__cell--protein">
-                <span className="foods-table__value">{formatNutritionValue(props.food.protein)} g</span>
-            </div>
-            <div className="foods-table__cell foods-table__cell--actions">
-                <div className="button-group">
-                    <button className="btn btn-info flex-larger" onClick={props.onEditStart}>
-                        Edit
-                    </button>
-                    <button className="btn btn-danger" onClick={props.onDelete}>
-                        Delete
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function FoodsTableFormRow(props: FoodsTableRowProps) {
+export default function FoodsTable(props: FoodsTableProps) {
     const nameInput = useRef<HTMLInputElement>();
-    const [food, setFood] = useState<Food>(props.food);
-    const onChange = (newField: Partial<Food>) => setFood((prev) => ({ ...prev, ...newField }));
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        props.onSave(food);
-        setFood(props.food);
-        nameInput.current.focus();
-    };
+    const onChange = (setFood: ItemSetter<Food>, newField: Partial<Food>) =>
+        setFood((prev) => ({ ...prev, ...newField }));
 
-    const onEscape = (e: KeyboardEvent) => {
-        if (e.keyCode === 27) {
-            props.onEditStop();
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener("keydown", onEscape, false);
-        return () => {
-            document.removeEventListener("keydown", onEscape, false);
-        };
-    });
-
-    return (
-        <form
-            className={
-                "foods-table__row foods-table__row--form" + (props.isEditing ? " foods-table__row--editing" : "")
-            }
-            onSubmit={onSubmit}
-        >
-            <div className="foods-table__cell foods-table__cell--name">
+    const columns: Array<DataTableColumn<Food>> = [
+        {
+            id: "food",
+            label: "Food",
+            value: (f: Food) => f.name,
+            form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
                         type="text"
                         className="form-control"
                         placeholder="Name"
-                        onChange={(e) => onChange({ name: e.target.value })}
-                        value={food.name}
+                        onChange={(e) => onChange(setItem, { name: e.target.value })}
+                        value={f.name}
                         ref={nameInput}
                         autoFocus
                     />
                 </div>
-            </div>
-            <div className="foods-table__cell foods-table__cell--brand">
+            ),
+        },
+        {
+            id: "brand",
+            label: "Brand",
+            value: (f: Food) => f.brand,
+            form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
                         type="text"
                         className="form-control"
                         placeholder="Brand"
-                        onChange={(e) => onChange({ brand: e.target.value })}
-                        value={food.brand}
+                        onChange={(e) => onChange(setItem, { brand: e.target.value })}
+                        value={f.brand}
                     />
                 </div>
-            </div>
-            <div className="foods-table__cell foods-table__cell--quantity">
+            ),
+        },
+        {
+            id: "quantity",
+            label: "Quantity",
+            value: (f: Food) => formatQuantity(f.quantity) + " " + f.unit,
+            form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
                         type="number"
@@ -150,38 +63,55 @@ function FoodsTableFormRow(props: FoodsTableRowProps) {
                         step="1"
                         className="form-control"
                         placeholder="Quantity"
-                        onChange={(e) => onChange({ quantity: parseInt(e.target.value) })}
-                        value={food.quantity}
+                        onChange={(e) =>
+                            parseInt(e.target.value) > 0
+                                ? onChange(setItem, { quantity: parseInt(e.target.value) })
+                                : null
+                        }
+                        value={f.quantity}
                     />
                     <div className="input-group-append">
                         <select
                             className="form-control"
-                            onChange={(e) => (isUnit(e.target.value) ? onChange({ unit: e.target.value }) : null)}
-                            value={food.unit}
+                            onChange={(e) =>
+                                isUnit(e.target.value) ? onChange(setItem, { unit: e.target.value }) : null
+                            }
+                            value={f.unit}
                         >
                             <option>g</option>
                             <option>ml</option>
                         </select>
                     </div>
                 </div>
-            </div>
-            <div className="foods-table__cell foods-table__cell--calories">
+            ),
+        },
+        {
+            id: "calories",
+            label: "Calories",
+            value: (f: Food) => formatCalories(f.calories),
+            form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
                         type="number"
                         min="0"
-                        step="0.1"
+                        step="1"
                         className="form-control"
                         placeholder="Calories"
-                        onChange={(e) => onChange({ calories: parseFloat(e.target.value) })}
-                        value={food.calories}
+                        onChange={(e) =>
+                            parseInt(e.target.value) > 0
+                                ? onChange(setItem, { calories: parseInt(e.target.value) })
+                                : null
+                        }
+                        value={f.calories}
                     />
-                    <div className="input-group-append">
-                        <div className="input-group-text">g</div>
-                    </div>
                 </div>
-            </div>
-            <div className="foods-table__cell foods-table__cell--fat">
+            ),
+        },
+        {
+            id: "fat",
+            label: "Fat",
+            value: (f: Food) => formatNutritionValue(f.fat) + " g",
+            form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
                         type="number"
@@ -189,15 +119,24 @@ function FoodsTableFormRow(props: FoodsTableRowProps) {
                         step="0.1"
                         className="form-control"
                         placeholder="Fat"
-                        onChange={(e) => onChange({ fat: parseFloat(e.target.value) })}
-                        value={food.fat}
+                        onChange={(e) =>
+                            parseFloat(e.target.value) > 0
+                                ? onChange(setItem, { fat: parseFloat(e.target.value) })
+                                : null
+                        }
+                        value={f.fat}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">g</div>
                     </div>
                 </div>
-            </div>
-            <div className="foods-table__cell foods-table__cell--carbs">
+            ),
+        },
+        {
+            id: "carbs",
+            label: "Carbs",
+            value: (f: Food) => formatNutritionValue(f.carbs) + " g",
+            form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
                         type="number"
@@ -205,15 +144,24 @@ function FoodsTableFormRow(props: FoodsTableRowProps) {
                         step="0.1"
                         className="form-control"
                         placeholder="Carbs"
-                        onChange={(e) => onChange({ carbs: parseFloat(e.target.value) })}
-                        value={food.carbs}
+                        onChange={(e) =>
+                            parseFloat(e.target.value) > 0
+                                ? onChange(setItem, { carbs: parseFloat(e.target.value) })
+                                : null
+                        }
+                        value={f.carbs}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">g</div>
                     </div>
                 </div>
-            </div>
-            <div className="foods-table__cell foods-table__cell--protein">
+            ),
+        },
+        {
+            id: "protein",
+            label: "Protein",
+            value: (f: Food) => formatNutritionValue(f.protein) + " g",
+            form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
                         type="number"
@@ -221,64 +169,32 @@ function FoodsTableFormRow(props: FoodsTableRowProps) {
                         step="0.1"
                         className="form-control"
                         placeholder="Protein"
-                        onChange={(e) => onChange({ protein: parseFloat(e.target.value) })}
-                        value={food.protein}
+                        onChange={(e) =>
+                            parseFloat(e.target.value) > 0
+                                ? onChange(setItem, { protein: parseFloat(e.target.value) })
+                                : null
+                        }
+                        value={f.protein}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">g</div>
                     </div>
                 </div>
-            </div>
-            <div className="foods-table__cell foods-table__cell--actions">
-                <div className="button-group">
-                    <button className="btn btn-primary flex-larger" type="submit">
-                        Save
-                    </button>
-                    <button className="btn btn-light btn--cancel" type="button" onClick={props.onEditStop}>
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </form>
-    );
-}
+            ),
+        },
+    ];
 
-export default function FoodsTable(props: FoodsTableProps) {
-    const [editing, setEditing] = useState<FoodId>();
-    const onSave = (oldFood?: Food) => {
-        return (newFood: Food) => {
-            props.onSave(newFood, oldFood);
-            setEditing(null);
-        };
-    };
-    const onDelete = (food: Food) => {
-        props.onDelete(food);
-        setEditing(null);
-    };
     return (
-        <div className="foods-table">
-            <FoodsTableHeader />
-            <FoodsTableRow
-                onSave={onSave()}
-                food={emptyFood}
-                form={true}
-                isEditing={false}
-                onEditStart={() => {}}
-                onEditStop={() => {}}
-                onDelete={() => {}}
-            />
-            {props.foods.map((food) => (
-                <FoodsTableRow
-                    onSave={onSave(food)}
-                    food={food}
-                    key={food.id}
-                    form={food.id === editing}
-                    isEditing={food.id === editing}
-                    onEditStart={() => setEditing(food.id)}
-                    onEditStop={() => setEditing(null)}
-                    onDelete={() => onDelete(food)}
-                />
-            ))}
-        </div>
+        <DataTable
+            columns={columns}
+            className={"foods-table"}
+            items={props.foods}
+            emptyItem={emptyFood}
+            idGetter={(item: Food) => item.id + ""}
+            onCreate={props.onCreate}
+            onUpdate={props.onUpdate}
+            onDelete={props.onDelete}
+            onUndoDelete={props.onDelete}
+        />
     );
 }

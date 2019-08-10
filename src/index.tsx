@@ -5,6 +5,7 @@ import NavItem from "./Nav/NavItem";
 import Foods from "./Foods/Foods";
 import Consumptions from "./Consumptions/Consumptions";
 import Recipes from "./Recipes/Recipes";
+import RecipeForm from "./Recipes/RecipeForm";
 import "./index.scss";
 
 ReactDOM.render(
@@ -24,7 +25,8 @@ ReactDOM.render(
         <div className="container-fluid">
             <Route path="/" exact component={Consumptions} />
             <Route path="/foods/" component={Foods} />
-            <Route path="/recipes/" component={Recipes} />
+            <Route path="/recipes/" exact component={Recipes} />
+            <Route path="/recipes/new" component={RecipeForm} />
             <Route path="/log/:date" component={Consumptions} />
         </div>
     </Router>,

@@ -9,6 +9,7 @@
     border-bottom-right-radius: $input-border-radius;
     list-style: none;
     padding: 0;
+    z-index: 2;
 
     &--item {
         padding: $input-padding-y $input-padding-x;
