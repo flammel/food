@@ -1,6 +1,15 @@
 import React from "react";
-import { Consumption, Consumable, consumableUnit, consumableLabel, nutritionData, consumableIsFood } from "./Data";
-import { formatCalories, formatNutritionValue, formatQuantity, Quantity } from "../Types";
+import {
+    Consumption,
+    Consumable,
+    consumableUnit,
+    consumableLabel,
+    nutritionData,
+    consumableIsFood,
+    formatCalories,
+    formatNutritionValue,
+} from "./Data";
+import { Quantity, formatQuantity } from "../Types";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
@@ -97,23 +106,23 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps) {
         },
         {
             id: "calories",
-            label: "Calories",
+            label: "Calories (kcal)",
             value: (consumption: Consumption) => formatCalories(nutritionData(consumption).calories),
         },
         {
             id: "fat",
-            label: "Fat",
-            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).fat) + " g",
+            label: "Fat (g)",
+            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).fat),
         },
         {
             id: "carbs",
-            label: "Carbs",
-            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).carbs) + " g",
+            label: "Carbs (g)",
+            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).carbs),
         },
         {
             id: "protein",
-            label: "Protein",
-            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).protein) + " g",
+            label: "Protein (g)",
+            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).protein),
         },
     ];
     return (

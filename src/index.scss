@@ -4,3 +4,7 @@
 @import "./Consumptions/Consumptions";
 @import "./ComboBox/ComboBox";
 @import "./Recipes/Recipes";
+
+.main-nav {
+    flex-grow: 1;
+}

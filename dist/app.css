@@ -7118,10 +7118,12 @@ a.text-dark:hover, a.text-dark:focus {
 
 .consumptions-table {
   grid-template-columns: 32% 11% 11% 11% 11% 11% 13%; }
-  .consumptions-table .consumptions-table__cell--sums {
+  .consumptions-table .consumptions-table__cell--totals {
     font-weight: bold;
     border-top: 1px solid #dee2e6;
     border-bottom: 4px double #dee2e6; }
+  .consumptions-table .consumptions-table__cell--remaining {
+    font-weight: bold; }
 
 .consumptions-header {
   display: flex;
@@ -7167,4 +7169,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .ingredients-table {
   grid-template-columns: 32% 11% 11% 11% 11% 11% 13%; }
+
+.main-nav {
+  flex-grow: 1; }
 

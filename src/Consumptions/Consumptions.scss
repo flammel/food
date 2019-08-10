@@ -7,11 +7,14 @@
         11%
         11%
         13%;
-    .consumptions-table__cell--sums {
+    .consumptions-table__cell--totals {
         font-weight: bold;
         // border will look like double-thickness because of border-bottom from second-to-last row
         border-top: $table-border-width solid $table-border-color;
         border-bottom: (4 * $table-border-width) double $table-border-color;
+    }
+    .consumptions-table__cell--remaining {
+        font-weight: bold;
     }
 }
 

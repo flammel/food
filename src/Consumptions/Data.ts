@@ -1,4 +1,4 @@
-import { Quantity, NutritionData } from "../Types";
+import { Quantity, NutritionData, Calories, NutritionValue } from "../Types";
 import { Recipe, recipeLabel, nutritionData as recipeNutritionData } from "../Recipes/Data";
 import { Food, foodLabel } from "../Foods/Data";
 
@@ -44,4 +44,12 @@ export function nutritionData(consumption: Consumption): NutritionData {
 
 export function consumableIsFood(consumable: Consumable): consumable is Food {
     return consumable && consumable.hasOwnProperty("brand");
+}
+
+export function formatCalories(calories: Calories): string {
+    return calories.toFixed(0);
+}
+
+export function formatNutritionValue(value: NutritionValue): string {
+    return value.toFixed(0);
 }
