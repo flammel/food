@@ -25,6 +25,10 @@ function Recipes(props: RecipesPageProps) {
                 onUpdate={repoAction(RecipesRepository.update)}
                 onDelete={repoAction(RecipesRepository.delete)}
                 onUndoDelete={repoAction(RecipesRepository.undoDelete)}
+                onDuplicate={(recipe) => {
+                    const duplicate = RecipesRepository.duplicate(recipe);
+                    goToEdit(duplicate);
+                }}
                 goToEdit={goToEdit}
             />
         </>

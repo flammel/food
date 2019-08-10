@@ -25,6 +25,7 @@ interface TableProps<ItemType> {
     onUpdate: (newItem: ItemType) => void;
     onDelete: (item: ItemType) => void;
     onUndoDelete: (item: ItemType) => void;
+    onDuplicate?: (item: ItemType) => void;
     rows?: Partial<Rows<ItemType>>;
     createButtonLabel?: string;
     editUrl?: {
@@ -102,6 +103,7 @@ interface ShowRowProps<ItemType> extends GenericRowProps<ItemType> {
     onDelete: (item: ItemType) => void;
     editUrl?: (item: ItemType) => string;
     onEditStart: (item: ItemType) => void;
+    onDuplicate?: (item: ItemType) => void;
 }
 
 function ShowRow<ItemType>(props: ShowRowProps<ItemType>) {
@@ -140,6 +142,14 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>) {
             ))}
             <div className="data-table__cell data-table__cell--actions">
                 {editButton}
+                {props.onDuplicate ? (
+                    <button
+                        className={"btn btn-light action" + (isHovering ? " action--visible" : "")}
+                        onClick={() => props.onDuplicate(props.item)}
+                    >
+                        Copy
+                    </button>
+                ) : null}
                 <button
                     className={"btn btn-danger action" + (isHovering ? " action--visible" : "")}
                     onClick={() => props.onDelete(props.item)}
@@ -272,6 +282,7 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>) {
                 onDelete={onDelete}
                 editUrl={props.editUrl ? props.editUrl.url : undefined}
                 onEditStart={onEditStart}
+                onDuplicate={props.onDuplicate}
             />
         ),
         edit: (item: ItemType) => (

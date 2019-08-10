@@ -9,21 +9,17 @@ function load(): Recipe[] {
     return loadIncludingDeleted().filter((i) => !i.isDeleted);
 }
 
-function create(newRecipeData: Recipe) {
+function create(newRecipeData: Recipe): Recipe {
     const id = Math.floor(Math.random() * 1000000);
     const newRecipe = { ...newRecipeData, id };
     window.localStorage.setItem("recipes", JSON.stringify([...loadIncludingDeleted(), newRecipe]));
+    return newRecipe;
 }
 
 function update(recipe: Recipe) {
-    const id = Math.floor(Math.random() * 1000000);
-    const newRecipe = { ...recipe, id };
     window.localStorage.setItem(
         "recipes",
-        JSON.stringify([
-            ...loadIncludingDeleted().map((i) => (i.id === recipe.id ? { ...i, next: newRecipe.id } : i)),
-            newRecipe,
-        ]),
+        JSON.stringify([...loadIncludingDeleted().map((i) => (i.id === recipe.id ? recipe : i))]),
     );
 }
 
@@ -56,5 +52,6 @@ export default {
     update: update,
     delete: remove,
     undoDelete: undoDelete,
+    duplicate: create,
     byId: byId,
 };

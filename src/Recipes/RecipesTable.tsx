@@ -11,6 +11,7 @@ interface RecipesTableProps {
     onDelete: (item: Recipe) => void;
     onUndoDelete: (item: Recipe) => void;
     goToEdit: (item: Recipe) => void;
+    onDuplicate: (item: Recipe) => void;
 }
 
 function CreateForm() {
@@ -70,6 +71,7 @@ export default function RecipesTable(props: RecipesTableProps) {
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
+            onDuplicate={props.onDuplicate}
             rows={{ subHeader: <CreateForm /> }}
             editUrl={{
                 url: (item: Recipe) => "/recipes/" + item.id,
