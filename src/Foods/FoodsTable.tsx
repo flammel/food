@@ -14,7 +14,7 @@ interface FoodsTableProps {
     onUndoDelete: (item: Food) => void;
 }
 
-function search(brands: Brand[], search: string | null): Brand[] {
+function search(brands: Brand[], search: string): Brand[] {
     // Fuse needs an array of objects, but the brands parameter is an array
     // of strings. So we first transform to an array of objects and
     // in the return statement extract the brand name.
@@ -26,7 +26,7 @@ function search(brands: Brand[], search: string | null): Brand[] {
 }
 
 export default function FoodsTable(props: FoodsTableProps) {
-    const nameInput = useRef<HTMLInputElement>();
+    const nameInput = useRef<HTMLInputElement>(null);
     const onChange = (setFood: ItemSetter<Food>, newField: Partial<Food>) =>
         setFood((prev) => ({ ...prev, ...newField }));
 

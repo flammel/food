@@ -9,7 +9,7 @@ interface ComboBoxProps<ItemType> {
     placeholder: string;
     itemLabel: (item: ItemType) => string;
     itemKey: (item: ItemType) => string;
-    search: (items: ItemType[], search: string | null) => ItemType[];
+    search: (items: ItemType[], search: string) => ItemType[];
     autoFocus?: boolean;
 }
 
@@ -42,7 +42,7 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
         highlightedIndex: number | null,
         selectedItem: ItemType,
     ) => {
-        const items = props.search(props.items, inputValue);
+        const items = props.search(props.items, inputValue || "");
         if (items.length === 0) {
             return <li className="combo--item">No matching food found.</li>;
         } else {

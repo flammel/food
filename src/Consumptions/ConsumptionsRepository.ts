@@ -35,24 +35,28 @@ function datesEqual(d1: Date, d2: Date): boolean {
 }
 
 function addConsumable(consumption: SerializedConsumption): Consumption {
-    let consumable: Consumable;
+    let consumable: Consumable | null = null;
     if (consumption.foodId) {
         consumable = FoodsRepository.byId(consumption.foodId);
     } else if (consumption.recipeId) {
         consumable = RecipesRepository.byId(consumption.recipeId);
-    } else {
-        consumable = emptyFood;
     }
 
-    return { ...consumption, consumable };
+    return { ...consumption, consumable: consumable || emptyFood };
 }
 
 function loadIncludingDeleted(date?: Date): Consumption[] {
-    const items: SerializedConsumption[] = JSON.parse(window.localStorage.getItem("consumptions")) || [];
-    return items
-        .map(fromJson)
-        .filter((item) => !date || datesEqual(item.date, date))
-        .map(addConsumable);
+    const json = window.localStorage.getItem("consumptions");
+    if (json) {
+        const parsed = JSON.parse(json);
+        if (parsed) {
+            return parsed
+                .map(fromJson)
+                .filter((item: SerializedConsumption) => !date || datesEqual(item.date, date))
+                .map(addConsumable);
+        }
+    }
+    return [];
 }
 
 function load(date?: Date): Consumption[] {

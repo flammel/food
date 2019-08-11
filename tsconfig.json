@@ -8,6 +8,9 @@
         "allowJs": true,
         "moduleResolution": "node",
         "lib": ["es6", "dom", "dom.iterable"],
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true
     }
 }

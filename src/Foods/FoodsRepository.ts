@@ -1,8 +1,14 @@
 import { Food, FoodId } from "./Data";
 
 function loadIncludingDeleted(): Food[] {
-    const items: Food[] = JSON.parse(window.localStorage.getItem("foods")) || [];
-    return items;
+    const json = window.localStorage.getItem("foods");
+    if (json) {
+        const parsed = JSON.parse(json);
+        if (parsed) {
+            return parsed;
+        }
+    }
+    return [];
 }
 
 function load(): Food[] {

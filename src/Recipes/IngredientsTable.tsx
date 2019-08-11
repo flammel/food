@@ -17,7 +17,7 @@ interface IngredientsTableProps {
     footer: React.ReactElement;
 }
 
-function search(foods: Food[], search: string | null): Food[] {
+function search(foods: Food[], search: string): Food[] {
     const fuse = new Fuse(foods, {
         keys: ["name", "brand"],
     });

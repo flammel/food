@@ -25,7 +25,7 @@ interface ConsumptionsTableProps {
     onUndoDelete: (consumption: Consumption) => void;
 }
 
-function search(consumables: Consumable[], search: string | null): Consumable[] {
+function search(consumables: Consumable[], search: string): Consumable[] {
     const fuse = new Fuse(consumables, {
         keys: ["name", "brand"],
     });

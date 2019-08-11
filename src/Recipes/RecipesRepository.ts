@@ -1,8 +1,14 @@
 import { Recipe, RecipeId } from "./Data";
 
 function loadIncludingDeleted(): Recipe[] {
-    const items: Recipe[] = JSON.parse(window.localStorage.getItem("recipes")) || [];
-    return items;
+    const json = window.localStorage.getItem("recipes");
+    if (json) {
+        const parsed = JSON.parse(json);
+        if (parsed) {
+            return parsed;
+        }
+    }
+    return [];
 }
 
 function load(): Recipe[] {

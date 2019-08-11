@@ -35,13 +35,13 @@ interface TableProps<ItemType> {
 }
 
 interface Rows<ItemType> {
-    first: React.ReactElement;
+    first: React.ReactElement | null;
     header: React.ReactElement;
     subHeader: React.ReactElement;
     show: (item: ItemType) => React.ReactElement;
     edit: (item: ItemType) => React.ReactElement;
     deleted: (item: ItemType) => React.ReactElement;
-    footer: React.ReactElement;
+    footer: React.ReactElement | null;
 }
 
 interface GenericRowProps<ItemType> {
@@ -128,6 +128,7 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>) {
             </button>
         );
     }
+    const onDuplicate = props.onDuplicate ? props.onDuplicate : () => {};
     return (
         <div
             className="data-table__row"
@@ -145,7 +146,7 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>) {
                 {props.onDuplicate ? (
                     <button
                         className={"btn btn-light action" + (isHovering ? " action--visible" : "")}
-                        onClick={() => props.onDuplicate(props.item)}
+                        onClick={() => onDuplicate(props.item)}
                     >
                         Copy
                     </button>
@@ -244,18 +245,18 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>) {
     const deletedTimeout = useRef(-1);
     const onUpdate = (item: ItemType) => {
         props.onUpdate(item);
-        setEditing(null);
+        setEditing(undefined);
     };
     const onDelete = (item: ItemType) => {
         clearTimeout(deletedTimeout.current);
         props.onDelete(item);
         setDeleted([props.items.indexOf(item), item]);
-        deletedTimeout.current = setTimeout(() => setDeleted(null), 4000);
+        deletedTimeout.current = setTimeout(() => setDeleted(undefined), 4000);
     };
     const onUndoDelete = (item: ItemType) => {
         clearTimeout(deletedTimeout.current);
         props.onUndoDelete(item);
-        setDeleted(null);
+        setDeleted(undefined);
     };
     const onEditStart = (item: ItemType) => {
         if (props.editUrl) {
@@ -286,7 +287,7 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>) {
             />
         ),
         edit: (item: ItemType) => (
-            <EditRow columns={props.columns} item={item} onSave={onUpdate} onCancel={() => setEditing(null)} />
+            <EditRow columns={props.columns} item={item} onSave={onUpdate} onCancel={() => setEditing(undefined)} />
         ),
         deleted: (item: ItemType) => (
             <DeletedRow
@@ -299,8 +300,6 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>) {
         footer: null,
     };
     const rows = { ...defaultRows, ...props.rows };
-    const allItemsDeleted = deleted && props.items.length === 0 && deleted[0] >= 0;
-    const lastItemDeleted = deleted && props.items.length === deleted[0];
     return (
         <div className={"data-table " + props.className}>
             {rows.first}
@@ -316,7 +315,10 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>) {
                     );
                 },
             )}
-            {allItemsDeleted || lastItemDeleted ? rows.deleted(deleted[1]) : null}
+            {deleted !== undefined &&
+            ((props.items.length === 0 && deleted[0] >= 0) || props.items.length === deleted[0])
+                ? rows.deleted(deleted[1])
+                : null}
             {rows.footer}
         </div>
     );

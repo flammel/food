@@ -16,7 +16,7 @@ interface ConsumptionsPageProps extends RouteComponentProps<ConsumptionsUrlParam
 
 export default function ConsumptionsPage(props: ConsumptionsPageProps) {
     const date = new Date(props.match.params.date || new Date().valueOf());
-    const [consumptions, setConsumptions] = useState([]);
+    const [consumptions, setConsumptions] = useState<Array<Consumption>>([]);
 
     const previousDay = new Date(date);
     previousDay.setDate(previousDay.getDate() - 1);

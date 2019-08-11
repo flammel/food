@@ -8,7 +8,14 @@ const emptySettings: Settings = {
 };
 
 function load(): Settings {
-    return JSON.parse(window.localStorage.getItem("settings")) || emptySettings;
+    const json = window.localStorage.getItem("settings");
+    if (json) {
+        const parsed = JSON.parse(json);
+        if (parsed) {
+            return parsed;
+        }
+    }
+    return emptySettings;
 }
 
 function update(settings: Settings) {
