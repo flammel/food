@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - run: sudo apt update
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-node-modules-cache-{{ checksum "package-lock.json" }}
+            - v1-node-modules-cache-
+      - run: npm ci
+      - save_cache:
+          key: v1-node-modules-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node-modules
+      - run: npm run tsc
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run test
