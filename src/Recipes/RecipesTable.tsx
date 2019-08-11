@@ -14,7 +14,7 @@ interface RecipesTableProps {
     onDuplicate: (item: Recipe) => void;
 }
 
-function CreateForm() {
+function CreateForm(): React.ReactElement {
     return (
         <div className="data-table__row recipes-table__row--create-link">
             <div className="data-table__cell data-table__cell--full-width">
@@ -26,7 +26,7 @@ function CreateForm() {
     );
 }
 
-export default function RecipesTable(props: RecipesTableProps) {
+export default function RecipesTable(props: RecipesTableProps): React.ReactElement {
     const columns: ColumnDefinition<Recipe> = [
         {
             id: "food",

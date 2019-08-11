@@ -25,12 +25,12 @@ function search(foods: Food[], search: string): Food[] {
     return result;
 }
 
-function onSelect(setItem: ItemSetter<Ingredient>) {
-    return (food: Food) => setItem((prev) => ({ ...prev, food }));
+function onSelect(setItem: ItemSetter<Ingredient>): (food: Food) => void {
+    return (food) => setItem((prev) => ({ ...prev, food }));
 }
 
-function onQuantityChange(setItem: ItemSetter<Ingredient>) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
+function onQuantityChange(setItem: ItemSetter<Ingredient>): (e: React.ChangeEvent<HTMLInputElement>) => void {
+    return (e) => {
         const quantity = parseInt(e.target.value);
         if (quantity >= 0) {
             setItem((prev) => ({ ...prev, quantity }));
@@ -38,7 +38,7 @@ function onQuantityChange(setItem: ItemSetter<Ingredient>) {
     };
 }
 
-export default function IngredientsTable(props: IngredientsTableProps) {
+export default function IngredientsTable(props: IngredientsTableProps): React.ReactElement {
     const columns: ColumnDefinition<Ingredient> = [
         {
             id: "food",

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export type ItemSetter<ItemType> = React.Dispatch<React.SetStateAction<ItemType>>;
 export type ColumnForm<ItemType> = (item: ItemType, setItem: ItemSetter<ItemType>) => React.ReactElement;
-export type ColumnDefinition<ItemType> = Array<Column<ItemType>>;
+export type ColumnDefinition<ItemType> = Column<ItemType>[];
 
 interface Column<ItemType> {
     id: string;
@@ -48,9 +48,9 @@ interface GenericRowProps<ItemType> {
     columns: ColumnDefinition<ItemType>;
 }
 
-interface HeaderRowProps<ItemType> extends GenericRowProps<ItemType> {}
+type HeaderRowProps<ItemType> = GenericRowProps<ItemType>;
 
-function HeaderRow<ItemType>(props: HeaderRowProps<ItemType>) {
+function HeaderRow<ItemType>(props: HeaderRowProps<ItemType>): React.ReactElement {
     return (
         <div className="data-table__row">
             {props.columns.map((column) => (
@@ -72,9 +72,9 @@ interface CreateRowProps<ItemType> extends GenericRowProps<ItemType> {
     createButtonLabel?: string;
 }
 
-function CreateRow<ItemType>(props: CreateRowProps<ItemType>) {
+function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElement {
     const [item, setItem] = useState<ItemType>(props.emptyItem);
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         props.onCreate(item);
         setItem(props.emptyItem);
@@ -106,7 +106,7 @@ interface ShowRowProps<ItemType> extends GenericRowProps<ItemType> {
     onDuplicate?: (item: ItemType) => void;
 }
 
-function ShowRow<ItemType>(props: ShowRowProps<ItemType>) {
+function ShowRow<ItemType>(props: ShowRowProps<ItemType>): React.ReactElement {
     const [isHovering, setHovering] = useState(false);
     let editButton;
     if (props.editUrl) {
@@ -168,15 +168,15 @@ interface EditRowProps<ItemType> extends GenericRowProps<ItemType> {
     onCancel: () => void;
 }
 
-function EditRow<ItemType>(props: EditRowProps<ItemType>) {
+function EditRow<ItemType>(props: EditRowProps<ItemType>): React.ReactElement {
     const [item, setItem] = useState<ItemType>(props.item);
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         props.onSave(item);
         setItem(props.item);
     };
 
-    const onEscape = (e: KeyboardEvent) => {
+    const onEscape = (e: KeyboardEvent): void => {
         if (e.keyCode === 27) {
             props.onCancel();
         }
@@ -220,8 +220,8 @@ interface DeletedRowProps<ItemType> extends GenericRowProps<ItemType> {
     labelGetter: (item: ItemType) => string;
 }
 
-function DeletedRow<ItemType>(props: DeletedRowProps<ItemType>) {
-    const onUndo = (e: React.MouseEvent) => {
+function DeletedRow<ItemType>(props: DeletedRowProps<ItemType>): React.ReactElement {
+    const onUndo = (e: React.MouseEvent): void => {
         e.preventDefault();
         props.onUndoDelete(props.item);
     };
@@ -239,26 +239,26 @@ function DeletedRow<ItemType>(props: DeletedRowProps<ItemType>) {
     );
 }
 
-export default function DataTable<ItemType>(props: TableProps<ItemType>) {
+export default function DataTable<ItemType>(props: TableProps<ItemType>): React.ReactElement {
     const [editing, setEditing] = useState<ItemId>();
     const [deleted, setDeleted] = useState<[number, ItemType]>();
     const deletedTimeout = useRef(-1);
-    const onUpdate = (item: ItemType) => {
+    const onUpdate = (item: ItemType): void => {
         props.onUpdate(item);
         setEditing(undefined);
     };
-    const onDelete = (item: ItemType) => {
+    const onDelete = (item: ItemType): void => {
         clearTimeout(deletedTimeout.current);
         props.onDelete(item);
         setDeleted([props.items.indexOf(item), item]);
         deletedTimeout.current = setTimeout(() => setDeleted(undefined), 4000);
     };
-    const onUndoDelete = (item: ItemType) => {
+    const onUndoDelete = (item: ItemType): void => {
         clearTimeout(deletedTimeout.current);
         props.onUndoDelete(item);
         setDeleted(undefined);
     };
-    const onEditStart = (item: ItemType) => {
+    const onEditStart = (item: ItemType): void => {
         if (props.editUrl) {
             props.editUrl.redirect(item);
         } else {

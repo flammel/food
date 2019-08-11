@@ -6,7 +6,7 @@ interface ConsumptionsTableSumsRowProps {
     consumptions: Consumption[];
 }
 
-export default function ConsumptionsTableSumsRow(props: ConsumptionsTableSumsRowProps) {
+export default function ConsumptionsTableSumsRow(props: ConsumptionsTableSumsRowProps): React.ReactElement {
     let calories = 0;
     let fat = 0.0;
     let carbs = 0.0;

@@ -11,9 +11,9 @@ interface RecipeFormUrlParams {
     id: string;
 }
 
-interface RecipeFormProps extends RouteComponentProps<RecipeFormUrlParams> {}
+type RecipeFormProps = RouteComponentProps<RecipeFormUrlParams>;
 
-function RecipeForm(props: RecipeFormProps) {
+function RecipeForm(props: RecipeFormProps): React.ReactElement {
     const [recipe, setRecipe] = useState(emptyRecipe);
     const [editing, setEditing] = useState(false);
 
@@ -28,13 +28,15 @@ function RecipeForm(props: RecipeFormProps) {
         }
     }, [editingId]);
 
-    const repoAction = (action: (ingredient: Ingredient, recipe: Recipe) => Recipe) => {
+    const repoAction = (
+        action: (ingredient: Ingredient, recipe: Recipe) => Recipe,
+    ): ((ingredient: Ingredient) => void) => {
         return (ingredient: Ingredient) => {
             setRecipe((prev) => action(ingredient, prev));
         };
     };
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (editing) {
             RecipesRepository.update(recipe);
@@ -44,12 +46,12 @@ function RecipeForm(props: RecipeFormProps) {
         props.history.push("/recipes");
     };
 
-    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const name = e.currentTarget.value;
         setRecipe((prev) => ({ ...prev, name }));
     };
 
-    const onServingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onServingsChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const servings = parseInt(e.currentTarget.value);
         if (servings >= 0) {
             setRecipe((prev) => ({ ...prev, servings }));

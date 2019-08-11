@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Settings } from "./Data";
 import SettingsRepository from "./SettingsRepository";
 
-export default function SettingsPage() {
+export default function SettingsPage(): React.ReactElement {
     const [settings, setSettings] = useState<Settings>(SettingsRepository.load());
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         SettingsRepository.update(settings);
     };
@@ -14,7 +14,6 @@ export default function SettingsPage() {
     ): ((e: React.ChangeEvent<HTMLInputElement>) => void) => {
         return (e) => {
             const newValue = parseInt(e.currentTarget.value);
-            console.log(newValue);
             if (newValue >= 0) {
                 setSettings((prev) => ({ ...prev, ...partial(newValue) }));
             }

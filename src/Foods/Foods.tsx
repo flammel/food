@@ -3,10 +3,10 @@ import FoodsTable from "./FoodsTable";
 import { Food } from "./Data";
 import Repository from "./FoodsRepository";
 
-export default function Foods() {
+export default function Foods(): React.ReactElement {
     const [foods, setFoods] = useState(Repository.load());
-    const repoAction = (action: (food: Food) => void) => {
-        return (food: Food) => {
+    const repoAction = (action: (food: Food) => void): ((food: Food) => void) => {
+        return (food) => {
             action(food);
             setFoods(Repository.load());
         };

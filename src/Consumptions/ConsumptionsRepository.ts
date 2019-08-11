@@ -9,6 +9,7 @@ interface SerializedConsumption extends Omit<Consumption, "consumable"> {
     recipeId?: RecipeId;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function fromJson(json: any): SerializedConsumption {
     return {
         ...json,
@@ -17,6 +18,7 @@ function fromJson(json: any): SerializedConsumption {
 }
 
 function toJson(consumption: Consumption): SerializedConsumption {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const json: any = { ...consumption };
     if (consumableIsFood(consumption.consumable)) {
         json.foodId = consumption.consumable.id;
@@ -63,41 +65,25 @@ function load(date?: Date): Consumption[] {
     return loadIncludingDeleted(date).filter((item) => !item.isDeleted);
 }
 
-function create(consumption: Consumption) {
+function store(items: Consumption[]): void {
+    window.localStorage.setItem("consumptions", JSON.stringify(items.map(toJson)));
+}
+
+function create(consumption: Consumption): void {
     const id = Math.floor(Math.random() * 1000000);
-    window.localStorage.setItem(
-        "consumptions",
-        JSON.stringify([...loadIncludingDeleted(), toJson({ ...consumption, id })]),
-    );
+    store([...loadIncludingDeleted(), { ...consumption, id }]);
 }
 
-function update(consumption: Consumption) {
-    window.localStorage.setItem(
-        "consumptions",
-        JSON.stringify(loadIncludingDeleted().map((c) => (c.id === consumption.id ? consumption : c))),
-    );
+function update(consumption: Consumption): void {
+    store(loadIncludingDeleted().map((c) => (c.id === consumption.id ? consumption : c)));
 }
 
-function remove(consumption: Consumption) {
-    window.localStorage.setItem(
-        "consumptions",
-        JSON.stringify(
-            loadIncludingDeleted().map((c) =>
-                c.id === consumption.id ? toJson({ ...consumption, isDeleted: true }) : c,
-            ),
-        ),
-    );
+function remove(consumption: Consumption): void {
+    store(loadIncludingDeleted().map((c) => (c.id === consumption.id ? { ...consumption, isDeleted: true } : c)));
 }
 
-function undoDelete(consumption: Consumption) {
-    window.localStorage.setItem(
-        "consumptions",
-        JSON.stringify(
-            loadIncludingDeleted().map((c) =>
-                c.id === consumption.id ? toJson({ ...consumption, isDeleted: false }) : c,
-            ),
-        ),
-    );
+function undoDelete(consumption: Consumption): void {
+    store(loadIncludingDeleted().map((c) => (c.id === consumption.id ? { ...consumption, isDeleted: false } : c)));
 }
 
 export default {

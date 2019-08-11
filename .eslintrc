@@ -16,5 +16,10 @@
         "react": {
             "version": "999.999.999"
         }
+    },
+    "rules": {
+        "@typescript-eslint/explicit-function-return-type": ["warn", { "allowExpressions": true }],
+        "react/prop-types": "off",
+        "react/display-name": "off"
     }
 }

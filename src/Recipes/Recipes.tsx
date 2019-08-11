@@ -4,17 +4,17 @@ import RecipesRepository from "./RecipesRepository";
 import RecipesTable from "./RecipesTable";
 import { withRouter, RouteComponentProps } from "react-router";
 
-interface RecipesPageProps extends RouteComponentProps {}
+type RecipesPageProps = RouteComponentProps;
 
-function Recipes(props: RecipesPageProps) {
+function Recipes(props: RecipesPageProps): React.ReactElement {
     const [recipes, setRecipes] = useState(RecipesRepository.load());
-    const repoAction = (action: (recipe: Recipe) => void) => {
+    const repoAction = (action: (recipe: Recipe) => void): ((recipe: Recipe) => void) => {
         return (recipe: Recipe) => {
             action(recipe);
             setRecipes(RecipesRepository.load());
         };
     };
-    const goToEdit = (item: Recipe) => {
+    const goToEdit = (item: Recipe): void => {
         props.history.push("/recipes/" + item.id);
     };
     return (

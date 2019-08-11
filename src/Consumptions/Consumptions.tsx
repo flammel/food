@@ -12,11 +12,11 @@ interface ConsumptionsUrlParams {
     date: string;
 }
 
-interface ConsumptionsPageProps extends RouteComponentProps<ConsumptionsUrlParams> {}
+type ConsumptionsPageProps = RouteComponentProps<ConsumptionsUrlParams>;
 
-export default function ConsumptionsPage(props: ConsumptionsPageProps) {
+export default function ConsumptionsPage(props: ConsumptionsPageProps): React.ReactElement {
     const date = new Date(props.match.params.date || new Date().valueOf());
-    const [consumptions, setConsumptions] = useState<Array<Consumption>>([]);
+    const [consumptions, setConsumptions] = useState<Consumption[]>([]);
 
     const previousDay = new Date(date);
     previousDay.setDate(previousDay.getDate() - 1);
@@ -31,8 +31,8 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps) {
         isDeleted: false,
     };
 
-    const repoAction = (action: (consumption: Consumption) => void) => {
-        return (consumption: Consumption) => {
+    const repoAction = (action: (c: Consumption) => void): ((c: Consumption) => void) => {
+        return (consumption) => {
             action(consumption);
             setConsumptions(Repository.load(date));
         };

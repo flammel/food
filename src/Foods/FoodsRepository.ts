@@ -17,13 +17,13 @@ function load(): Food[] {
         .filter((i) => !i.isDeleted);
 }
 
-function create(newFoodData: Food) {
+function create(newFoodData: Food): void {
     const id = Math.floor(Math.random() * 1000000);
     const newFood = { ...newFoodData, id };
     window.localStorage.setItem("foods", JSON.stringify([...loadIncludingDeleted(), newFood]));
 }
 
-function update(food: Food) {
+function update(food: Food): void {
     const id = Math.floor(Math.random() * 1000000);
     const newFood = { ...food, id };
     window.localStorage.setItem(
@@ -35,14 +35,14 @@ function update(food: Food) {
     );
 }
 
-function remove(food: Food) {
+function remove(food: Food): void {
     window.localStorage.setItem(
         "foods",
         JSON.stringify(loadIncludingDeleted().map((i) => (i.id === food.id ? { ...food, isDeleted: true } : i))),
     );
 }
 
-function undoDelete(food: Food) {
+function undoDelete(food: Food): void {
     window.localStorage.setItem(
         "foods",
         JSON.stringify(loadIncludingDeleted().map((i) => (i.id === food.id ? { ...food, isDeleted: false } : i))),

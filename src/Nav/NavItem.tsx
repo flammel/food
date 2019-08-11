@@ -7,9 +7,9 @@ interface NavItemProps extends RouteComponentProps {
     children: string;
 }
 
-function NavItem(props: NavItemProps) {
-    var isActive = props.location.pathname === props.to;
-    var className = isActive ? "active" : "";
+function NavItem(props: NavItemProps): React.ReactElement {
+    const isActive = props.location.pathname === props.to;
+    const className = isActive ? "active" : "";
 
     return (
         <li className={"nav-item " + className}>

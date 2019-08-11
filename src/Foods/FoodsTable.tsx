@@ -25,9 +25,9 @@ function search(brands: Brand[], search: string): Brand[] {
     return result.map((brand) => brand.brand);
 }
 
-export default function FoodsTable(props: FoodsTableProps) {
+export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
     const nameInput = useRef<HTMLInputElement>(null);
-    const onChange = (setFood: ItemSetter<Food>, newField: Partial<Food>) =>
+    const onChange = (setFood: ItemSetter<Food>, newField: Partial<Food>): void =>
         setFood((prev) => ({ ...prev, ...newField }));
 
     const columns: ColumnDefinition<Food> = [
@@ -79,7 +79,7 @@ export default function FoodsTable(props: FoodsTableProps) {
                         className="form-control"
                         placeholder="Serving Size"
                         onChange={(e) =>
-                            parseInt(e.target.value) > 0
+                            parseInt(e.target.value) >= 0
                                 ? onChange(setItem, { servingSize: parseInt(e.target.value) })
                                 : null
                         }

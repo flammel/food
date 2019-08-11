@@ -45,8 +45,8 @@ function consumptionIsNew(consumption: Consumption): boolean {
     return consumption.id === 0;
 }
 
-function onSelect(setItem: ItemSetter<Consumption>) {
-    return (consumable: Consumable) =>
+function onSelect(setItem: ItemSetter<Consumption>): (c: Consumable) => void {
+    return (consumable) =>
         setItem((prev) => ({
             ...prev,
             consumable,
@@ -54,8 +54,8 @@ function onSelect(setItem: ItemSetter<Consumption>) {
         }));
 }
 
-function onQuantityChange(setItem: ItemSetter<Consumption>) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
+function onQuantityChange(setItem: ItemSetter<Consumption>): (e: React.ChangeEvent<HTMLInputElement>) => void {
+    return (e) => {
         const quantity = parseInt(e.target.value);
         if (quantity >= 0) {
             setItem((prev) => ({ ...prev, quantity }));
@@ -63,7 +63,7 @@ function onQuantityChange(setItem: ItemSetter<Consumption>) {
     };
 }
 
-export default function ConsumptionsTable(props: ConsumptionsTableProps) {
+export default function ConsumptionsTable(props: ConsumptionsTableProps): React.ReactElement {
     const columns: ColumnDefinition<Consumption> = [
         {
             id: "consumable",

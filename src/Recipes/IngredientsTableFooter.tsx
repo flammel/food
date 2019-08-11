@@ -9,7 +9,7 @@ interface IngredientsTableFooterProps {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-function Headers() {
+function Headers(): React.ReactElement {
     return (
         <div className="data-table__row">
             <div className="data-table__cell data-table__cell--header data-table__cell--food">Recipe</div>
@@ -23,7 +23,7 @@ function Headers() {
     );
 }
 
-export default function IngredientsTableFooter(props: IngredientsTableFooterProps) {
+export default function IngredientsTableFooter(props: IngredientsTableFooterProps): React.ReactElement {
     const sums = nutritionData(props.recipe);
     return (
         <>

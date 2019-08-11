@@ -18,7 +18,7 @@ function load(): Settings {
     return emptySettings;
 }
 
-function update(settings: Settings) {
+function update(settings: Settings): void {
     window.localStorage.setItem("settings", JSON.stringify(settings));
 }
 

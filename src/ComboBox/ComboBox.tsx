@@ -13,21 +13,21 @@ interface ComboBoxProps<ItemType> {
     autoFocus?: boolean;
 }
 
-export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
+export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): React.ReactElement {
     const [currentInputValue, setCurrentInputValue] = useState<string>(props.itemLabel(props.selected));
 
     useEffect(() => {
         setCurrentInputValue(props.itemLabel(props.selected));
     }, [props.itemKey(props.selected)]);
 
-    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setCurrentInputValue(e.target.value);
         if (props.onChange) {
             props.onChange(e.target.value);
         }
     };
 
-    const onSelectChange = (item: ItemType | null) => {
+    const onSelectChange = (item: ItemType | null): void => {
         if (item !== null) {
             props.onSelect(item);
             setCurrentInputValue(props.itemLabel(item));
@@ -38,18 +38,23 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>) {
 
     const comboItems = (
         inputValue: string | null,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         getItemProps: (options: GetItemPropsOptions<ItemType>) => any,
         highlightedIndex: number | null,
         selectedItem: ItemType,
-    ) => {
+    ): React.ReactElement[] => {
         const items = props.search(props.items, inputValue || "");
         if (items.length === 0) {
-            return <li className="combo--item">No matching food found.</li>;
+            return [
+                <li key="not-found" className="combo--item">
+                    No matching food found.
+                </li>,
+            ];
         } else {
             return items.map((item, index) => (
                 <li
+                    key={props.itemKey(item)}
                     {...getItemProps({
-                        key: props.itemKey(item),
                         index,
                         item,
                         className: [

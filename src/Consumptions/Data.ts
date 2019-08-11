@@ -13,6 +13,10 @@ export interface Consumption {
     readonly isDeleted: boolean;
 }
 
+export function consumableIsFood(consumable: Consumable): consumable is Food {
+    return consumable && Object.prototype.hasOwnProperty.call(consumable, "brand");
+}
+
 export function consumableLabel(consumable: Consumable): string {
     if (consumableIsFood(consumable)) {
         return foodLabel(consumable);
@@ -40,10 +44,6 @@ export function nutritionData(consumption: Consumption): NutritionData {
     } else {
         return recipeNutritionData(consumption.consumable);
     }
-}
-
-export function consumableIsFood(consumable: Consumable): consumable is Food {
-    return consumable && consumable.hasOwnProperty("brand");
 }
 
 export function formatCalories(calories: Calories): string {

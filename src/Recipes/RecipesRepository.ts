@@ -22,21 +22,21 @@ function create(newRecipeData: Recipe): Recipe {
     return newRecipe;
 }
 
-function update(recipe: Recipe) {
+function update(recipe: Recipe): void {
     window.localStorage.setItem(
         "recipes",
         JSON.stringify([...loadIncludingDeleted().map((i) => (i.id === recipe.id ? recipe : i))]),
     );
 }
 
-function remove(recipe: Recipe) {
+function remove(recipe: Recipe): void {
     window.localStorage.setItem(
         "recipes",
         JSON.stringify(loadIncludingDeleted().map((i) => (i.id === recipe.id ? { ...recipe, isDeleted: true } : i))),
     );
 }
 
-function undoDelete(recipe: Recipe) {
+function undoDelete(recipe: Recipe): void {
     window.localStorage.setItem(
         "recipes",
         JSON.stringify(loadIncludingDeleted().map((i) => (i.id === recipe.id ? { ...recipe, isDeleted: false } : i))),

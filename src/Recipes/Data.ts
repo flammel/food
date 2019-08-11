@@ -23,6 +23,15 @@ export function recipeLabel(recipe: Recipe): string {
     return recipe.name;
 }
 
+export function ingredientNutritionData(ingredient: Ingredient): NutritionData {
+    return {
+        calories: (ingredient.food.calories / ingredient.food.quantity) * ingredient.quantity,
+        fat: (ingredient.food.fat / ingredient.food.quantity) * ingredient.quantity,
+        carbs: (ingredient.food.carbs / ingredient.food.quantity) * ingredient.quantity,
+        protein: (ingredient.food.protein / ingredient.food.quantity) * ingredient.quantity,
+    };
+}
+
 export function nutritionData(recipe: Recipe): NutritionData {
     const data = {
         calories: 0,
@@ -38,15 +47,6 @@ export function nutritionData(recipe: Recipe): NutritionData {
         data.protein += values.protein;
     }
     return data;
-}
-
-export function ingredientNutritionData(ingredient: Ingredient): NutritionData {
-    return {
-        calories: (ingredient.food.calories / ingredient.food.quantity) * ingredient.quantity,
-        fat: (ingredient.food.fat / ingredient.food.quantity) * ingredient.quantity,
-        carbs: (ingredient.food.carbs / ingredient.food.quantity) * ingredient.quantity,
-        protein: (ingredient.food.protein / ingredient.food.quantity) * ingredient.quantity,
-    };
 }
 
 export function formatServings(servings: Servings): string {
