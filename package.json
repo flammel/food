@@ -1,7 +1,7 @@
 {
-    "name": "react-starter",
+    "name": "food",
     "version": "0.0.1",
-    "description": "Webpack, Typescript, Babel, Prettier, ESLint, Sass, React, React Router, Twitter Bootstrap",
+    "description": "Calories tracker",
     "scripts": {
         "test": "echo 'no tests'",
         "tsc": "tsc",
