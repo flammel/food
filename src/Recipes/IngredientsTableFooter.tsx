@@ -12,12 +12,12 @@ interface IngredientsTableFooterProps {
 function Headers(): React.ReactElement {
     return (
         <div className="data-table__row">
-            <div className="data-table__cell data-table__cell--header data-table__cell--food">Recipe</div>
-            <div className="data-table__cell data-table__cell--header data-table__cell--quantity">Servings</div>
-            <div className="data-table__cell data-table__cell--header data-table__cell--calories">Calories</div>
-            <div className="data-table__cell data-table__cell--header data-table__cell--fat">Fat</div>
-            <div className="data-table__cell data-table__cell--header data-table__cell--carbs">Carbs</div>
-            <div className="data-table__cell data-table__cell--header data-table__cell--protein">Protein</div>
+            <div className="data-table__cell data-table__cell--header">Recipe</div>
+            <div className="data-table__cell data-table__cell--header">Servings</div>
+            <div className="data-table__cell data-table__cell--header">Calories</div>
+            <div className="data-table__cell data-table__cell--header">Fat</div>
+            <div className="data-table__cell data-table__cell--header">Carbs</div>
+            <div className="data-table__cell data-table__cell--header">Protein</div>
             <div className="data-table__cell data-table__cell--header data-table__cell--actions"></div>
         </div>
     );
@@ -29,7 +29,7 @@ export default function IngredientsTableFooter(props: IngredientsTableFooterProp
         <>
             <Headers />
             <form onSubmit={props.onSubmit} className="data-table__row">
-                <div className="data-table__cell data-table__cell--food ingredients-table__cell--sums">
+                <div className="data-table__cell ingredients-table__cell--sums">
                     <div className="input-group">
                         <input
                             type="text"
@@ -41,7 +41,7 @@ export default function IngredientsTableFooter(props: IngredientsTableFooterProp
                         />
                     </div>
                 </div>
-                <div className="data-table__cell data-table__cell--quantity ingredients-table__cell--sums">
+                <div className="data-table__cell ingredients-table__cell--sums">
                     <div className="input-group">
                         <input
                             type="number"
@@ -57,19 +57,19 @@ export default function IngredientsTableFooter(props: IngredientsTableFooterProp
                         </div>
                     </div>
                 </div>
-                <div className="data-table__cell data-table__cell--calories ingredients-table__cell--sums">
+                <div className="data-table__cell ingredients-table__cell--sums">
                     <span className="data-table__value">{formatCalories(sums.calories)}</span>
                 </div>
-                <div className="data-table__cell data-table__cell--fat ingredients-table__cell--sums">
+                <div className="data-table__cell ingredients-table__cell--sums">
                     <span className="data-table__value">{formatNutritionValue(sums.fat)} g</span>
                 </div>
-                <div className="data-table__cell data-table__cell--carbs ingredients-table__cell--sums">
+                <div className="data-table__cell ingredients-table__cell--sums">
                     <span className="data-table__value">{formatNutritionValue(sums.carbs)} g</span>
                 </div>
-                <div className="data-table__cell data-table__cell--protein ingredients-table__cell--sums">
+                <div className="data-table__cell ingredients-table__cell--sums">
                     <span className="data-table__value">{formatNutritionValue(sums.protein)} g</span>
                 </div>
-                <div className="data-table__cell data-table__cell--actions ingredients-table__cell--sums">
+                <div className="data-table__cell ingredients-table__cell--sums data-table__cell--actions">
                     <button className="btn btn-primary action action--visible" type="submit">
                         Save
                     </button>

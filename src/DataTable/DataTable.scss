@@ -1,8 +1,6 @@
 .data-table {
-    display: grid;
-
     &__row {
-        display: contents;
+        display: grid;
 
         &--deleted {
             text-align: center;
@@ -27,11 +25,12 @@
             align-content: space-between;
 
             .action {
-                display: none;
+                visibility: hidden;
                 flex-grow: 1;
                 margin-left: $table-cell-padding;
 
                 &.action--visible {
+                    visibility: visible;
                     display: inline-block;
                 }
 
@@ -47,6 +46,7 @@
     }
 
     &__value {
+        width: 100%;
         line-height: $input-height;
     }
 

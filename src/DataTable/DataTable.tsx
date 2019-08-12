@@ -48,19 +48,43 @@ interface GenericRowProps<ItemType> {
     columns: ColumnDefinition<ItemType>;
 }
 
+interface ColumnsWithItemProps<ItemType> extends GenericRowProps<ItemType> {
+    cellClass?: string;
+    children: (column: Column<ItemType>, item: ItemType) => React.ReactChild;
+    item: ItemType;
+}
+
+interface ColumnsWithoutItemProps<ItemType> extends GenericRowProps<ItemType> {
+    cellClass?: string;
+    children: (column: Column<ItemType>) => React.ReactChild;
+}
+
+type ColumnsProps<ItemType> = ColumnsWithItemProps<ItemType> | ColumnsWithoutItemProps<ItemType>;
+
+function hasItem<ItemType>(props: ColumnsProps<ItemType>): props is ColumnsWithItemProps<ItemType> {
+    return Object.prototype.hasOwnProperty.call(props, "item");
+}
+
+function Columns<ItemType>(props: ColumnsProps<ItemType>) {
+    return (
+        <>
+            {props.columns.map((column) => (
+                <div key={column.id} className={"data-table__cell " + (props.cellClass || "") + " data-table__cell--id-" + column.id}>
+                    {hasItem(props) ? props.children(column, props.item) : props.children(column)}
+                </div>
+            ))}
+        </>
+    );
+}
+
 type HeaderRowProps<ItemType> = GenericRowProps<ItemType>;
 
 function HeaderRow<ItemType>(props: HeaderRowProps<ItemType>): React.ReactElement {
     return (
-        <div className="data-table__row">
-            {props.columns.map((column) => (
-                <div
-                    key={column.id}
-                    className={"data-table__cell data-table__cell--header data-table__cell--" + column.id}
-                >
-                    {column.label}
-                </div>
-            ))}
+        <div className="data-table__row data-table__row--header">
+            <Columns columns={props.columns} cellClass="data-table__cell--header">
+                {(column: Column<ItemType>) => column.label}
+            </Columns>
             <div className="data-table__cell data-table__cell--header data-table__cell--actions"></div>
         </div>
     );
@@ -81,14 +105,14 @@ function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElemen
     };
 
     return (
-        <form className="data-table__row data-table__row--form" onSubmit={onSubmit}>
-            {props.columns.map((column) => (
-                <div key={column.id} className={"data-table__cell data-table__cell--" + column.id}>
-                    <span className="data-table__value">
+        <form className="data-table__row data-table__row--form data-table__row--create" onSubmit={onSubmit}>
+            <Columns columns={props.columns} item={item}>
+                {(column, item) => (
+                    <span className="data-table__value" data-label={column.label}>
                         {column.form ? column.form(item, setItem) : column.value(item)}
                     </span>
-                </div>
-            ))}
+                )}
+            </Columns>
             <div className="data-table__cell data-table__cell--actions">
                 <button className="btn btn-primary action action--visible" type="submit">
                     {props.createButtonLabel || "Save"}
@@ -131,16 +155,14 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>): React.ReactElement {
     const onDuplicate = props.onDuplicate ? props.onDuplicate : () => {};
     return (
         <div
-            className="data-table__row"
+            className="data-table__row data-table__row--show"
             onDoubleClick={() => props.onEditStart(props.item)}
             onMouseOver={() => setHovering(true)}
             onMouseOut={() => setHovering(false)}
         >
-            {props.columns.map((column) => (
-                <div key={column.id} className={"data-table__cell data-table__cell--" + column.id}>
-                    <span className="data-table__value">{column.value(props.item)}</span>
-                </div>
-            ))}
+            <Columns columns={props.columns} item={props.item}>
+                {(column, item) => <span className="data-table__value" data-label={column.label}>{column.value(item)}</span>}
+            </Columns>
             <div className="data-table__cell data-table__cell--actions">
                 {editButton}
                 {props.onDuplicate ? (
@@ -190,14 +212,14 @@ function EditRow<ItemType>(props: EditRowProps<ItemType>): React.ReactElement {
     });
 
     return (
-        <form className="data-table__row data-table__row--form" onSubmit={onSubmit}>
-            {props.columns.map((column) => (
-                <div key={column.id} className={"data-table__cell data-table__cell--" + column.id}>
-                    <span className="data-table__value">
+        <form className="data-table__row data-table__row--form data-table__row--edit" onSubmit={onSubmit}>
+            <Columns columns={props.columns} item={item}>
+                {(column, item) => (
+                    <span className="data-table__value" data-label={column.label}>
                         {column.form ? column.form(item, setItem) : column.value(item)}
                     </span>
-                </div>
-            ))}
+                )}
+            </Columns>
             <div className="data-table__cell data-table__cell--actions">
                 <button className="btn btn-primary action action--larger action--visible" type="submit">
                     Save

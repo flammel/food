@@ -1,12 +1,102 @@
 .foods-table {
-    grid-template-columns:
-        19%
-        15%
-        9%
-        9%
-        9%
-        9%
-        9%
-        9%
-        9%;
+    .data-table__row {
+        grid-template-columns:
+            1fr
+            15%
+            9%
+            150px
+            9%
+            9%
+            9%
+            9%
+            160px;
+            grid-template-areas:
+                "food brand servingSize quantity calories fat carbs protein actions";
+    }
+    .data-table__cell {
+        &--id-food {
+            grid-area: food;
+        }
+        &--id-brand {
+            grid-area: brand;
+        }
+        &--id-servingSize {
+            grid-area: servingSize;
+        }
+        &--id-quantity {
+            grid-area: quantity;
+        }
+        &--id-calories {
+            grid-area: calories;
+        }
+        &--id-fat {
+            grid-area: fat;
+        }
+        &--id-carbs {
+            grid-area: carbs;
+        }
+        &--id-protein {
+            grid-area: protein;
+        }
+        &--actions {
+            grid-area: actions;
+        }
+    }
+}
+
+@media screen and (max-width: 1320px) {
+    .foods-table {
+        .data-table__row {
+            grid-template-columns:
+                1fr
+                150px
+                150px
+                110px
+                110px
+                110px
+                110px
+                160px;
+            grid-template-areas:
+                "food food servingSize calories fat carbs protein actions"
+                "brand brand quantity calories fat carbs protein actions"
+        }
+        .data-table__cell {
+            padding: $table-cell-padding / 2;
+            display: flex;
+            align-items: center;
+
+            &--id-food,
+            &--id-servingSize {
+                border-width: 0;
+            }
+        }
+    }
+}
+@media screen and (max-width: 1000px) {
+    .foods-table {
+        .data-table__row {
+            grid-template-columns:
+                repeat(6, 1fr);
+            grid-template-areas:
+                "food food food brand brand brand"
+                "servingSize servingSize quantity quantity calories calories"
+                "fat fat carbs carbs protein protein"
+                "actions actions actions actions actions actions"
+        }
+        .data-table__cell {
+            padding: $table-cell-padding / 2;
+            display: flex;
+            align-items: center;
+
+            &:not(.data-table__cell--actions) {
+                border-width: 0;
+            }
+
+            &--header {
+                &.data-table__cell--actions {
+                    padding: 0;
+                }
+            }
+        }
+    }
 }

@@ -1,12 +1,18 @@
+// This value is selected such that the input field stays large enough
+// when the label is set to "servings"
+$quantity-column-width: 150px;
+
 .consumptions-table {
-    grid-template-columns:
-        32%
-        11%
-        11%
-        11%
-        11%
-        11%
-        13%;
+    .data-table__row {
+        grid-template-columns:
+            1fr
+            $quantity-column-width
+            11%
+            11%
+            11%
+            11%
+            13%;
+    }
     .consumptions-table__cell--totals {
         font-weight: bold;
         // border will look like double-thickness because of border-bottom from second-to-last row
@@ -15,6 +21,166 @@
     }
     .consumptions-table__cell--remaining {
         font-weight: bold;
+    }
+    .consumptions-table--totals {
+        display: contents;
+    }
+}
+
+@media screen and (max-width: 1220px) {
+    .consumptions-table {
+        .data-table__row {
+            grid-template-columns:
+                1fr
+                $quantity-column-width
+                13%
+                11%
+                11%
+                11%
+                16%;
+        }
+    }
+}
+
+@media screen and (max-width: 1040px) {
+    .consumptions-table {
+        .data-table__row {
+            grid-template-columns:
+                1fr
+                $quantity-column-width
+                minmax(min-content, 80px)
+                minmax(min-content, 60px)
+                minmax(min-content, 60px)
+                minmax(min-content, 80px)
+                minmax(160px, 14%);
+        }
+        .data-table__cell {
+            padding: $table-cell-padding / 2;
+        }
+    }
+}
+
+@media screen and (max-width: 860px) {
+    .consumptions-table {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas: "create totals";
+        grid-column-gap: 15px;
+        grid-row-gap: 15px;
+        
+        .data-table__row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            overflow: hidden;
+            justify-content: space-between;
+            border: $table-border-width solid $table-border-color;
+            border-radius: $border-radius;
+
+            &--header {
+                display: none;
+            }
+            &--create {
+                grid-area: create;
+            }
+            &--deleted {
+                // This is the height of the other cards
+                height: 240px;
+                display: flex;
+                align-items: center;
+            }
+            &--show {
+                .data-table__cell--id-consumable,
+                .data-table__cell--id-quantity {
+                    text-align: center;
+                }
+                .data-table__cell--id-consumable {
+                    padding-bottom: 0;
+                }
+                .data-table__cell--id-quantity {
+                    padding-top: 0;
+                    // This ensures that the card that only displays the data
+                    // has the same height as the edit form.
+                    // We reduce the cell padding to ($table-cell-padding / 2) in
+                    // a different breakpoint. In this breakpoint, we remove the
+                    // padding between consumable and quantity.
+                    // So we have to add 2 * ($table-cell-padding / 2) padding to
+                    // the normal padding of ($table-cell-padding / 2), which gives
+                    // 3 * ($table-cell-padding / 2).
+                    padding-bottom: 3 * ($table-cell-padding / 2);
+                }
+            }
+        }
+        .data-table__cell {
+            border-width: 0;
+    
+            &--id-consumable,
+            &--id-quantity {
+                width: 100%;
+                .data-table__value::after {
+                    content: '';
+                }
+            }
+            &--id-consumable,
+            &--id-quantity,
+            &--full-width,
+            &--actions {
+                flex-basis: 100%;
+            }
+            &--id-calories,
+            &--id-fat,
+            &--id-carbs,
+            &--id-protein {
+                flex-basis: 25%;
+                text-align: center;
+            }
+        }
+        .data-table__value {
+            display: flex;
+            flex-direction: column;
+
+            &::after {
+                content: attr(data-label);
+            }
+        }
+        .consumptions-table--totals {
+            display: flex;
+            grid-area: totals;
+            border: $table-border-width solid $table-border-color;
+            border-radius: $border-radius;
+
+            .data-table__row {
+                flex-basis: 33.3333%;
+                float: left;
+                border: none;
+            }
+            .data-table__cell {
+                flex: 0 0 100%;
+                text-align: left;
+            }
+        }
+        // .data-table__cell--actions {
+        //     padding: 0;
+        //     margin: -$table-border-width;
+        //     .action {
+        //         border-radius: 0;
+        //         margin: 0;
+        //     }
+        //     .action:first-child {
+        //         border-bottom-left-radius: $border-radius;
+        //     }
+        //     .action:last-child {
+        //         border-bottom-right-radius: $border-radius;
+        //     }
+        // }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .consumptions-table {
+        grid-template-columns: 1fr;
+        grid-template-areas: "create" "totals";
     }
 }
 
@@ -26,8 +192,11 @@
 
     &__current-date {
         margin: 0 1rem;
-    }
 
+        @include media-breakpoint-down(sm) {
+            font-size: 1.8rem;
+        }
+    }
     &__nav-link {
         display: block;
     }

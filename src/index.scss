@@ -5,6 +5,6 @@
 @import "./ComboBox/ComboBox";
 @import "./Recipes/Recipes";
 
-.main-nav {
-    flex-grow: 1;
+body {
+    min-width: 320px;
 }

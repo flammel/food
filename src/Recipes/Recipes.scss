@@ -1,13 +1,14 @@
 .recipes-table {
-    grid-template-columns:
-        32%
-        11%
-        11%
-        11%
-        11%
-        11%
-        13%;
-
+    .data-table__row {
+        grid-template-columns:
+            32%
+            11%
+            11%
+            11%
+            11%
+            11%
+            13%;
+    }
     .recipes-table__row--create-link {
         .data-table__cell {
             background-color: lighten($table-border-color, 7.5%);
@@ -22,15 +23,16 @@
 }
 
 .ingredients-table {
-    grid-template-columns:
-        32%
-        11%
-        11%
-        11%
-        11%
-        11%
-        13%;
-
+    .data-table__row {
+        grid-template-columns:
+            32%
+            11%
+            11%
+            11%
+            11%
+            11%
+            13%;
+    }
     // .ingredients-table__cell--sums {
     //     font-weight: bold;
     //     // border will look like double-thickness because of border-bottom from second-to-last row

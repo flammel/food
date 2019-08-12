@@ -13,7 +13,7 @@ import { Quantity, formatQuantity } from "../Types";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
-import ConsumptionsTableSumsRow from "./ConsumptionsTableSumsRow";
+import ConsumptionsTableTotals from "./ConsumptionsTableTotals";
 
 interface ConsumptionsTableProps {
     consumptions: Consumption[];
@@ -106,22 +106,22 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
         },
         {
             id: "calories",
-            label: "Calories (kcal)",
+            label: "Calories",
             value: (consumption: Consumption) => formatCalories(nutritionData(consumption).calories),
         },
         {
             id: "fat",
-            label: "Fat (g)",
+            label: "Fat",
             value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).fat),
         },
         {
             id: "carbs",
-            label: "Carbs (g)",
+            label: "Carbs",
             value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).carbs),
         },
         {
             id: "protein",
-            label: "Protein (g)",
+            label: "Protein",
             value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).protein),
         },
     ];
@@ -137,7 +137,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
-            rows={{ footer: <ConsumptionsTableSumsRow consumptions={props.consumptions} /> }}
+            rows={{ footer: <ConsumptionsTableTotals consumptions={props.consumptions} /> }}
         />
     );
 }

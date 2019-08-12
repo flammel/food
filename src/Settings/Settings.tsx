@@ -21,100 +21,102 @@ export default function SettingsPage(): React.ReactElement {
     };
 
     return (
-        <div className="col">
-            <h1>Settings</h1>
-            <form onSubmit={onSubmit}>
-                <fieldset>
-                    <legend>Targets</legend>
-                    <div className="form-group row">
-                        <label htmlFor="inputTargetCalories" className="col-1 col-form-label">
-                            Calories
-                        </label>
-                        <div className="col-2 input-group">
-                            <input
-                                type="number"
-                                step="1"
-                                min="0"
-                                className="form-control"
-                                id="inputTargetCalories"
-                                placeholder="Calories"
-                                value={settings.targetCalories}
-                                onChange={onChange((newValue) => ({ targetCalories: newValue }))}
-                            />
-                            <div className="input-group-append">
-                                <div className="input-group-text">kcal</div>
+        <div className="row">
+            <div className="col col-xl-4 col-md-6 col-sm-8">
+                <h1>Settings</h1>
+                <form onSubmit={onSubmit}>
+                    <fieldset>
+                        <legend>Targets</legend>
+                        <div className="form-group row">
+                            <label htmlFor="inputTargetCalories" className="col-4 col-form-label">
+                                Calories
+                            </label>
+                            <div className="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    min="0"
+                                    className="form-control"
+                                    id="inputTargetCalories"
+                                    placeholder="Calories"
+                                    value={settings.targetCalories}
+                                    onChange={onChange((newValue) => ({ targetCalories: newValue }))}
+                                />
+                                <div className="input-group-append">
+                                    <div className="input-group-text">kcal</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="form-group row">
-                        <label htmlFor="inputTargetFat" className="col-1 col-form-label">
-                            Fat
-                        </label>
-                        <div className="col-2 input-group">
-                            <input
-                                type="number"
-                                step="1"
-                                min="0"
-                                className="form-control"
-                                id="inputTargetFat"
-                                placeholder="Fat"
-                                value={settings.targetFat}
-                                onChange={onChange((newValue) => ({ targetFat: newValue }))}
-                            />
-                            <div className="input-group-append">
-                                <div className="input-group-text">g</div>
+                        <div className="form-group row">
+                            <label htmlFor="inputTargetFat" className="col-4 col-form-label">
+                                Fat
+                            </label>
+                            <div className="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    min="0"
+                                    className="form-control"
+                                    id="inputTargetFat"
+                                    placeholder="Fat"
+                                    value={settings.targetFat}
+                                    onChange={onChange((newValue) => ({ targetFat: newValue }))}
+                                />
+                                <div className="input-group-append">
+                                    <div className="input-group-text">g</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="form-group row">
-                        <label htmlFor="inputTargetCarbs" className="col-1 col-form-label">
-                            Carbs
-                        </label>
-                        <div className="col-2 input-group">
-                            <input
-                                type="number"
-                                step="1"
-                                min="0"
-                                className="form-control"
-                                id="inputTargetCarbs"
-                                placeholder="Carbs"
-                                value={settings.targetCarbs}
-                                onChange={onChange((newValue) => ({ targetCarbs: newValue }))}
-                            />
-                            <div className="input-group-append">
-                                <div className="input-group-text">g</div>
+                        <div className="form-group row">
+                            <label htmlFor="inputTargetCarbs" className="col-4 col-form-label">
+                                Carbs
+                            </label>
+                            <div className="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    min="0"
+                                    className="form-control"
+                                    id="inputTargetCarbs"
+                                    placeholder="Carbs"
+                                    value={settings.targetCarbs}
+                                    onChange={onChange((newValue) => ({ targetCarbs: newValue }))}
+                                />
+                                <div className="input-group-append">
+                                    <div className="input-group-text">g</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="form-group row">
-                        <label htmlFor="inputTargetProtein" className="col-1 col-form-label">
-                            Protein
-                        </label>
-                        <div className="col-2 input-group">
-                            <input
-                                type="number"
-                                step="1"
-                                min="0"
-                                className="form-control"
-                                id="inputTargetProtein"
-                                placeholder="Protein"
-                                value={settings.targetProtein}
-                                onChange={onChange((newValue) => ({ targetProtein: newValue }))}
-                            />
-                            <div className="input-group-append">
-                                <div className="input-group-text">g</div>
+                        <div className="form-group row">
+                            <label htmlFor="inputTargetProtein" className="col-4 col-form-label">
+                                Protein
+                            </label>
+                            <div className="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    min="0"
+                                    className="form-control"
+                                    id="inputTargetProtein"
+                                    placeholder="Protein"
+                                    value={settings.targetProtein}
+                                    onChange={onChange((newValue) => ({ targetProtein: newValue }))}
+                                />
+                                <div className="input-group-append">
+                                    <div className="input-group-text">g</div>
+                                </div>
                             </div>
                         </div>
+                    </fieldset>
+                    <div className="form-group row">
+                        <div className="col-8 offset-4">
+                            <button type="submit" className="btn btn-primary btn-block">
+                                Save
+                            </button>
+                        </div>
                     </div>
-                </fieldset>
-                <div className="form-group row">
-                    <div className="col-2 offset-1">
-                        <button type="submit" className="btn btn-primary btn-block">
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     );
 }
