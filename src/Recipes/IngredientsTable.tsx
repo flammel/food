@@ -25,8 +25,16 @@ function search(foods: Food[], search: string): Food[] {
     return result;
 }
 
+function ingredientIsNew(ingredient: Ingredient): boolean {
+    return ingredient.id === 0;
+}
+
 function onSelect(setItem: ItemSetter<Ingredient>): (food: Food) => void {
-    return (food) => setItem((prev) => ({ ...prev, food }));
+    return (food) => setItem((prev) => ({
+        ...prev,
+        food,
+        quantity: ingredientIsNew(prev) && food.servingSize > 0 ? food.servingSize : prev.quantity,
+    }));
 }
 
 export default function IngredientsTable(props: IngredientsTableProps): React.ReactElement {
