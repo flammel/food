@@ -42,7 +42,13 @@ export function nutritionData(consumption: Consumption): NutritionData {
             protein: (consumption.consumable.protein / consumption.consumable.quantity) * consumption.quantity,
         };
     } else {
-        return recipeNutritionData(consumption.consumable);
+        const nutrition = recipeNutritionData(consumption.consumable);
+        return {
+            calories: (nutrition.calories / consumption.consumable.servings) * consumption.quantity,
+            fat: (nutrition.fat / consumption.consumable.servings) * consumption.quantity,
+            carbs: (nutrition.carbs / consumption.consumable.servings) * consumption.quantity,
+            protein: (nutrition.protein / consumption.consumable.servings) * consumption.quantity,
+        };
     }
 }
 
