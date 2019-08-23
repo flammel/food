@@ -31,5 +31,8 @@ export function foodLabel(food: Food): string {
     if (food.id === 0) {
         return "";
     }
+    if (food.brand.length === 0) {
+        return food.name;
+    }
     return food.name + " (" + food.brand + ")";
 }
