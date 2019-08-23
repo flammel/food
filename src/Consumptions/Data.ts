@@ -47,9 +47,9 @@ export function nutritionData(consumption: Consumption): NutritionData {
 }
 
 export function formatCalories(calories: Calories): string {
-    return calories.toFixed(0);
+    return isNaN(calories) ? "" :  calories.toFixed(0);
 }
 
 export function formatNutritionValue(value: NutritionValue): string {
-    return value.toFixed(0);
+    return isNaN(value) ? "" : value.toFixed(1);
 }

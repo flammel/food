@@ -78,12 +78,8 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         step="1"
                         className="form-control"
                         placeholder="Serving Size"
-                        onChange={(e) =>
-                            parseInt(e.target.value) >= 0
-                                ? onChange(setItem, { servingSize: parseInt(e.target.value) })
-                                : null
-                        }
-                        value={f.servingSize}
+                        onChange={(e) => onChange(setItem, { servingSize: parseInt(e.target.value) })}
+                        value={isNaN(f.servingSize) ? "" : f.servingSize}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">{f.unit}</div>
@@ -103,12 +99,8 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         step="1"
                         className="form-control"
                         placeholder="Quantity"
-                        onChange={(e) =>
-                            parseInt(e.target.value) > 0
-                                ? onChange(setItem, { quantity: parseInt(e.target.value) })
-                                : null
-                        }
-                        value={f.quantity}
+                        onChange={(e) => onChange(setItem, { quantity: parseInt(e.target.value) })}
+                        value={isNaN(f.quantity) ? "" : f.quantity}
                     />
                     <div className="input-group-append">
                         <select
@@ -137,12 +129,8 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         step="1"
                         className="form-control"
                         placeholder="Calories"
-                        onChange={(e) =>
-                            parseInt(e.target.value) > 0
-                                ? onChange(setItem, { calories: parseInt(e.target.value) })
-                                : null
-                        }
-                        value={f.calories}
+                        onChange={(e) => onChange(setItem, { calories: parseInt(e.target.value) })}
+                        value={isNaN(f.calories) ? "" : f.calories}
                     />
                 </div>
             ),
@@ -159,12 +147,8 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         step="0.1"
                         className="form-control"
                         placeholder="Fat"
-                        onChange={(e) =>
-                            parseFloat(e.target.value) > 0
-                                ? onChange(setItem, { fat: parseFloat(e.target.value) })
-                                : null
-                        }
-                        value={f.fat}
+                        onChange={(e) => onChange(setItem, { fat: parseFloat(e.target.value) })}
+                        value={isNaN(f.fat) ? "" : f.fat}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">g</div>
@@ -184,12 +168,8 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         step="0.1"
                         className="form-control"
                         placeholder="Carbs"
-                        onChange={(e) =>
-                            parseFloat(e.target.value) > 0
-                                ? onChange(setItem, { carbs: parseFloat(e.target.value) })
-                                : null
-                        }
-                        value={f.carbs}
+                        onChange={(e) => onChange(setItem, { carbs: parseFloat(e.target.value) })}
+                        value={isNaN(f.carbs) ? "" : f.carbs}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">g</div>
@@ -209,12 +189,8 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         step="0.1"
                         className="form-control"
                         placeholder="Protein"
-                        onChange={(e) =>
-                            parseFloat(e.target.value) > 0
-                                ? onChange(setItem, { protein: parseFloat(e.target.value) })
-                                : null
-                        }
-                        value={f.protein}
+                        onChange={(e) => onChange(setItem, { protein: parseFloat(e.target.value) })}
+                        value={isNaN(f.protein) ? "" : f.protein}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">g</div>

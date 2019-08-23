@@ -54,15 +54,6 @@ function onSelect(setItem: ItemSetter<Consumption>): (c: Consumable) => void {
         }));
 }
 
-function onQuantityChange(setItem: ItemSetter<Consumption>): (e: React.ChangeEvent<HTMLInputElement>) => void {
-    return (e) => {
-        const quantity = parseInt(e.target.value);
-        if (quantity >= 0) {
-            setItem((prev) => ({ ...prev, quantity }));
-        }
-    };
-}
-
 export default function ConsumptionsTable(props: ConsumptionsTableProps): React.ReactElement {
     const columns: ColumnDefinition<Consumption> = [
         {
@@ -96,7 +87,10 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
                         className="form-control"
                         placeholder="Quantity"
                         value={formatQuantity(consumption.quantity)}
-                        onChange={onQuantityChange(setItem)}
+                        onChange={(e) => {
+                            const quantity = parseInt(e.target.value);
+                            setItem((prev) => ({ ...prev, quantity }))
+                        }}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">{consumableUnit(consumption.consumable)}</div>

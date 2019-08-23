@@ -29,15 +29,6 @@ function onSelect(setItem: ItemSetter<Ingredient>): (food: Food) => void {
     return (food) => setItem((prev) => ({ ...prev, food }));
 }
 
-function onQuantityChange(setItem: ItemSetter<Ingredient>): (e: React.ChangeEvent<HTMLInputElement>) => void {
-    return (e) => {
-        const quantity = parseInt(e.target.value);
-        if (quantity >= 0) {
-            setItem((prev) => ({ ...prev, quantity }));
-        }
-    };
-}
-
 export default function IngredientsTable(props: IngredientsTableProps): React.ReactElement {
     const columns: ColumnDefinition<Ingredient> = [
         {
@@ -69,7 +60,10 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
                         className="form-control"
                         placeholder="Quantity"
                         value={formatQuantity(item.quantity)}
-                        onChange={onQuantityChange(setItem)}
+                        onChange={(e) => {
+                            const quantity = parseInt(e.target.value);
+                            setItem((prev) => ({ ...prev, quantity }))
+                        }}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">{item.food.unit}</div>

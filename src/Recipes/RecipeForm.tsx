@@ -53,9 +53,7 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
 
     const onServingsChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const servings = parseInt(e.currentTarget.value);
-        if (servings >= 0) {
-            setRecipe((prev) => ({ ...prev, servings }));
-        }
+        setRecipe((prev) => ({ ...prev, servings }));
     };
 
     const footer = (
