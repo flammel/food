@@ -1,14 +1,14 @@
 .foods-table {
     .data-table__row {
         grid-template-columns:
+            2fr
             1fr
-            15%
-            9%
+            170px
+            170px
+            120px
             150px
-            9%
-            9%
-            9%
-            9%
+            150px
+            150px
             160px;
             grid-template-areas:
                 "food brand servingSize quantity calories fat carbs protein actions";
