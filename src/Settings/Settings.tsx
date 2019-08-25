@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Settings } from "./Data";
 import SettingsRepository from "./SettingsRepository";
 
 export default function SettingsPage(): React.ReactElement {
     const [settings, setSettings] = useState<Settings>(SettingsRepository.load());
+    const [saved, setSaved] = useState(false);
+    const savedTimeout = useRef(-1);
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         SettingsRepository.update(settings);
+        clearTimeout(savedTimeout.current);
+        setSaved(true);
+        savedTimeout.current = setTimeout(() => setSaved(false), 800);
     };
 
     const onChange = (
@@ -110,8 +115,8 @@ export default function SettingsPage(): React.ReactElement {
                     </fieldset>
                     <div className="form-group row">
                         <div className="col-8 offset-4">
-                            <button type="submit" className="btn btn-primary btn-block">
-                                Save
+                            <button type="submit" className={"btn btn-primary btn-block " + (saved ? "btn-saved" : "")} disabled={saved}>
+                                {saved ? "Saved!" : "Save"}
                             </button>
                         </div>
                     </div>

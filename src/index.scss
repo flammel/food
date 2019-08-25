@@ -8,3 +8,12 @@
 body {
     min-width: 320px;
 }
+
+.btn.btn-saved {
+    background: transparent;
+    border-color: $success;
+    border-width: 3px;
+    padding-top: calc(#{$input-btn-padding-y} - 2px);
+    padding-bottom: calc(#{$input-btn-padding-y} - 2px);
+    color: $success;
+}
