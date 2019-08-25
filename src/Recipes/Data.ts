@@ -40,11 +40,13 @@ export function nutritionData(recipe: Recipe): NutritionData {
         protein: 0,
     };
     for (const ingredient of recipe.ingredients) {
-        const values = ingredientNutritionData(ingredient);
-        data.calories += values.calories;
-        data.fat += values.fat;
-        data.carbs += values.carbs;
-        data.protein += values.protein;
+        if (!ingredient.isDeleted) {
+            const values = ingredientNutritionData(ingredient);
+            data.calories += values.calories;
+            data.fat += values.fat;
+            data.carbs += values.carbs;
+            data.protein += values.protein;
+        }
     }
     return data;
 }
