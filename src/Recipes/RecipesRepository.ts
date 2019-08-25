@@ -1,14 +1,69 @@
-import { Recipe, RecipeId } from "./Data";
+import { Recipe, RecipeId, Ingredient } from "./Data";
+import { FoodId } from "../Foods/Data";
+import FoodsRepository from "../Foods/FoodsRepository";
+import { notEmpty } from "../Types";
+
+interface SerializedIngredient extends Omit<Ingredient, "food"> {
+    foodId: FoodId
+}
+
+interface SerializedRecipe extends Omit<Recipe, "ingredients"> {
+    ingredients: SerializedIngredient[];
+}
+
+function fromJson(json: SerializedRecipe): Recipe {
+    return {
+        id: json.id,
+        name: json.name,
+        servings: json.servings,
+        ingredients: json.ingredients.map(ingredientFromJson).filter(notEmpty),
+        isDeleted: json.isDeleted,
+    };
+}
+
+function ingredientFromJson(json: SerializedIngredient): Ingredient | null {
+    const food = FoodsRepository.byId(json.foodId);
+    if (food === null) {
+        return null;
+    }
+    return {
+        id: json.id,
+        food: food,
+        quantity: json.quantity,
+        isDeleted: json.isDeleted,
+    };
+}
+
+function toJson(recipe: Recipe): SerializedRecipe {
+    const ingredients = recipe.ingredients.map(ingredient => ({
+            id: ingredient.id,
+            foodId: ingredient.food.id,
+            quantity: ingredient.quantity,
+            isDeleted: ingredient.isDeleted,
+        }
+    ));
+    return {
+        id: recipe.id,
+        name: recipe.name,
+        servings: recipe.servings,
+        ingredients: ingredients,
+        isDeleted: recipe.isDeleted,
+    };
+}
 
 function loadIncludingDeleted(): Recipe[] {
     const json = window.localStorage.getItem("recipes");
     if (json) {
         const parsed = JSON.parse(json);
         if (parsed) {
-            return parsed;
+            return parsed.map(fromJson);
         }
     }
     return [];
+}
+
+function store(items: Recipe[]): void {
+    window.localStorage.setItem("recipes", JSON.stringify(items.map(toJson)));
 }
 
 function load(): Recipe[] {
@@ -18,29 +73,20 @@ function load(): Recipe[] {
 function create(newRecipeData: Recipe): Recipe {
     const id = Math.floor(Math.random() * 1000000);
     const newRecipe = { ...newRecipeData, id };
-    window.localStorage.setItem("recipes", JSON.stringify([...loadIncludingDeleted(), newRecipe]));
+    store([...loadIncludingDeleted(), newRecipe]);
     return newRecipe;
 }
 
 function update(recipe: Recipe): void {
-    window.localStorage.setItem(
-        "recipes",
-        JSON.stringify([...loadIncludingDeleted().map((i) => (i.id === recipe.id ? recipe : i))]),
-    );
+    store([...loadIncludingDeleted().map((i) => (i.id === recipe.id ? recipe : i))]);
 }
 
 function remove(recipe: Recipe): void {
-    window.localStorage.setItem(
-        "recipes",
-        JSON.stringify(loadIncludingDeleted().map((i) => (i.id === recipe.id ? { ...recipe, isDeleted: true } : i))),
-    );
+    store(loadIncludingDeleted().map((i) => (i.id === recipe.id ? { ...recipe, isDeleted: true } : i)));
 }
 
 function undoDelete(recipe: Recipe): void {
-    window.localStorage.setItem(
-        "recipes",
-        JSON.stringify(loadIncludingDeleted().map((i) => (i.id === recipe.id ? { ...recipe, isDeleted: false } : i))),
-    );
+    store(loadIncludingDeleted().map((i) => (i.id === recipe.id ? { ...recipe, isDeleted: false } : i)));
 }
 
 function byId(id: RecipeId): Recipe | null {

@@ -28,3 +28,7 @@ export function formatNutritionValue(value: NutritionValue): string {
 export function isUnit(value: string): value is Unit {
     return value === "g" || value === "ml";
 }
+
+export function notEmpty<T>(value: T | null | undefined): value is T {
+    return value !== null && value !== undefined;
+}
