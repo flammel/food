@@ -17,36 +17,30 @@ function load(): Food[] {
         .filter((i) => !i.isDeleted);
 }
 
-function create(newFoodData: Food): void {
+function store(items: Food[]): void {
+    window.localStorage.setItem("foods", JSON.stringify(items));
+}
+
+function create(food: Food): void {
     const id = Math.floor(Math.random() * 1000000);
-    const newFood = { ...newFoodData, id };
-    window.localStorage.setItem("foods", JSON.stringify([...loadIncludingDeleted(), newFood]));
+    store([{ ...food, id }, ...loadIncludingDeleted()]);
 }
 
 function update(food: Food): void {
     const id = Math.floor(Math.random() * 1000000);
     const newFood = { ...food, id };
-    window.localStorage.setItem(
-        "foods",
-        JSON.stringify([
+    store([
             ...loadIncludingDeleted().map((i) => (i.id === food.id ? { ...i, next: newFood.id } : i)),
             newFood,
-        ]),
-    );
+        ]);
 }
 
 function remove(food: Food): void {
-    window.localStorage.setItem(
-        "foods",
-        JSON.stringify(loadIncludingDeleted().map((i) => (i.id === food.id ? { ...food, isDeleted: true } : i))),
-    );
+    store(loadIncludingDeleted().map((i) => (i.id === food.id ? { ...food, isDeleted: true } : i)));
 }
 
 function undoDelete(food: Food): void {
-    window.localStorage.setItem(
-        "foods",
-        JSON.stringify(loadIncludingDeleted().map((i) => (i.id === food.id ? { ...food, isDeleted: false } : i))),
-    );
+    store(loadIncludingDeleted().map((i) => (i.id === food.id ? { ...food, isDeleted: false } : i)));
 }
 
 function byId(id: FoodId): Food | null {

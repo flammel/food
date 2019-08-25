@@ -71,7 +71,7 @@ function store(items: Consumption[]): void {
 
 function create(consumption: Consumption): void {
     const id = Math.floor(Math.random() * 1000000);
-    store([...loadIncludingDeleted(), { ...consumption, id }]);
+    store([{ ...consumption, id }, ...loadIncludingDeleted()]);
 }
 
 function update(consumption: Consumption): void {
