@@ -34,10 +34,14 @@ function search(consumables: Consumable[], search: string): Consumable[] {
 }
 
 function consumableServingSize(consumable: Consumable): Quantity {
-    if (consumableIsFood(consumable) && consumable.servingSize > 0) {
-        return consumable.servingSize;
+    if (consumableIsFood(consumable)) {
+        if (consumable.servingSize > 0) {
+            return consumable.servingSize;
+        } else {
+            return 100;
+        }
     } else {
-        return 100;
+        return 1;
     }
 }
 
