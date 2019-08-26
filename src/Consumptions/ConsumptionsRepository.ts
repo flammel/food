@@ -86,10 +86,15 @@ function undoDelete(consumption: Consumption): void {
     store(loadIncludingDeleted().map((c) => (c.id === consumption.id ? { ...consumption, isDeleted: false } : c)));
 }
 
+function datesWithData(): Set<string> {
+    return new Set(load().map(consumption => consumption.date.toISOString().substr(0, 10)))
+}
+
 export default {
     load: load,
     create: create,
     update: update,
     delete: remove,
     undoDelete: undoDelete,
+    datesWithData: datesWithData,
 };
