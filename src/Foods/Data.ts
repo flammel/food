@@ -11,6 +11,7 @@ export interface Food extends NutritionData {
     readonly unit: Unit;
     readonly next?: FoodId;
     readonly isDeleted: boolean;
+    readonly sort: number;
 }
 
 export const emptyFood: Food = {
@@ -25,6 +26,7 @@ export const emptyFood: Food = {
     carbs: 0,
     protein: 0,
     isDeleted: false,
+    sort: 0,
 };
 
 export function foodLabel(food: Food): string {

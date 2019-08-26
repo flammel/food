@@ -14,7 +14,8 @@ function loadIncludingDeleted(): Food[] {
 function load(): Food[] {
     return loadIncludingDeleted()
         .filter((i) => !i.next)
-        .filter((i) => !i.isDeleted);
+        .filter((i) => !i.isDeleted)
+        .sort((a, b) => a.sort - b.sort);
 }
 
 function store(items: Food[]): void {
@@ -23,7 +24,8 @@ function store(items: Food[]): void {
 
 function create(food: Food): void {
     const id = Math.floor(Math.random() * 1000000);
-    store([{ ...food, id }, ...loadIncludingDeleted()]);
+    const sort = new Date().valueOf();
+    store([{ ...food, id, sort }, ...loadIncludingDeleted()]);
 }
 
 function update(food: Food): void {
