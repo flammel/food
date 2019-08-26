@@ -11,16 +11,6 @@ interface SerializedRecipe extends Omit<Recipe, "ingredients"> {
     ingredients: SerializedIngredient[];
 }
 
-function fromJson(json: SerializedRecipe): Recipe {
-    return {
-        id: json.id,
-        name: json.name,
-        servings: json.servings,
-        ingredients: json.ingredients.map(ingredientFromJson).filter(notEmpty),
-        isDeleted: json.isDeleted,
-    };
-}
-
 function ingredientFromJson(json: SerializedIngredient): Ingredient | null {
     const food = FoodsRepository.byId(json.foodId);
     if (food === null) {
@@ -30,6 +20,16 @@ function ingredientFromJson(json: SerializedIngredient): Ingredient | null {
         id: json.id,
         food: food,
         quantity: json.quantity,
+        isDeleted: json.isDeleted,
+    };
+}
+
+function fromJson(json: SerializedRecipe): Recipe {
+    return {
+        id: json.id,
+        name: json.name,
+        servings: json.servings,
+        ingredients: json.ingredients.map(ingredientFromJson).filter(notEmpty),
         isDeleted: json.isDeleted,
     };
 }

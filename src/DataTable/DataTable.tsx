@@ -65,7 +65,7 @@ function hasItem<ItemType>(props: ColumnsProps<ItemType>): props is ColumnsWithI
     return Object.prototype.hasOwnProperty.call(props, "item");
 }
 
-function Columns<ItemType>(props: ColumnsProps<ItemType>) {
+function Columns<ItemType>(props: ColumnsProps<ItemType>): React.ReactElement {
     return (
         <>
             {props.columns.map((column) => (

@@ -4,7 +4,7 @@ import NavItem from "./NavItem";
 
 export default function Nav(): React.ReactElement {
     const [show, setShow] = React.useState(false);
-    const onToggle = () => {
+    const onToggle = (): void => {
         setShow((prev) => !prev);
     };
     return (
