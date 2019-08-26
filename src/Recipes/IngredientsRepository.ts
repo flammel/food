@@ -1,9 +1,10 @@
 import { Ingredient, Recipe } from "./Data";
+import { uuidv4 } from "../UUID";
 
 function create(ingredient: Ingredient, recipe: Recipe): Recipe {
     return {
         ...recipe,
-        ingredients: [{ ...ingredient, id: recipe.ingredients.length + 1 }, ...recipe.ingredients],
+        ingredients: [{ ...ingredient, id: uuidv4() }, ...recipe.ingredients],
     };
 }
 

@@ -17,7 +17,7 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
     const [recipe, setRecipe] = useState(emptyRecipe);
     const [editing, setEditing] = useState(false);
 
-    const editingId = parseInt(props.match.params.id);
+    const editingId = props.match.params.id;
     useEffect(() => {
         if (editingId) {
             const loaded = RecipesRepository.byId(editingId);

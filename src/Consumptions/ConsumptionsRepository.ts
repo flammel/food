@@ -4,6 +4,7 @@ import { RecipeId } from "../Recipes/Data";
 import FoodsRepository from "../Foods/FoodsRepository";
 import RecipesRepository from "../Recipes/RecipesRepository";
 import { Consumable } from "../Consumable";
+import { uuidv4 } from "../UUID";
 
 interface SerializedConsumption extends Omit<Consumption, "consumable"> {
     foodId?: FoodId;
@@ -71,8 +72,7 @@ function store(items: Consumption[]): void {
 }
 
 function create(consumption: Consumption): void {
-    const id = Math.floor(Math.random() * 1000000);
-    store([{ ...consumption, id }, ...loadIncludingDeleted()]);
+    store([{ ...consumption, id: uuidv4() }, ...loadIncludingDeleted()]);
 }
 
 function update(consumption: Consumption): void {

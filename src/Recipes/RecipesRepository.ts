@@ -2,6 +2,7 @@ import { Recipe, RecipeId, Ingredient } from "./Data";
 import { FoodId } from "../Foods/Data";
 import FoodsRepository from "../Foods/FoodsRepository";
 import { notEmpty } from "../Types";
+import { uuidv4 } from "../UUID";
 
 interface SerializedIngredient extends Omit<Ingredient, "food"> {
     foodId: FoodId;
@@ -70,8 +71,7 @@ function load(): Recipe[] {
 }
 
 function create(newRecipeData: Recipe): Recipe {
-    const id = Math.floor(Math.random() * 1000000);
-    const newRecipe = { ...newRecipeData, id };
+    const newRecipe = { ...newRecipeData, id: uuidv4() };
     store([...loadIncludingDeleted(), newRecipe]);
     return newRecipe;
 }

@@ -9,6 +9,7 @@ import Repository from "./ConsumptionsRepository";
 import FoodsRepository from "../Foods/FoodsRepository";
 import RecipesRepository from "../Recipes/RecipesRepository";
 import { Instance } from "flatpickr/dist/types/instance";
+import { nilUUID } from "../UUID";
 
 interface ConsumptionsUrlParams {
     date: string;
@@ -28,7 +29,7 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
     nextDay.setDate(nextDay.getDate() + 1);
 
     const emptyConsumption: Consumption = {
-        id: 0,
+        id: nilUUID,
         date: date,
         consumable: emptyFood,
         quantity: 1,

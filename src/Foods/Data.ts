@@ -1,6 +1,7 @@
 import { NutritionData, Quantity, Unit } from "../Types";
+import { UUID, nilUUID } from "../UUID";
 
-export type FoodId = number;
+export type FoodId = UUID;
 export type Brand = string;
 export type ServingSize = Quantity;
 export interface Food extends NutritionData {
@@ -16,7 +17,7 @@ export interface Food extends NutritionData {
 }
 
 export const emptyFood: Food = {
-    id: 0,
+    id: nilUUID,
     name: "",
     brand: "",
     quantity: 100,
@@ -38,7 +39,7 @@ export function formatServingSize(servingSize: ServingSize): string {
 }
 
 export function foodLabel(food: Food): string {
-    if (food.id === 0) {
+    if (food.id === nilUUID) {
         return "";
     }
     if (food.brand.length === 0) {

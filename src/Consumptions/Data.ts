@@ -2,8 +2,9 @@ import { Quantity, NutritionData, Calories, NutritionValue } from "../Types";
 import { recipeLabel, nutritionData as recipeNutritionData } from "../Recipes/Data";
 import { Food, foodLabel } from "../Foods/Data";
 import { Consumable } from "../Consumable";
+import { UUID } from "../UUID";
 
-type ConsumptionId = number;
+type ConsumptionId = UUID;
 export interface Consumption {
     readonly id: ConsumptionId;
     readonly consumable: Consumable;

@@ -1,4 +1,5 @@
 import { Food, FoodId } from "./Data";
+import { uuidv4 } from "../UUID";
 
 function loadIncludingDeleted(): Food[] {
     const json = window.localStorage.getItem("foods");
@@ -23,14 +24,12 @@ function store(items: Food[]): void {
 }
 
 function create(food: Food): void {
-    const id = Math.floor(Math.random() * 1000000);
     const sort = new Date().valueOf();
-    store([{ ...food, id, sort }, ...loadIncludingDeleted()]);
+    store([{ ...food, id: uuidv4(), sort }, ...loadIncludingDeleted()]);
 }
 
 function update(food: Food): void {
-    const id = Math.floor(Math.random() * 1000000);
-    const newFood = { ...food, id };
+    const newFood = { ...food, id: uuidv4() };
     store([...loadIncludingDeleted().map((i) => (i.id === food.id ? { ...i, next: newFood.id } : i)), newFood]);
 }
 

@@ -1,7 +1,8 @@
 import { Quantity, NutritionData, formatQuantity } from "../Types";
 import { emptyFood, Food } from "../Foods/Data";
+import { UUID, nilUUID } from "../UUID";
 
-type IngredientId = number;
+type IngredientId = UUID;
 export interface Ingredient {
     readonly id: IngredientId;
     readonly food: Food;
@@ -10,7 +11,7 @@ export interface Ingredient {
 }
 
 type Servings = number;
-export type RecipeId = number;
+export type RecipeId = UUID;
 export interface Recipe {
     readonly id: RecipeId;
     readonly name: string;
@@ -58,7 +59,7 @@ export function formatServings(servings: Servings): string {
 }
 
 export const emptyRecipe: Recipe = {
-    id: 0,
+    id: nilUUID,
     name: "",
     servings: 1,
     ingredients: [],
@@ -66,7 +67,7 @@ export const emptyRecipe: Recipe = {
 };
 
 export const emptyIngredient: Ingredient = {
-    id: 0,
+    id: nilUUID,
     food: emptyFood,
     quantity: 1,
     isDeleted: false,
