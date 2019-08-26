@@ -1,10 +1,11 @@
 import React from "react";
 import { Ingredient, ingredientNutritionData } from "./Data";
 import { Food, foodLabel } from "../Foods/Data";
-import { formatCalories, formatNutritionValue, formatQuantity } from "../Types";
+import { formatCalories, formatNutritionValue } from "../Types";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
+import { ConsumableQuantityInput } from "../Consumable";
 
 interface IngredientsTableProps {
     ingredients: Ingredient[];
@@ -25,16 +26,11 @@ function search(foods: Food[], search: string): Food[] {
     return result;
 }
 
-function ingredientIsNew(ingredient: Ingredient): boolean {
-    return ingredient.id === 0;
-}
-
 function onSelect(setItem: ItemSetter<Ingredient>): (food: Food) => void {
     return (food) =>
         setItem((prev) => ({
             ...prev,
             food,
-            quantity: ingredientIsNew(prev) && food.servingSize > 0 ? food.servingSize : prev.quantity,
         }));
 }
 
@@ -56,30 +52,7 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
                 />
             ),
         },
-        {
-            id: "quantity",
-            label: "Quantity",
-            value: (item: Ingredient) => formatQuantity(item.quantity) + " " + item.food.unit,
-            form: (item: Ingredient, setItem: ItemSetter<Ingredient>) => (
-                <div className="input-group">
-                    <input
-                        type="number"
-                        min="0"
-                        step="1"
-                        className="form-control"
-                        placeholder="Quantity"
-                        value={formatQuantity(item.quantity)}
-                        onChange={(e) => {
-                            const quantity = parseInt(e.target.value);
-                            setItem((prev) => ({ ...prev, quantity }));
-                        }}
-                    />
-                    <div className="input-group-append">
-                        <div className="input-group-text">{item.food.unit}</div>
-                    </div>
-                </div>
-            ),
-        },
+        ConsumableQuantityInput((item) => item.food),
         {
             id: "calories",
             label: "",

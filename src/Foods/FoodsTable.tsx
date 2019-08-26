@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import { emptyFood, Food, Brand, foodLabel } from "./Data";
-import { isUnit, formatQuantity, formatNutritionValue, formatCalories } from "../Types";
+import { emptyFood, Food, Brand, foodLabel, formatServingSize } from "./Data";
+import { isUnit, formatNutritionValue, formatCalories } from "../Types";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import Fuse from "fuse.js";
 import ComboBox from "../ComboBox/ComboBox";
@@ -123,7 +123,7 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
         {
             id: "servingSize",
             label: "Serving Size",
-            value: (f: Food) => formatQuantity(f.servingSize) + " " + f.unit,
+            value: (f: Food) => formatServingSize(f.servingSize) + " " + f.unit,
             form: (f: Food, setItem: ItemSetter<Food>) => (
                 <div className="input-group">
                     <input
@@ -134,27 +134,6 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         placeholder="Serving Size"
                         onChange={(e) => onChange(setItem, { servingSize: parseInt(e.target.value) })}
                         value={isNaN(f.servingSize) ? "" : f.servingSize}
-                    />
-                    <div className="input-group-append">
-                        <div className="input-group-text">{f.unit}</div>
-                    </div>
-                </div>
-            ),
-        },
-        {
-            id: "quantity",
-            label: "Base Quantity",
-            value: (f: Food) => formatQuantity(f.quantity) + " " + f.unit,
-            form: (f: Food, setItem: ItemSetter<Food>) => (
-                <div className="input-group">
-                    <input
-                        type="number"
-                        min="0"
-                        step="1"
-                        className="form-control"
-                        placeholder="Quantity"
-                        onChange={(e) => onChange(setItem, { quantity: parseInt(e.target.value) })}
-                        value={isNaN(f.quantity) ? "" : f.quantity}
                     />
                     <div className="input-group-append">
                         <select

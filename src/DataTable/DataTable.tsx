@@ -5,7 +5,7 @@ export type ItemSetter<ItemType> = React.Dispatch<React.SetStateAction<ItemType>
 export type ColumnForm<ItemType> = (item: ItemType, setItem: ItemSetter<ItemType>) => React.ReactElement;
 export type ColumnDefinition<ItemType> = Column<ItemType>[];
 
-interface Column<ItemType> {
+export interface Column<ItemType> {
     id: string;
     label: string;
     value: (item: ItemType) => string;

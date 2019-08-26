@@ -31,7 +31,7 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
         id: 0,
         date: date,
         consumable: emptyFood,
-        quantity: 100,
+        quantity: 1,
         isDeleted: false,
     };
 

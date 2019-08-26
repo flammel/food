@@ -1,8 +1,7 @@
 import { Quantity, NutritionData, Calories, NutritionValue } from "../Types";
-import { Recipe, recipeLabel, nutritionData as recipeNutritionData } from "../Recipes/Data";
+import { recipeLabel, nutritionData as recipeNutritionData } from "../Recipes/Data";
 import { Food, foodLabel } from "../Foods/Data";
-
-export type Consumable = Food | Recipe;
+import { Consumable } from "../Consumable";
 
 type ConsumptionId = number;
 export interface Consumption {
@@ -25,21 +24,37 @@ export function consumableLabel(consumable: Consumable): string {
     }
 }
 
-export function consumableUnit(consumable: Consumable): string {
+export function consumableUnit(consumable: Consumable, quantity: Quantity): string {
     if (consumableIsFood(consumable)) {
         return consumable.unit;
     } else {
-        return "servings";
+        if (quantity === 1) {
+            return "serving";
+        } else {
+            return "servings";
+        }
     }
 }
 
 export function nutritionData(consumption: Consumption): NutritionData {
     if (consumableIsFood(consumption.consumable)) {
         return {
-            calories: (consumption.consumable.calories / consumption.consumable.quantity) * consumption.quantity,
-            fat: (consumption.consumable.fat / consumption.consumable.quantity) * consumption.quantity,
-            carbs: (consumption.consumable.carbs / consumption.consumable.quantity) * consumption.quantity,
-            protein: (consumption.consumable.protein / consumption.consumable.quantity) * consumption.quantity,
+            calories:
+                (consumption.consumable.calories / consumption.consumable.quantity) *
+                consumption.quantity *
+                consumption.consumable.servingSize,
+            fat:
+                (consumption.consumable.fat / consumption.consumable.quantity) *
+                consumption.quantity *
+                consumption.consumable.servingSize,
+            carbs:
+                (consumption.consumable.carbs / consumption.consumable.quantity) *
+                consumption.quantity *
+                consumption.consumable.servingSize,
+            protein:
+                (consumption.consumable.protein / consumption.consumable.quantity) *
+                consumption.quantity *
+                consumption.consumable.servingSize,
         };
     } else {
         const nutrition = recipeNutritionData(consumption.consumable);

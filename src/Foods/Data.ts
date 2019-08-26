@@ -2,12 +2,13 @@ import { NutritionData, Quantity, Unit } from "../Types";
 
 export type FoodId = number;
 export type Brand = string;
+export type ServingSize = Quantity;
 export interface Food extends NutritionData {
     readonly id: FoodId;
     readonly name: string;
     readonly brand: Brand;
     readonly quantity: Quantity;
-    readonly servingSize: Quantity;
+    readonly servingSize: ServingSize;
     readonly unit: Unit;
     readonly next?: FoodId;
     readonly isDeleted: boolean;
@@ -19,7 +20,7 @@ export const emptyFood: Food = {
     name: "",
     brand: "",
     quantity: 100,
-    servingSize: 100,
+    servingSize: 1,
     unit: "g",
     calories: 0,
     fat: 0,
@@ -28,6 +29,13 @@ export const emptyFood: Food = {
     isDeleted: false,
     sort: 0,
 };
+
+export function formatServingSize(servingSize: ServingSize): string {
+    if (isNaN(servingSize)) {
+        return "";
+    }
+    return servingSize.toFixed(0);
+}
 
 export function foodLabel(food: Food): string {
     if (food.id === 0) {

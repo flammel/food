@@ -4,13 +4,12 @@
             2fr
             1fr
             170px
-            170px
             120px
             150px
             150px
             150px
             160px;
-        grid-template-areas: "food brand servingSize quantity calories fat carbs protein actions";
+        grid-template-areas: "food brand servingSize calories fat carbs protein actions";
     }
     .data-table__cell {
         &--id-food {
@@ -21,9 +20,6 @@
         }
         &--id-servingSize {
             grid-area: servingSize;
-        }
-        &--id-quantity {
-            grid-area: quantity;
         }
         &--id-calories {
             grid-area: calories;

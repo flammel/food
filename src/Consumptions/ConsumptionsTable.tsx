@@ -1,19 +1,10 @@
 import React from "react";
-import {
-    Consumption,
-    Consumable,
-    consumableUnit,
-    consumableLabel,
-    nutritionData,
-    consumableIsFood,
-    formatCalories,
-    formatNutritionValue,
-} from "./Data";
-import { Quantity, formatQuantity } from "../Types";
+import { Consumption, consumableLabel, nutritionData, formatCalories, formatNutritionValue } from "./Data";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
 import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
 import ConsumptionsTableTotals from "./ConsumptionsTableTotals";
+import { Consumable, ConsumableQuantityInput } from "../Consumable";
 
 interface ConsumptionsTableProps {
     consumptions: Consumption[];
@@ -33,28 +24,11 @@ function search(consumables: Consumable[], search: string): Consumable[] {
     return result;
 }
 
-function consumableServingSize(consumable: Consumable): Quantity {
-    if (consumableIsFood(consumable)) {
-        if (consumable.servingSize > 0) {
-            return consumable.servingSize;
-        } else {
-            return 100;
-        }
-    } else {
-        return 1;
-    }
-}
-
-function consumptionIsNew(consumption: Consumption): boolean {
-    return consumption.id === 0;
-}
-
 function onSelect(setItem: ItemSetter<Consumption>): (c: Consumable) => void {
     return (consumable) =>
         setItem((prev) => ({
             ...prev,
             consumable,
-            quantity: consumptionIsNew(prev) ? consumableServingSize(consumable) : prev.quantity,
         }));
 }
 
@@ -77,31 +51,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
                 />
             ),
         },
-        {
-            id: "quantity",
-            label: "Quantity",
-            value: (consumption: Consumption) =>
-                formatQuantity(consumption.quantity) + " " + consumableUnit(consumption.consumable),
-            form: (consumption: Consumption, setItem: ItemSetter<Consumption>) => (
-                <div className="input-group">
-                    <input
-                        type="number"
-                        min="0"
-                        step="1"
-                        className="form-control"
-                        placeholder="Quantity"
-                        value={formatQuantity(consumption.quantity)}
-                        onChange={(e) => {
-                            const quantity = parseInt(e.target.value);
-                            setItem((prev) => ({ ...prev, quantity }));
-                        }}
-                    />
-                    <div className="input-group-append">
-                        <div className="input-group-text">{consumableUnit(consumption.consumable)}</div>
-                    </div>
-                </div>
-            ),
-        },
+        ConsumableQuantityInput((item) => item.consumable),
         {
             id: "calories",
             label: "Calories",

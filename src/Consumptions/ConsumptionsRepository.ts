@@ -1,8 +1,9 @@
-import { Consumption, consumableIsFood, Consumable } from "./Data";
+import { Consumption, consumableIsFood } from "./Data";
 import { FoodId, emptyFood } from "../Foods/Data";
 import { RecipeId } from "../Recipes/Data";
 import FoodsRepository from "../Foods/FoodsRepository";
 import RecipesRepository from "../Recipes/RecipesRepository";
+import { Consumable } from "../Consumable";
 
 interface SerializedConsumption extends Omit<Consumption, "consumable"> {
     foodId?: FoodId;

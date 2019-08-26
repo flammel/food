@@ -25,10 +25,12 @@ export function recipeLabel(recipe: Recipe): string {
 
 export function ingredientNutritionData(ingredient: Ingredient): NutritionData {
     return {
-        calories: (ingredient.food.calories / ingredient.food.quantity) * ingredient.quantity,
-        fat: (ingredient.food.fat / ingredient.food.quantity) * ingredient.quantity,
-        carbs: (ingredient.food.carbs / ingredient.food.quantity) * ingredient.quantity,
-        protein: (ingredient.food.protein / ingredient.food.quantity) * ingredient.quantity,
+        calories:
+            (ingredient.food.calories / ingredient.food.quantity) * ingredient.quantity * ingredient.food.servingSize,
+        fat: (ingredient.food.fat / ingredient.food.quantity) * ingredient.quantity * ingredient.food.servingSize,
+        carbs: (ingredient.food.carbs / ingredient.food.quantity) * ingredient.quantity * ingredient.food.servingSize,
+        protein:
+            (ingredient.food.protein / ingredient.food.quantity) * ingredient.quantity * ingredient.food.servingSize,
     };
 }
 
@@ -66,6 +68,6 @@ export const emptyRecipe: Recipe = {
 export const emptyIngredient: Ingredient = {
     id: 0,
     food: emptyFood,
-    quantity: 100,
+    quantity: 1,
     isDeleted: false,
 };
