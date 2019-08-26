@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { emptyRecipe, Recipe, nutritionData } from "./Data";
 import { formatNutritionValue, formatCalories } from "../Types";
 import DataTable, { ColumnDefinition } from "../DataTable/DataTable";
 import { Link } from "react-router-dom";
+import Fuse from "fuse.js";
 
 interface RecipesTableProps {
     recipes: Recipe[];
@@ -26,12 +27,37 @@ function CreateForm(): React.ReactElement {
     );
 }
 
+function search(recipes: Recipe[], name: string): Recipe[] {
+    if (name.length > 0) {
+        const fuse = new Fuse(recipes, {
+            keys: ["name"],
+        });
+        return fuse.search(name);
+    } else {
+        return recipes;
+    }
+}
+
 export default function RecipesTable(props: RecipesTableProps): React.ReactElement {
+    const [searchName, setSearchName] = useState("");
+    const filteredRecipes = search(props.recipes, searchName);
     const columns: ColumnDefinition<Recipe> = [
         {
             id: "food",
             label: "Recipe",
             value: (item: Recipe) => item.name,
+            header: (
+                <>
+                    Recipe
+                    <input
+                        type="text"
+                        className="form-control data-table__search-input"
+                        placeholder="Search"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                    />
+                </>
+            ),
         },
         {
             id: "servings",
@@ -63,7 +89,7 @@ export default function RecipesTable(props: RecipesTableProps): React.ReactEleme
         <DataTable
             columns={columns}
             className={"recipes-table"}
-            items={props.recipes}
+            items={filteredRecipes}
             emptyItem={emptyRecipe}
             idGetter={(item: Recipe) => item.id + ""}
             labelGetter={(item: Recipe) => item.name}

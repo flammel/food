@@ -5,6 +5,11 @@
         &--deleted {
             text-align: center;
         }
+        &--header .data-table__cell {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+        }
     }
 
     &__cell {
@@ -48,6 +53,10 @@
     &__value {
         width: 100%;
         line-height: $input-height;
+    }
+
+    &__search-input {
+        margin-left: 10px;
     }
 
     .input-group-append input,

@@ -10,6 +10,7 @@ interface Column<ItemType> {
     label: string;
     value: (item: ItemType) => string;
     form?: ColumnForm<ItemType>;
+    header?: React.ReactElement;
 }
 
 type ItemId = string;
@@ -86,7 +87,7 @@ function HeaderRow<ItemType>(props: HeaderRowProps<ItemType>): React.ReactElemen
     return (
         <div className="data-table__row data-table__row--header">
             <Columns columns={props.columns} cellClass="data-table__cell--header">
-                {(column: Column<ItemType>) => column.label}
+                {(column: Column<ItemType>) => (column.header ? column.header : column.label)}
             </Columns>
             <div className="data-table__cell data-table__cell--header data-table__cell--actions"></div>
         </div>

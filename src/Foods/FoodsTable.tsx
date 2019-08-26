@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { emptyFood, Food, Brand, foodLabel } from "./Data";
 import { isUnit, formatQuantity, formatNutritionValue, formatCalories } from "../Types";
 import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
@@ -14,7 +14,7 @@ interface FoodsTableProps {
     onUndoDelete: (item: Food) => void;
 }
 
-function search(brands: Brand[], search: string): Brand[] {
+function filterBrands(brands: Brand[], search: string): Brand[] {
     // Fuse needs an array of objects, but the brands parameter is an array
     // of strings. So we first transform to an array of objects and
     // in the return statement extract the brand name.
@@ -25,10 +25,40 @@ function search(brands: Brand[], search: string): Brand[] {
     return result.map((brand) => brand.brand);
 }
 
+function filterByName(foods: Food[], name: string): Food[] {
+    if (name.length > 0) {
+        const fuse = new Fuse(foods, {
+            keys: ["name"],
+        });
+        return fuse.search(name);
+    } else {
+        return foods;
+    }
+}
+
+function filterByBrand(foods: Food[], brand: string): Food[] {
+    if (brand.length > 0) {
+        const fuse = new Fuse(foods, {
+            keys: ["brand"],
+        });
+        return fuse.search(brand);
+    } else {
+        return foods;
+    }
+}
+
+function search(foods: Food[], searchName: string, searchBrand: string): Food[] {
+    return filterByBrand(filterByName(foods, searchName), searchBrand);
+}
+
 export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
     const nameInput = useRef<HTMLInputElement>(null);
+    const [searchName, setSearchName] = useState("");
+    const [searchBrand, setSearchBrand] = useState("");
     const onChange = (setFood: ItemSetter<Food>, newField: Partial<Food>): void =>
         setFood((prev) => ({ ...prev, ...newField }));
+
+    const filteredFoods = search(props.foods, searchName, searchBrand);
 
     const columns: ColumnDefinition<Food> = [
         {
@@ -48,6 +78,18 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                     />
                 </div>
             ),
+            header: (
+                <>
+                    Food
+                    <input
+                        type="text"
+                        className="form-control data-table__search-input"
+                        placeholder="Search"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                    />
+                </>
+            ),
         },
         {
             id: "brand",
@@ -62,8 +104,20 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                     placeholder="Brand"
                     itemLabel={(brand) => brand}
                     itemKey={(brand) => brand}
-                    search={search}
+                    search={filterBrands}
                 />
+            ),
+            header: (
+                <>
+                    Brand
+                    <input
+                        type="text"
+                        className="form-control data-table__search-input"
+                        placeholder="Search"
+                        value={searchBrand}
+                        onChange={(e) => setSearchBrand(e.target.value)}
+                    />
+                </>
             ),
         },
         {
@@ -204,7 +258,7 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
         <DataTable
             columns={columns}
             className={"foods-table"}
-            items={props.foods}
+            items={filteredFoods}
             emptyItem={emptyFood}
             idGetter={(item: Food) => item.id + ""}
             labelGetter={(item: Food) => foodLabel(item)}
