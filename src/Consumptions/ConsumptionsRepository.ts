@@ -87,7 +87,7 @@ function undoDelete(consumption: Consumption): void {
 }
 
 function datesWithData(): Set<string> {
-    return new Set(load().map(consumption => consumption.date.toISOString().substr(0, 10)))
+    return new Set(load().map((consumption) => consumption.date.toISOString().substr(0, 10)));
 }
 
 export default {

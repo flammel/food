@@ -3,7 +3,7 @@ import { Ingredient, Recipe } from "./Data";
 function create(ingredient: Ingredient, recipe: Recipe): Recipe {
     return {
         ...recipe,
-        ingredients: [{ ...ingredient, id: recipe.ingredients.length + 1 }, ...recipe.ingredients, ],
+        ingredients: [{ ...ingredient, id: recipe.ingredients.length + 1 }, ...recipe.ingredients],
     };
 }
 

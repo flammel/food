@@ -4,7 +4,7 @@ import FoodsRepository from "../Foods/FoodsRepository";
 import { notEmpty } from "../Types";
 
 interface SerializedIngredient extends Omit<Ingredient, "food"> {
-    foodId: FoodId
+    foodId: FoodId;
 }
 
 interface SerializedRecipe extends Omit<Recipe, "ingredients"> {
@@ -35,13 +35,12 @@ function ingredientFromJson(json: SerializedIngredient): Ingredient | null {
 }
 
 function toJson(recipe: Recipe): SerializedRecipe {
-    const ingredients = recipe.ingredients.map(ingredient => ({
-            id: ingredient.id,
-            foodId: ingredient.food.id,
-            quantity: ingredient.quantity,
-            isDeleted: ingredient.isDeleted,
-        }
-    ));
+    const ingredients = recipe.ingredients.map((ingredient) => ({
+        id: ingredient.id,
+        foodId: ingredient.food.id,
+        quantity: ingredient.quantity,
+        isDeleted: ingredient.isDeleted,
+    }));
     return {
         id: recipe.id,
         name: recipe.name,

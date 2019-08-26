@@ -93,7 +93,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
                         value={formatQuantity(consumption.quantity)}
                         onChange={(e) => {
                             const quantity = parseInt(e.target.value);
-                            setItem((prev) => ({ ...prev, quantity }))
+                            setItem((prev) => ({ ...prev, quantity }));
                         }}
                     />
                     <div className="input-group-append">

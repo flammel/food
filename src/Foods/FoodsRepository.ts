@@ -29,10 +29,7 @@ function create(food: Food): void {
 function update(food: Food): void {
     const id = Math.floor(Math.random() * 1000000);
     const newFood = { ...food, id };
-    store([
-            ...loadIncludingDeleted().map((i) => (i.id === food.id ? { ...i, next: newFood.id } : i)),
-            newFood,
-        ]);
+    store([...loadIncludingDeleted().map((i) => (i.id === food.id ? { ...i, next: newFood.id } : i)), newFood]);
 }
 
 function remove(food: Food): void {

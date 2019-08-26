@@ -115,7 +115,11 @@ export default function SettingsPage(): React.ReactElement {
                     </fieldset>
                     <div className="form-group row">
                         <div className="col-8 offset-4">
-                            <button type="submit" className={"btn btn-primary btn-block " + (saved ? "btn-saved" : "")} disabled={saved}>
+                            <button
+                                type="submit"
+                                className={"btn btn-primary btn-block " + (saved ? "btn-saved" : "")}
+                                disabled={saved}
+                            >
                                 {saved ? "Saved!" : "Save"}
                             </button>
                         </div>

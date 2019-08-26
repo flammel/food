@@ -45,25 +45,22 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
     useEffect(() => {
         setConsumptions(Repository.load(date));
         const datesWithData = Repository.datesWithData();
-        flatpickrInstance.current = flatpickr(
-            datePickerRef.current as Node,
-            {
-                defaultDate: date,
-                // Need to use any because "below center" was added to flatpickr but they
-                // did not update their types.
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                position: "below center" as any,
-                disableMobile: true,
-                onDayCreate: (_dObj, _dStr, _fp, dayElem) => {
-                    if (datesWithData.has(dateToString(dayElem.dateObj))) {
-                        dayElem.innerHTML += "<span class='flatpickr-day-with-data-marker'></span>";
-                    }
-                },
-                onChange: (_selected, dateStr) => {
-                    props.history.push("/log/" + dateStr);
+        flatpickrInstance.current = flatpickr(datePickerRef.current as Node, {
+            defaultDate: date,
+            // Need to use any because "below center" was added to flatpickr but they
+            // did not update their types.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            position: "below center" as any,
+            disableMobile: true,
+            onDayCreate: (_dObj, _dStr, _fp, dayElem) => {
+                if (datesWithData.has(dateToString(dayElem.dateObj))) {
+                    dayElem.innerHTML += "<span class='flatpickr-day-with-data-marker'></span>";
                 }
-            }
-        );
+            },
+            onChange: (_selected, dateStr) => {
+                props.history.push("/log/" + dateStr);
+            },
+        });
     }, [dateToString(date)]);
 
     return (

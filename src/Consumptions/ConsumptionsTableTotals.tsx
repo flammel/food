@@ -22,27 +22,47 @@ export default function ConsumptionsTableTotals(props: ConsumptionsTableTotalsPr
     return (
         <div className="consumptions-table--totals">
             <div className="data-table__row">
-                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-consumable">Totals</div>
+                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-consumable">
+                    Totals
+                </div>
                 <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-quantity"></div>
-                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-calories">{formatCalories(calories)}</div>
-                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-fat">{formatNutritionValue(fat)}</div>
-                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-carbs">{formatNutritionValue(carbs)}</div>
-                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-protein">{formatNutritionValue(protein)}</div>
+                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-calories">
+                    {formatCalories(calories)}
+                </div>
+                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-fat">
+                    {formatNutritionValue(fat)}
+                </div>
+                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-carbs">
+                    {formatNutritionValue(carbs)}
+                </div>
+                <div className="data-table__cell consumptions-table__cell--totals data-table__cell--id-protein">
+                    {formatNutritionValue(protein)}
+                </div>
                 <div className="data-table__cell data-table__cell--actions consumptions-table__cell--totals"></div>
             </div>
 
             <div className="data-table__row">
                 <div className="data-table__cell data-table__cell--id-consumable">Targets</div>
                 <div className="data-table__cell data-table__cell--id-quantity"></div>
-                <div className="data-table__cell data-table__cell--id-calories">{formatCalories(settings.targetCalories)}</div>
-                <div className="data-table__cell data-table__cell--id-fat">{formatNutritionValue(settings.targetFat)}</div>
-                <div className="data-table__cell data-table__cell--id-carbs">{formatNutritionValue(settings.targetCarbs)}</div>
-                <div className="data-table__cell data-table__cell--id-protein">{formatNutritionValue(settings.targetProtein)}</div>
+                <div className="data-table__cell data-table__cell--id-calories">
+                    {formatCalories(settings.targetCalories)}
+                </div>
+                <div className="data-table__cell data-table__cell--id-fat">
+                    {formatNutritionValue(settings.targetFat)}
+                </div>
+                <div className="data-table__cell data-table__cell--id-carbs">
+                    {formatNutritionValue(settings.targetCarbs)}
+                </div>
+                <div className="data-table__cell data-table__cell--id-protein">
+                    {formatNutritionValue(settings.targetProtein)}
+                </div>
                 <div className="data-table__cell data-table__cell--actions"></div>
             </div>
 
             <div className="data-table__row">
-                <div className="data-table__cell consumptions-table__cell--remaining data-table__cell--id-consumable">Remaining</div>
+                <div className="data-table__cell consumptions-table__cell--remaining data-table__cell--id-consumable">
+                    Remaining
+                </div>
                 <div className="data-table__cell consumptions-table__cell--remaining data-table__cell--id-quantity"></div>
                 <div
                     className={

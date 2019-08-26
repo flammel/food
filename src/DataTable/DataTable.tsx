@@ -69,7 +69,10 @@ function Columns<ItemType>(props: ColumnsProps<ItemType>) {
     return (
         <>
             {props.columns.map((column) => (
-                <div key={column.id} className={"data-table__cell " + (props.cellClass || "") + " data-table__cell--id-" + column.id}>
+                <div
+                    key={column.id}
+                    className={"data-table__cell " + (props.cellClass || "") + " data-table__cell--id-" + column.id}
+                >
                     {hasItem(props) ? props.children(column, props.item) : props.children(column)}
                 </div>
             ))}
@@ -170,7 +173,11 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>): React.ReactElement {
             onMouseOut={() => setHovering(false)}
         >
             <Columns columns={props.columns} item={props.item}>
-                {(column, item) => <span className="data-table__value" data-label={column.label}>{column.value(item)}</span>}
+                {(column, item) => (
+                    <span className="data-table__value" data-label={column.label}>
+                        {column.value(item)}
+                    </span>
+                )}
             </Columns>
             <div className="data-table__cell data-table__cell--actions">
                 {editButton}

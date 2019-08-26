@@ -10,8 +10,7 @@
             150px
             150px
             160px;
-            grid-template-areas:
-                "food brand servingSize quantity calories fat carbs protein actions";
+        grid-template-areas: "food brand servingSize quantity calories fat carbs protein actions";
     }
     .data-table__cell {
         &--id-food {
@@ -58,7 +57,7 @@
                 160px;
             grid-template-areas:
                 "food food servingSize calories fat carbs protein actions"
-                "brand brand quantity calories fat carbs protein actions"
+                "brand brand quantity calories fat carbs protein actions";
         }
         .data-table__cell {
             padding: $table-cell-padding / 2;
@@ -75,13 +74,12 @@
 @media screen and (max-width: 1000px) {
     .foods-table {
         .data-table__row {
-            grid-template-columns:
-                repeat(6, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             grid-template-areas:
                 "food food food brand brand brand"
                 "servingSize servingSize quantity quantity calories calories"
                 "fat fat carbs carbs protein protein"
-                "actions actions actions actions actions actions"
+                "actions actions actions actions actions actions";
         }
         .data-table__cell {
             padding: $table-cell-padding / 2;

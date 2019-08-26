@@ -30,11 +30,12 @@ function ingredientIsNew(ingredient: Ingredient): boolean {
 }
 
 function onSelect(setItem: ItemSetter<Ingredient>): (food: Food) => void {
-    return (food) => setItem((prev) => ({
-        ...prev,
-        food,
-        quantity: ingredientIsNew(prev) && food.servingSize > 0 ? food.servingSize : prev.quantity,
-    }));
+    return (food) =>
+        setItem((prev) => ({
+            ...prev,
+            food,
+            quantity: ingredientIsNew(prev) && food.servingSize > 0 ? food.servingSize : prev.quantity,
+        }));
 }
 
 export default function IngredientsTable(props: IngredientsTableProps): React.ReactElement {
@@ -70,7 +71,7 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
                         value={formatQuantity(item.quantity)}
                         onChange={(e) => {
                             const quantity = parseInt(e.target.value);
-                            setItem((prev) => ({ ...prev, quantity }))
+                            setItem((prev) => ({ ...prev, quantity }));
                         }}
                     />
                     <div className="input-group-append">
