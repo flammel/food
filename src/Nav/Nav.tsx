@@ -19,7 +19,9 @@ export default function Nav(): React.ReactElement {
                 <ul className="navbar-nav flex-grow-1">
                     <NavItem to="/">Log</NavItem>
                     <NavItem to="/foods">Foods</NavItem>
-                    <NavItem to="/recipes">Recipes</NavItem>
+                    <NavItem to="/recipes" isActive={(url) => url.substr(0, 8) === "/recipes"}>
+                        Recipes
+                    </NavItem>
                 </ul>
                 <ul className="navbar-nav">
                     <NavItem to="/settings">Settings</NavItem>

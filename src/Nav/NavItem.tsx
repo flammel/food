@@ -5,10 +5,12 @@ import { RouteComponentProps } from "react-router";
 interface NavItemProps extends RouteComponentProps {
     to: string;
     children: string;
+    isActive?: (url: string) => boolean;
 }
 
 function NavItem(props: NavItemProps): React.ReactElement {
-    const isActive = props.location.pathname === props.to;
+    const url = props.location.pathname;
+    const isActive = props.isActive ? props.isActive(url) : url === props.to;
     const className = isActive ? "active" : "";
 
     return (
