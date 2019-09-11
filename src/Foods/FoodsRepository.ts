@@ -16,7 +16,7 @@ function load(): Food[] {
     return loadIncludingDeleted()
         .filter((i) => !i.next)
         .filter((i) => !i.isDeleted)
-        .sort((a, b) => a.sort - b.sort);
+        .sort((a, b) => b.sort - a.sort);
 }
 
 function store(items: Food[]): void {
