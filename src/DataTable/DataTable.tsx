@@ -138,14 +138,7 @@ function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElemen
             .catch(() => {});
     };
 
-    const isFirstRun = useRef(true);
-    useEffect(() => {
-        if (!isFirstRun.current) {
-            setItem(props.emptyItem);
-        } else {
-            isFirstRun.current = false;
-        }
-    }, [props.emptyItem]);
+    useEffect(() => setItem(props.emptyItem), [props.emptyItem]);
 
     return (
         <form className="data-table__row data-table__row--form data-table__row--create" onSubmit={onSubmit}>
