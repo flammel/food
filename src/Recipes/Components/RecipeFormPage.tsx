@@ -33,7 +33,7 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
                 setEditing(true);
             }
         }
-    }, [editingId]);
+    }, [editingId, appState]);
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
