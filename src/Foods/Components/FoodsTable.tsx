@@ -138,6 +138,7 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                                 isUnit(e.target.value) ? onChange(setItem, { unit: e.target.value }) : null
                             }
                             value={f.unit}
+                            tabIndex={-1}
                         >
                             <option>g</option>
                             <option>ml</option>
