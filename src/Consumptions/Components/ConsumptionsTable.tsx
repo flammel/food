@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Fuse from "fuse.js";
 import { Consumption, consumableLabel, nutritionData, formatCalories, formatNutritionValue } from "../Data";
 import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
@@ -30,6 +30,7 @@ function onSelect(setItem: ItemSetter<Consumption>): (c: Consumable) => void {
 }
 
 export default function ConsumptionsTable(props: ConsumptionsTableProps): React.ReactElement {
+    const consumableInputRef = useRef<HTMLInputElement>(null);
     const columns: ColumnDefinition<Consumption> = [
         {
             id: "consumable",
@@ -45,6 +46,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
                     itemKey={(consumable) => consumable.id.toString()}
                     search={search}
                     autoFocus={true}
+                    inputRef={consumableInputRef}
                 />
             ),
         },
@@ -78,7 +80,9 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             emptyItem={props.emptyItem}
             idGetter={(consumption) => consumption.id.toString()}
             labelGetter={(consumption) => consumableLabel(consumption.consumable)}
-            onCreate={props.onCreate}
+            onCreate={(item) => props.onCreate(item).then(() => {
+                consumableInputRef.current ? consumableInputRef.current.focus() : {}
+            })}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}

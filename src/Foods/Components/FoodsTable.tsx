@@ -48,7 +48,7 @@ function search(foods: Food[], searchName: string, searchBrand: string): Food[] 
 }
 
 export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
-    const nameInput = useRef<HTMLInputElement>(null);
+    const nameInputRef = useRef<HTMLInputElement>(null);
     const [searchName, setSearchName] = useState("");
     const [searchBrand, setSearchBrand] = useState("");
     const onChange = (setFood: ItemSetter<Food>, newField: Partial<Food>): void =>
@@ -69,7 +69,7 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
                         placeholder="Name"
                         onChange={(e) => onChange(setItem, { name: e.target.value })}
                         value={f.name}
-                        ref={nameInput}
+                        ref={nameInputRef}
                         autoFocus
                     />
                 </div>
@@ -237,7 +237,9 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             emptyItem={props.emptyItem}
             idGetter={(item: Food) => item.id + ""}
             labelGetter={(item: Food) => foodLabel(item)}
-            onCreate={props.onCreate}
+            onCreate={(item) => props.onCreate(item).then(() => {
+                nameInputRef.current ? nameInputRef.current.focus() : {}
+            })}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Ingredient, ingredientNutritionData } from "../Data";
 import { Food, foodLabel } from "../../Foods/Data";
 import { formatCalories, formatNutritionValue } from "../../Types";
@@ -30,6 +30,7 @@ function onSelect(setItem: ItemSetter<Ingredient>): (food: Food) => void {
 }
 
 export default function IngredientsTable(props: IngredientsTableProps): React.ReactElement {
+    const foodInputRef = useRef<HTMLInputElement>(null);
     const columns: ColumnDefinition<Ingredient> = [
         {
             id: "food",
@@ -44,6 +45,7 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
                     itemLabel={(food) => foodLabel(food)}
                     itemKey={(food) => food.id.toString()}
                     search={search}
+                    inputRef={foodInputRef}
                 />
             ),
         },
@@ -77,7 +79,9 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
             emptyItem={props.emptyItem}
             idGetter={(ingredient) => ingredient.id.toString()}
             labelGetter={(ingredient) => foodLabel(ingredient.food)}
-            onCreate={props.onCreate}
+            onCreate={(item) => props.onCreate(item).then(() => {
+                foodInputRef.current ? foodInputRef.current.focus() : {}
+            })}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import Downshift, { GetItemPropsOptions } from "downshift";
 
 interface ComboBoxProps<ItemType> {
@@ -11,6 +11,7 @@ interface ComboBoxProps<ItemType> {
     itemKey: (item: ItemType) => string;
     search: (items: ItemType[], search: string) => ItemType[];
     autoFocus?: boolean;
+    inputRef?: MutableRefObject<HTMLInputElement | null>;
 }
 
 export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): React.ReactElement {
@@ -75,6 +76,7 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
                             placeholder: props.placeholder,
                             onChange: onInputChange,
                             autoFocus: props.autoFocus,
+                            ref: props.inputRef
                         })}
                     />
                     {isOpen ? (
