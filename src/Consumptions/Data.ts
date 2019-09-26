@@ -6,7 +6,7 @@ import { UUID, nilUUID } from "../UUID";
 import { dateToString } from "../Utilities";
 import { AppState } from "../AppState/Types";
 
-type ConsumptionId = UUID;
+export type ConsumptionId = UUID;
 export interface Consumption {
     readonly id: ConsumptionId;
     readonly consumable: Consumable;

@@ -2,11 +2,16 @@ import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 import { Link } from "react-router-dom";
 
 export type ItemSetter<ItemType> = React.Dispatch<React.SetStateAction<ItemType>>;
-export type ColumnForm<ItemType> = (item: ItemType, setItem: ItemSetter<ItemType>) => React.ReactElement;
+export type ColumnForm<ItemType> = (
+    item: ItemType,
+    setItem: ItemSetter<ItemType>,
+    isInvalid: boolean,
+) => React.ReactElement;
 export type ColumnDefinition<ItemType> = Column<ItemType>[];
 
+export type ColumnId = string;
 export interface Column<ItemType> {
-    id: string;
+    id: ColumnId;
     label: string;
     value: (item: ItemType) => string;
     form?: ColumnForm<ItemType>;
@@ -39,6 +44,7 @@ interface TableProps<ItemType> extends BaseTableProps<ItemType> {
         redirect: (item: ItemType) => void;
     };
     focusAfterCreateRef?: MutableRefObject<HTMLInputElement | null>;
+    validator?: (item: ItemType) => Set<ColumnId>;
 }
 
 interface Rows<ItemType> {
@@ -105,12 +111,22 @@ interface CreateRowProps<ItemType> extends GenericRowProps<ItemType> {
     onCreate: TableEventHandler<ItemType>;
     createButtonLabel?: string;
     focusAfterCreateRef?: MutableRefObject<HTMLInputElement | null>;
+    validator?: (item: ItemType) => Set<ColumnId>;
 }
 
 function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElement {
     const [item, setItem] = useState<ItemType>(props.emptyItem);
+    const [invalidColumns, setInvalidColumns] = useState<Set<ColumnId>>(new Set());
+
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
+        if (props.validator) {
+            const validationResult = props.validator(item);
+            setInvalidColumns(validationResult);
+            if (validationResult.size > 0) {
+                return;
+            }
+        }
         props
             .onCreate(item)
             .then(() => {
@@ -136,7 +152,7 @@ function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElemen
             <Columns columns={props.columns} item={item}>
                 {(column, item) => (
                     <span className="data-table__value" data-label={column.label}>
-                        {column.form ? column.form(item, setItem) : column.value(item)}
+                        {column.form ? column.form(item, setItem, invalidColumns.has(column.id)) : column.value(item)}
                     </span>
                 )}
             </Columns>
@@ -219,12 +235,21 @@ interface EditRowProps<ItemType> extends GenericRowProps<ItemType> {
     item: ItemType;
     onSave: TableEventHandler<ItemType>;
     onCancel: () => void;
+    validator?: (item: ItemType) => Set<ColumnId>;
 }
 
 function EditRow<ItemType>(props: EditRowProps<ItemType>): React.ReactElement {
     const [item, setItem] = useState<ItemType>(props.item);
+    const [invalidColumns, setInvalidColumns] = useState<Set<ColumnId>>(new Set());
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
+        if (props.validator) {
+            const validationResult = props.validator(item);
+            setInvalidColumns(validationResult);
+            if (validationResult.size > 0) {
+                return;
+            }
+        }
         props
             .onSave(item)
             .then(() => {})
@@ -249,7 +274,7 @@ function EditRow<ItemType>(props: EditRowProps<ItemType>): React.ReactElement {
             <Columns columns={props.columns} item={item}>
                 {(column, item) => (
                     <span className="data-table__value" data-label={column.label}>
-                        {column.form ? column.form(item, setItem) : column.value(item)}
+                        {column.form ? column.form(item, setItem, invalidColumns.has(column.id)) : column.value(item)}
                     </span>
                 )}
             </Columns>
@@ -336,6 +361,7 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>): React.
                 onCreate={props.onCreate}
                 createButtonLabel={props.createButtonLabel}
                 focusAfterCreateRef={props.focusAfterCreateRef}
+                validator={props.validator}
             />
         ),
         show: (item: ItemType) => (
@@ -349,7 +375,13 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>): React.
             />
         ),
         edit: (item: ItemType) => (
-            <EditRow columns={props.columns} item={item} onSave={onUpdate} onCancel={() => setEditing(undefined)} />
+            <EditRow
+                columns={props.columns}
+                item={item}
+                onSave={onUpdate}
+                onCancel={() => setEditing(undefined)}
+                validator={props.validator}
+            />
         ),
         deleted: (item: ItemType) => (
             <DeletedRow
