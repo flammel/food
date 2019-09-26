@@ -21,4 +21,6 @@ body {
 .form-control.form-control__invalid {
     border-color: $danger;
     box-shadow: 0 0 0 $input-focus-width rgba($danger, 0.25);
+    // z-index has to be set so that box-shadow is above an appended select box.
+    z-index: 1;
 }
