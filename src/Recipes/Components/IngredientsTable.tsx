@@ -2,10 +2,11 @@ import React, { useRef } from "react";
 import { Ingredient, ingredientNutritionData } from "../Data";
 import { Food, foodLabel } from "../../Foods/Data";
 import { formatCalories, formatNutritionValue } from "../../Types";
-import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
+import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps, ColumnId } from "../../DataTable/DataTable";
 import ComboBox from "../../ComboBox/ComboBox";
 import Fuse from "fuse.js";
 import { ConsumableQuantityInput } from "../../Consumable";
+import { nilUUID } from "../../UUID";
 
 interface IngredientsTableProps extends BaseTableProps<Ingredient> {
     ingredients: Ingredient[];
@@ -36,7 +37,7 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
             id: "food",
             label: "Ingredients",
             value: (item: Ingredient) => foodLabel(item.food),
-            form: (item: Ingredient, setItem: ItemSetter<Ingredient>) => (
+            form: (item: Ingredient, setItem: ItemSetter<Ingredient>, isInvalid: boolean) => (
                 <ComboBox
                     items={props.foods}
                     onSelect={onSelect(setItem)}
@@ -46,6 +47,7 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
                     itemKey={(food) => food.id.toString()}
                     search={search}
                     inputRef={foodInputRef}
+                    isInvalid={isInvalid}
                 />
             ),
         },
@@ -86,6 +88,16 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
             onUndoDelete={props.onUndoDelete}
             rows={{ first: props.footer }}
             createButtonLabel="Add"
+            validator={(item) => {
+                const result = new Set<ColumnId>();
+                if (item.food.id === nilUUID) {
+                    result.add("food");
+                }
+                if (item.quantity < 1 || isNaN(item.quantity)) {
+                    result.add("quantity");
+                }
+                return result;
+            }}
         />
     );
 }
