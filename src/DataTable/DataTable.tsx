@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 import { Link } from "react-router-dom";
 
 export type ItemSetter<ItemType> = React.Dispatch<React.SetStateAction<ItemType>>;
@@ -38,6 +38,7 @@ interface TableProps<ItemType> extends BaseTableProps<ItemType> {
         url: (item: ItemType) => string;
         redirect: (item: ItemType) => void;
     };
+    focusAfterCreateRef?: MutableRefObject<HTMLInputElement | null>;
 }
 
 interface Rows<ItemType> {
@@ -103,6 +104,7 @@ interface CreateRowProps<ItemType> extends GenericRowProps<ItemType> {
     emptyItem: ItemType;
     onCreate: TableEventHandler<ItemType>;
     createButtonLabel?: string;
+    focusAfterCreateRef?: MutableRefObject<HTMLInputElement | null>;
 }
 
 function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElement {
@@ -113,6 +115,9 @@ function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElemen
             .onCreate(item)
             .then(() => {
                 setItem(props.emptyItem);
+                if (props.focusAfterCreateRef && props.focusAfterCreateRef.current) {
+                    props.focusAfterCreateRef.current.focus();
+                }
             })
             .catch(() => {});
     };
@@ -330,6 +335,7 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>): React.
                 emptyItem={props.emptyItem}
                 onCreate={props.onCreate}
                 createButtonLabel={props.createButtonLabel}
+                focusAfterCreateRef={props.focusAfterCreateRef}
             />
         ),
         show: (item: ItemType) => (

@@ -61,18 +61,6 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             });
     };
 
-    const focusing = (fn: TableEventHandler<Consumption>): TableEventHandler<Consumption> => {
-        return (item: Consumption) =>
-            new Promise((res, rej) =>
-                fn(item)
-                    .then(() => {
-                        consumableInputRef.current ? consumableInputRef.current.focus() : {};
-                        res();
-                    })
-                    .catch((err) => rej(err)),
-            );
-    };
-
     const columns: ColumnDefinition<Consumption> = [
         {
             id: "consumable",
@@ -126,7 +114,8 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             emptyItem={props.emptyItem}
             idGetter={(consumption) => consumption.id.toString()}
             labelGetter={(consumption) => consumableLabel(consumption.consumable)}
-            onCreate={focusing(validating(props.onCreate))}
+            focusAfterCreateRef={consumableInputRef}
+            onCreate={validating(props.onCreate)}
             onUpdate={validating(props.onUpdate)}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}

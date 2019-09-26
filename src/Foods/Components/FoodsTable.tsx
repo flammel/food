@@ -238,11 +238,8 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             emptyItem={props.emptyItem}
             idGetter={(item: Food) => item.id + ""}
             labelGetter={(item: Food) => foodLabel(item)}
-            onCreate={(item) =>
-                props.onCreate(item).then(() => {
-                    nameInputRef.current ? nameInputRef.current.focus() : {};
-                })
-            }
+            focusAfterCreateRef={nameInputRef}
+            onCreate={props.onCreate}
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
