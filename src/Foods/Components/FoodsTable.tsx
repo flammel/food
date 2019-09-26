@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Food, Brand, foodLabel, formatServingSize } from "../Data";
 import { isUnit, formatNutritionValue, formatCalories } from "../../Types";
-import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
+import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps, ColumnId } from "../../DataTable/DataTable";
 import Fuse from "fuse.js";
 import ComboBox from "../../ComboBox/ComboBox";
 
@@ -61,11 +61,11 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             id: "food",
             label: "Food",
             value: (f: Food) => f.name,
-            form: (f: Food, setItem: ItemSetter<Food>) => (
+            form: (f: Food, setItem: ItemSetter<Food>, isInvalid: boolean) => (
                 <div className="input-group">
                     <input
                         type="text"
-                        className="form-control"
+                        className={"form-control" + (isInvalid ? " form-control__invalid" : "")}
                         placeholder="Name"
                         onChange={(e) => onChange(setItem, { name: e.target.value })}
                         value={f.name}
@@ -120,13 +120,13 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             id: "servingSize",
             label: "Serving Size",
             value: (f: Food) => formatServingSize(f.servingSize) + " " + f.unit,
-            form: (f: Food, setItem: ItemSetter<Food>) => (
+            form: (f: Food, setItem: ItemSetter<Food>, isInvalid: boolean) => (
                 <div className="input-group">
                     <input
                         type="number"
                         min="0"
                         step="1"
-                        className="form-control"
+                        className={"form-control" + (isInvalid ? " form-control__invalid" : "")}
                         placeholder="Serving Size"
                         onChange={(e) => onChange(setItem, { servingSize: parseInt(e.target.value) })}
                         value={isNaN(f.servingSize) ? "" : f.servingSize}
@@ -151,13 +151,13 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             id: "calories",
             label: "Calories",
             value: (f: Food) => formatCalories(f.calories),
-            form: (f: Food, setItem: ItemSetter<Food>) => (
+            form: (f: Food, setItem: ItemSetter<Food>, isInvalid: boolean) => (
                 <div className="input-group">
                     <input
                         type="number"
                         min="0"
                         step="1"
-                        className="form-control"
+                        className={"form-control" + (isInvalid ? " form-control__invalid" : "")}
                         placeholder="Calories"
                         onChange={(e) => onChange(setItem, { calories: parseInt(e.target.value) })}
                         value={isNaN(f.calories) ? "" : f.calories}
@@ -169,13 +169,13 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             id: "fat",
             label: "Fat",
             value: (f: Food) => formatNutritionValue(f.fat) + " g",
-            form: (f: Food, setItem: ItemSetter<Food>) => (
+            form: (f: Food, setItem: ItemSetter<Food>, isInvalid: boolean) => (
                 <div className="input-group">
                     <input
                         type="number"
                         min="0"
                         step="0.1"
-                        className="form-control"
+                        className={"form-control" + (isInvalid ? " form-control__invalid" : "")}
                         placeholder="Fat"
                         onChange={(e) => onChange(setItem, { fat: parseFloat(e.target.value) })}
                         value={isNaN(f.fat) ? "" : f.fat}
@@ -190,13 +190,13 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             id: "carbs",
             label: "Carbs",
             value: (f: Food) => formatNutritionValue(f.carbs) + " g",
-            form: (f: Food, setItem: ItemSetter<Food>) => (
+            form: (f: Food, setItem: ItemSetter<Food>, isInvalid: boolean) => (
                 <div className="input-group">
                     <input
                         type="number"
                         min="0"
                         step="0.1"
-                        className="form-control"
+                        className={"form-control" + (isInvalid ? " form-control__invalid" : "")}
                         placeholder="Carbs"
                         onChange={(e) => onChange(setItem, { carbs: parseFloat(e.target.value) })}
                         value={isNaN(f.carbs) ? "" : f.carbs}
@@ -211,13 +211,13 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             id: "protein",
             label: "Protein",
             value: (f: Food) => formatNutritionValue(f.protein) + " g",
-            form: (f: Food, setItem: ItemSetter<Food>) => (
+            form: (f: Food, setItem: ItemSetter<Food>, isInvalid: boolean) => (
                 <div className="input-group">
                     <input
                         type="number"
                         min="0"
                         step="0.1"
-                        className="form-control"
+                        className={"form-control" + (isInvalid ? " form-control__invalid" : "")}
                         placeholder="Protein"
                         onChange={(e) => onChange(setItem, { protein: parseFloat(e.target.value) })}
                         value={isNaN(f.protein) ? "" : f.protein}
@@ -243,6 +243,28 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
+            validator={(item: Food): Set<ColumnId> => {
+                const result = new Set<ColumnId>();
+                if (item.name.length < 1) {
+                    result.add("food");
+                }
+                if (isNaN(item.servingSize)) {
+                    result.add("servingSize");
+                }
+                if (isNaN(item.calories)) {
+                    result.add("calories");
+                }
+                if (isNaN(item.fat)) {
+                    result.add("fat");
+                }
+                if (isNaN(item.carbs)) {
+                    result.add("carbs");
+                }
+                if (isNaN(item.protein)) {
+                    result.add("protein");
+                }
+                return result;
+            }}
         />
     );
 }
