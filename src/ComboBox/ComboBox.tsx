@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Downshift, { GetItemPropsOptions } from "downshift";
 
 interface ComboBoxProps<ItemType> {
@@ -14,14 +14,7 @@ interface ComboBoxProps<ItemType> {
 }
 
 export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): React.ReactElement {
-    const [currentInputValue, setCurrentInputValue] = useState<string>(props.itemLabel(props.selected));
-
-    useEffect(() => {
-        setCurrentInputValue(props.itemLabel(props.selected));
-    }, [props.itemKey(props.selected)]);
-
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setCurrentInputValue(e.target.value);
         if (props.onChange) {
             props.onChange(e.target.value);
         }
@@ -30,9 +23,6 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
     const onSelectChange = (item: ItemType | null): void => {
         if (item !== null) {
             props.onSelect(item);
-            setCurrentInputValue(props.itemLabel(item));
-        } else {
-            setCurrentInputValue("");
         }
     };
 
@@ -74,10 +64,10 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
         <Downshift
             onChange={onSelectChange}
             itemToString={(item) => (item ? props.itemLabel(item) : "")}
-            inputValue={currentInputValue}
+            selectedItem={props.selected}
         >
             {({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, highlightedIndex, selectedItem }) => (
-                <div className="input-group input-group--combo">
+                <div className="input-group input-group--combo" data-foo={JSON.stringify(selectedItem)}>
                     <input
                         {...getInputProps({
                             type: "text",
