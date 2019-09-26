@@ -99,5 +99,5 @@ export function consumptionsByDate(appState: AppState, date: Date): Consumption[
     return Object.values(appState.consumptions)
         .filter(dateFilter(date))
         .filter((consumption) => !consumption.isDeleted)
-        .sort((a, b) => a.date.valueOf() - b.date.valueOf());
+        .sort((a, b) => b.sort - a.sort);
 }
