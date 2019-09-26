@@ -12,6 +12,7 @@ interface ComboBoxProps<ItemType> {
     search: (items: ItemType[], search: string) => ItemType[];
     autoFocus?: boolean;
     inputRef?: MutableRefObject<HTMLInputElement | null>;
+    isInvalid?: boolean;
 }
 
 export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): React.ReactElement {
@@ -72,11 +73,11 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
                     <input
                         {...getInputProps({
                             type: "text",
-                            className: "form-control",
+                            className: "form-control" + (props.isInvalid ? " form-control__invalid" : ""),
                             placeholder: props.placeholder,
                             onChange: onInputChange,
                             autoFocus: props.autoFocus,
-                            ref: props.inputRef
+                            ref: props.inputRef,
                         })}
                     />
                     {isOpen ? (

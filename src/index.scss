@@ -17,3 +17,8 @@ body {
     padding-bottom: calc(#{$input-btn-padding-y} - 2px);
     color: $success;
 }
+
+.form-control.form-control__invalid {
+    border-color: $danger;
+    box-shadow: 0 0 0 $input-focus-width rgba($danger, 0.25);
+}

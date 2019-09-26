@@ -1,11 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Fuse from "fuse.js";
 import { Consumption, consumableLabel, nutritionData, formatCalories, formatNutritionValue } from "../Data";
-import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
+import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps, TableEventHandler } from "../../DataTable/DataTable";
 import ComboBox from "../../ComboBox/ComboBox";
 import ConsumptionsTableTotals from "./ConsumptionsTableTotals";
 import { Consumable, ConsumableQuantityInput } from "../../Consumable";
 import { Settings } from "../../Settings/Data";
+import { nilUUID } from "../../UUID";
 
 interface ConsumptionsTableProps extends BaseTableProps<Consumption> {
     consumptions: Consumption[];
@@ -31,6 +32,47 @@ function onSelect(setItem: ItemSetter<Consumption>): (c: Consumable) => void {
 
 export default function ConsumptionsTable(props: ConsumptionsTableProps): React.ReactElement {
     const consumableInputRef = useRef<HTMLInputElement>(null);
+    const [invalidConsumable, setInvalidConsumable] = useState<string | null>(null);
+    const [invalidQuantity, setInvalidQuantity] = useState<string | null>(null);
+
+    const validating = (fn: TableEventHandler<Consumption>): TableEventHandler<Consumption> => {
+        return (item: Consumption) =>
+            new Promise((res, rej) => {
+                let valid = true;
+                if (item.consumable.id === nilUUID) {
+                    setInvalidConsumable(item.id);
+                    valid = false;
+                } else {
+                    setInvalidConsumable(null);
+                }
+                if (item.quantity < 1 || isNaN(item.quantity)) {
+                    setInvalidQuantity(item.id);
+                    valid = false;
+                } else {
+                    setInvalidQuantity(null);
+                }
+                if (valid) {
+                    fn(item)
+                        .then(res)
+                        .catch(rej);
+                } else {
+                    rej();
+                }
+            });
+    };
+
+    const focusing = (fn: TableEventHandler<Consumption>): TableEventHandler<Consumption> => {
+        return (item: Consumption) =>
+            new Promise((res, rej) =>
+                fn(item)
+                    .then(() => {
+                        consumableInputRef.current ? consumableInputRef.current.focus() : {};
+                        res();
+                    })
+                    .catch((err) => rej(err)),
+            );
+    };
+
     const columns: ColumnDefinition<Consumption> = [
         {
             id: "consumable",
@@ -47,10 +89,14 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
                     search={search}
                     autoFocus={true}
                     inputRef={consumableInputRef}
+                    isInvalid={invalidConsumable === consumption.id}
                 />
             ),
         },
-        ConsumableQuantityInput((item) => item.consumable),
+        ConsumableQuantityInput(
+            (consumption: Consumption) => consumption.consumable,
+            (consumption: Consumption) => invalidQuantity === consumption.id,
+        ),
         {
             id: "calories",
             label: "Calories",
@@ -80,10 +126,8 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             emptyItem={props.emptyItem}
             idGetter={(consumption) => consumption.id.toString()}
             labelGetter={(consumption) => consumableLabel(consumption.consumable)}
-            onCreate={(item) => props.onCreate(item).then(() => {
-                consumableInputRef.current ? consumableInputRef.current.focus() : {}
-            })}
-            onUpdate={props.onUpdate}
+            onCreate={focusing(validating(props.onCreate))}
+            onUpdate={validating(props.onUpdate)}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
             rows={{ footer: <ConsumptionsTableTotals consumptions={props.consumptions} settings={props.settings} /> }}

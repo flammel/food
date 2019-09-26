@@ -101,7 +101,7 @@ function HeaderRow<ItemType>(props: HeaderRowProps<ItemType>): React.ReactElemen
 
 interface CreateRowProps<ItemType> extends GenericRowProps<ItemType> {
     emptyItem: ItemType;
-    onCreate: (item: ItemType) => void;
+    onCreate: TableEventHandler<ItemType>;
     createButtonLabel?: string;
 }
 
@@ -109,8 +109,12 @@ function CreateRow<ItemType>(props: CreateRowProps<ItemType>): React.ReactElemen
     const [item, setItem] = useState<ItemType>(props.emptyItem);
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        props.onCreate(item);
-        setItem(props.emptyItem);
+        props
+            .onCreate(item)
+            .then(() => {
+                setItem(props.emptyItem);
+            })
+            .catch(() => {});
     };
 
     const isFirstRun = useRef(true);
@@ -208,7 +212,7 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>): React.ReactElement {
 
 interface EditRowProps<ItemType> extends GenericRowProps<ItemType> {
     item: ItemType;
-    onSave: (item: ItemType) => void;
+    onSave: TableEventHandler<ItemType>;
     onCancel: () => void;
 }
 
@@ -216,8 +220,10 @@ function EditRow<ItemType>(props: EditRowProps<ItemType>): React.ReactElement {
     const [item, setItem] = useState<ItemType>(props.item);
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        props.onSave(item);
-        setItem(props.item);
+        props
+            .onSave(item)
+            .then(() => {})
+            .catch(() => {});
     };
 
     const onEscape = (e: KeyboardEvent): void => {
@@ -287,10 +293,16 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>): React.
     const [editing, setEditing] = useState<ItemId>();
     const [deleted, setDeleted] = useState<[number, ItemType]>();
     const deletedTimeout = useRef(-1);
-    const onUpdate = (item: ItemType): void => {
-        props.onUpdate(item);
-        setEditing(undefined);
-    };
+    const onUpdate = (item: ItemType): Promise<void> =>
+        new Promise((res, rej) =>
+            props
+                .onUpdate(item)
+                .then(() => {
+                    setEditing(undefined);
+                    res();
+                })
+                .catch(() => rej()),
+        );
     const onDelete = (item: ItemType): void => {
         clearTimeout(deletedTimeout.current);
         props.onDelete(item);

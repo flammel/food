@@ -20,6 +20,7 @@ const label = (consumable: Consumable): string => {
 
 export function ConsumableQuantityInput<ItemType extends { quantity: Quantity }>(
     getConsumable: (item: ItemType) => Consumable,
+    isInvalid?: (item: ItemType) => boolean,
 ): Column<ItemType> {
     return {
         id: "quantity",
@@ -44,7 +45,7 @@ export function ConsumableQuantityInput<ItemType extends { quantity: Quantity }>
                     type="number"
                     min="0"
                     step="1"
-                    className="form-control"
+                    className={"form-control" + (isInvalid && isInvalid(item) ? " form-control__invalid" : "")}
                     placeholder="Quantity"
                     value={formatQuantity(item.quantity)}
                     onChange={(e) => {
