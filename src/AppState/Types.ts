@@ -3,7 +3,9 @@ import { Recipe } from "../Recipes/Data";
 import { Settings } from "../Settings/Data";
 import { Food } from "../Foods/Data";
 
-type MapOf<ItemType> = { [key: string]: ItemType };
+interface MapOf<ItemType> {
+    [key: string]: ItemType;
+}
 
 export type Action = (appState: AppState) => AppState;
 export type AppStateConsumptions = MapOf<Consumption>;

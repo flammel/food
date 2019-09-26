@@ -5,7 +5,7 @@ import { Food } from "./Data";
 export function createAction(food: Food): Action {
     return (prev: AppState) => {
         const id = uuidv4();
-        return { ...prev, foods: { ...prev.foods, [id]: { ...food, id, sort: (new Date()).valueOf() } } };
+        return { ...prev, foods: { ...prev.foods, [id]: { ...food, id, sort: new Date().valueOf() } } };
     };
 }
 

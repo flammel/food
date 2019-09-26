@@ -5,7 +5,10 @@ import { Consumption } from "./Data";
 export function createAction(consumption: Consumption): Action {
     return (prev: AppState) => {
         const id = uuidv4();
-        return { ...prev, consumptions: { ...prev.consumptions, [id]: { ...consumption, id, sort: (new Date()).valueOf() } } };
+        return {
+            ...prev,
+            consumptions: { ...prev.consumptions, [id]: { ...consumption, id, sort: new Date().valueOf() } },
+        };
     };
 }
 

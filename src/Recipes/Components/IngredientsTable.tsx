@@ -79,9 +79,11 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
             emptyItem={props.emptyItem}
             idGetter={(ingredient) => ingredient.id.toString()}
             labelGetter={(ingredient) => foodLabel(ingredient.food)}
-            onCreate={(item) => props.onCreate(item).then(() => {
-                foodInputRef.current ? foodInputRef.current.focus() : {}
-            })}
+            onCreate={(item) =>
+                props.onCreate(item).then(() => {
+                    foodInputRef.current ? foodInputRef.current.focus() : {};
+                })
+            }
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}

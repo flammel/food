@@ -333,8 +333,8 @@ function serialize(state: AppState): JsonData {
             ...recipe,
             ingredients: recipe.ingredients.map((ingredient) => {
                 const result = {
-                ...ingredient,
-                foodId: ingredient.food.id,
+                    ...ingredient,
+                    foodId: ingredient.food.id,
                 };
                 delete result.food;
                 return result;

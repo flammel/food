@@ -5,7 +5,7 @@ import { Recipe } from "./Data";
 export function createAction(recipe: Recipe): Action {
     return (prev: AppState) => {
         const id = uuidv4();
-        return { ...prev, recipes: { ...prev.recipes, [id]: { ...recipe, id, sort: (new Date()).valueOf() } } };
+        return { ...prev, recipes: { ...prev.recipes, [id]: { ...recipe, id, sort: new Date().valueOf() } } };
     };
 }
 

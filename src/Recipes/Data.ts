@@ -81,7 +81,7 @@ export const emptyIngredient: Ingredient = {
 export function addIngredient(ingredient: Ingredient, recipe: Recipe): Recipe {
     return {
         ...recipe,
-        ingredients: [{ ...ingredient, id: uuidv4(), sort: (new Date()).valueOf() }, ...recipe.ingredients],
+        ingredients: [{ ...ingredient, id: uuidv4(), sort: new Date().valueOf() }, ...recipe.ingredients],
     };
 }
 
