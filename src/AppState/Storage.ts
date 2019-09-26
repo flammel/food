@@ -362,9 +362,13 @@ export function loadAppState(): Promise<AppState> {
 
 export function storeAppState(newState: AppState): Promise<AppState> {
     return new Promise((resolve, reject) => {
-        const jsonData = serialize(newState);
-        if (isJsonData(jsonData)) {
-            window.localStorage.setItem("foodlog", JSON.stringify(jsonData));
+        const json = JSON.stringify(serialize(newState));
+        if (isJsonData(JSON.parse(json))) {
+            window.localStorage.setItem(
+                "foodlog-backup-" + new Date().toISOString(),
+                window.localStorage.getItem("foodlog") || "",
+            );
+            window.localStorage.setItem("foodlog", json);
             resolve(newState);
         } else {
             console.error("Did not save invalid JSON");
