@@ -1,19 +1,16 @@
 import React from "react";
-import { Consumption, consumableLabel, nutritionData, formatCalories, formatNutritionValue } from "./Data";
-import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
-import ComboBox from "../ComboBox/ComboBox";
 import Fuse from "fuse.js";
+import { Consumption, consumableLabel, nutritionData, formatCalories, formatNutritionValue } from "../Data";
+import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
+import ComboBox from "../../ComboBox/ComboBox";
 import ConsumptionsTableTotals from "./ConsumptionsTableTotals";
-import { Consumable, ConsumableQuantityInput } from "../Consumable";
+import { Consumable, ConsumableQuantityInput } from "../../Consumable";
+import { Settings } from "../../Settings/Data";
 
-interface ConsumptionsTableProps {
+interface ConsumptionsTableProps extends BaseTableProps<Consumption> {
     consumptions: Consumption[];
     consumables: Consumable[];
-    emptyItem: Consumption;
-    onCreate: (consumption: Consumption) => void;
-    onUpdate: (consumption: Consumption) => void;
-    onDelete: (consumption: Consumption) => void;
-    onUndoDelete: (consumption: Consumption) => void;
+    settings: Settings;
 }
 
 function search(consumables: Consumable[], search: string): Consumable[] {
@@ -85,7 +82,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
-            rows={{ footer: <ConsumptionsTableTotals consumptions={props.consumptions} /> }}
+            rows={{ footer: <ConsumptionsTableTotals consumptions={props.consumptions} settings={props.settings} /> }}
         />
     );
 }

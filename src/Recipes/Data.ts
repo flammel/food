@@ -1,6 +1,7 @@
 import { Quantity, NutritionData, formatQuantity } from "../Types";
 import { emptyFood, Food } from "../Foods/Data";
-import { UUID, nilUUID } from "../UUID";
+import { UUID, nilUUID, uuidv4 } from "../UUID";
+import { AppState } from "../AppState/Types";
 
 type IngredientId = UUID;
 export interface Ingredient {
@@ -8,6 +9,7 @@ export interface Ingredient {
     readonly food: Food;
     readonly quantity: Quantity;
     readonly isDeleted: boolean;
+    readonly sort: number;
 }
 
 type Servings = number;
@@ -18,6 +20,7 @@ export interface Recipe {
     readonly servings: Servings;
     readonly ingredients: Ingredient[];
     readonly isDeleted: boolean;
+    readonly sort: number;
 }
 
 export function recipeLabel(recipe: Recipe): string {
@@ -64,6 +67,7 @@ export const emptyRecipe: Recipe = {
     servings: 1,
     ingredients: [],
     isDeleted: false,
+    sort: 0,
 };
 
 export const emptyIngredient: Ingredient = {
@@ -71,4 +75,43 @@ export const emptyIngredient: Ingredient = {
     food: emptyFood,
     quantity: 1,
     isDeleted: false,
+    sort: 0,
 };
+
+export function addIngredient(ingredient: Ingredient, recipe: Recipe): Recipe {
+    return {
+        ...recipe,
+        ingredients: [{ ...ingredient, id: uuidv4(), sort: (new Date()).valueOf() }, ...recipe.ingredients],
+    };
+}
+
+export function updateIngredient(ingredient: Ingredient, recipe: Recipe): Recipe {
+    return {
+        ...recipe,
+        ingredients: recipe.ingredients.map((current) => (current.id === ingredient.id ? ingredient : current)),
+    };
+}
+
+export function deleteIngredient(ingredient: Ingredient, recipe: Recipe): Recipe {
+    return {
+        ...recipe,
+        ingredients: recipe.ingredients.map((current) =>
+            current.id === ingredient.id ? { ...current, isDeleted: true } : current,
+        ),
+    };
+}
+
+export function undoDeleteIngredient(ingredient: Ingredient, recipe: Recipe): Recipe {
+    return {
+        ...recipe,
+        ingredients: recipe.ingredients.map((current) =>
+            current.id === ingredient.id ? { ...current, isDeleted: false } : current,
+        ),
+    };
+}
+
+export function sortedRecipes(appState: AppState): Recipe[] {
+    return Object.values(appState.recipes)
+        .filter((recipe) => !recipe.isDeleted)
+        .sort((a, b) => b.sort - a.sort);
+}

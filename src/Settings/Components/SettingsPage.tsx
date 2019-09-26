@@ -1,14 +1,16 @@
-import React, { useState, useRef } from "react";
-import { Settings } from "./Data";
-import SettingsRepository from "./SettingsRepository";
+import React, { useState, useRef, useContext } from "react";
+import { Settings } from "../Data";
+import { AppStateContext } from "../../AppState/Context";
+import { saveAction } from "../Actions";
 
 export default function SettingsPage(): React.ReactElement {
-    const [settings, setSettings] = useState<Settings>(SettingsRepository.load());
+    const [appState, reducer] = useContext(AppStateContext);
+    const [settings, setSettings] = useState<Settings>(appState.settings);
     const [saved, setSaved] = useState(false);
     const savedTimeout = useRef(-1);
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        SettingsRepository.update(settings);
+        reducer(saveAction(settings));
         clearTimeout(savedTimeout.current);
         setSaved(true);
         savedTimeout.current = setTimeout(() => setSaved(false), 800);
@@ -44,7 +46,7 @@ export default function SettingsPage(): React.ReactElement {
                                     className="form-control"
                                     id="inputTargetCalories"
                                     placeholder="Calories"
-                                    value={settings.targetCalories}
+                                    value={appState.settings.targetCalories}
                                     onChange={onChange((newValue) => ({ targetCalories: newValue }))}
                                 />
                                 <div className="input-group-append">
@@ -64,7 +66,7 @@ export default function SettingsPage(): React.ReactElement {
                                     className="form-control"
                                     id="inputTargetFat"
                                     placeholder="Fat"
-                                    value={settings.targetFat}
+                                    value={appState.settings.targetFat}
                                     onChange={onChange((newValue) => ({ targetFat: newValue }))}
                                 />
                                 <div className="input-group-append">
@@ -84,7 +86,7 @@ export default function SettingsPage(): React.ReactElement {
                                     className="form-control"
                                     id="inputTargetCarbs"
                                     placeholder="Carbs"
-                                    value={settings.targetCarbs}
+                                    value={appState.settings.targetCarbs}
                                     onChange={onChange((newValue) => ({ targetCarbs: newValue }))}
                                 />
                                 <div className="input-group-append">
@@ -104,7 +106,7 @@ export default function SettingsPage(): React.ReactElement {
                                     className="form-control"
                                     id="inputTargetProtein"
                                     placeholder="Protein"
-                                    value={settings.targetProtein}
+                                    value={appState.settings.targetProtein}
                                     onChange={onChange((newValue) => ({ targetProtein: newValue }))}
                                 />
                                 <div className="input-group-append">

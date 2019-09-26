@@ -17,7 +17,9 @@ export default function Nav(): React.ReactElement {
             </button>
             <div className={"collapse navbar-collapse" + (show ? " show" : "")} onClick={onToggle}>
                 <ul className="navbar-nav flex-grow-1">
-                    <NavItem to="/" isActive={(url) => url.substr(0, 5) === "/log/" || url === "/"}>Log</NavItem>
+                    <NavItem to="/" isActive={(url) => url.substr(0, 5) === "/log/" || url === "/"}>
+                        Log
+                    </NavItem>
                     <NavItem to="/foods">Foods</NavItem>
                     <NavItem to="/recipes" isActive={(url) => url.substr(0, 8) === "/recipes"}>
                         Recipes

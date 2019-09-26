@@ -1,9 +1,10 @@
 import React from "react";
-import { Consumption, nutritionData, formatCalories, formatNutritionValue } from "./Data";
-import SettingsRepository from "../Settings/SettingsRepository";
+import { Consumption, nutritionData, formatCalories, formatNutritionValue } from "../Data";
+import { Settings } from "../../Settings/Data";
 
 interface ConsumptionsTableTotalsProps {
     consumptions: Consumption[];
+    settings: Settings;
 }
 
 export default function ConsumptionsTableTotals(props: ConsumptionsTableTotalsProps): React.ReactElement {
@@ -18,7 +19,6 @@ export default function ConsumptionsTableTotals(props: ConsumptionsTableTotalsPr
         carbs += values.carbs;
         protein += values.protein;
     }
-    const settings = SettingsRepository.load();
     return (
         <div className="consumptions-table--totals">
             <div className="data-table__row">
@@ -45,16 +45,16 @@ export default function ConsumptionsTableTotals(props: ConsumptionsTableTotalsPr
                 <div className="data-table__cell data-table__cell--id-consumable">Targets</div>
                 <div className="data-table__cell data-table__cell--id-quantity"></div>
                 <div className="data-table__cell data-table__cell--id-calories">
-                    {formatCalories(settings.targetCalories)}
+                    {formatCalories(props.settings.targetCalories)}
                 </div>
                 <div className="data-table__cell data-table__cell--id-fat">
-                    {formatNutritionValue(settings.targetFat)}
+                    {formatNutritionValue(props.settings.targetFat)}
                 </div>
                 <div className="data-table__cell data-table__cell--id-carbs">
-                    {formatNutritionValue(settings.targetCarbs)}
+                    {formatNutritionValue(props.settings.targetCarbs)}
                 </div>
                 <div className="data-table__cell data-table__cell--id-protein">
-                    {formatNutritionValue(settings.targetProtein)}
+                    {formatNutritionValue(props.settings.targetProtein)}
                 </div>
                 <div className="data-table__cell data-table__cell--actions"></div>
             </div>
@@ -67,34 +67,34 @@ export default function ConsumptionsTableTotals(props: ConsumptionsTableTotalsPr
                 <div
                     className={
                         "data-table__cell consumptions-table__cell--remaining data-table__cell--id-calories " +
-                        (settings.targetCalories - calories >= 0 ? "text-success" : "text-danger")
+                        (props.settings.targetCalories - calories >= 0 ? "text-success" : "text-danger")
                     }
                 >
-                    {formatCalories(settings.targetCalories - calories)}
+                    {formatCalories(props.settings.targetCalories - calories)}
                 </div>
                 <div
                     className={
                         "data-table__cell consumptions-table__cell--remaining data-table__cell--id-fat " +
-                        (settings.targetFat - fat >= 0 ? "text-success" : "text-danger")
+                        (props.settings.targetFat - fat >= 0 ? "text-success" : "text-danger")
                     }
                 >
-                    {formatNutritionValue(settings.targetFat - fat)}
+                    {formatNutritionValue(props.settings.targetFat - fat)}
                 </div>
                 <div
                     className={
                         "data-table__cell consumptions-table__cell--remaining data-table__cell--id-carbs " +
-                        (settings.targetCarbs - carbs >= 0 ? "text-success" : "text-danger")
+                        (props.settings.targetCarbs - carbs >= 0 ? "text-success" : "text-danger")
                     }
                 >
-                    {formatNutritionValue(settings.targetCarbs - carbs)}
+                    {formatNutritionValue(props.settings.targetCarbs - carbs)}
                 </div>
                 <div
                     className={
                         "data-table__cell consumptions-table__cell--remaining data-table__cell--id-protein " +
-                        (settings.targetProtein - protein >= 0 ? "text-success" : "text-danger")
+                        (props.settings.targetProtein - protein >= 0 ? "text-success" : "text-danger")
                     }
                 >
-                    {formatNutritionValue(settings.targetProtein - protein)}
+                    {formatNutritionValue(props.settings.targetProtein - protein)}
                 </div>
                 <div className="data-table__cell data-table__cell--actions consumptions-table__cell--remaining"></div>
             </div>

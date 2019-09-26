@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Recipe, emptyRecipe, Ingredient, emptyIngredient } from "./Data";
-import FoodsRepository from "../Foods/FoodsRepository";
-import RecipesRepository from "./RecipesRepository";
-import IngredientsRepository from "./IngredientsRepository";
+import React, { useState, useEffect, useContext } from "react";
+import {
+    emptyRecipe,
+    emptyIngredient,
+    addIngredient,
+    updateIngredient,
+    deleteIngredient,
+    undoDeleteIngredient,
+} from "../Data";
 import { withRouter, RouteComponentProps } from "react-router";
 import IngredientsTable from "./IngredientsTable";
 import IngredientsTableFooter from "./IngredientsTableFooter";
+import { AppStateContext } from "../../AppState/Context";
+import { updateAction, createAction } from "../Actions";
 
 interface RecipeFormUrlParams {
     id: string;
@@ -14,13 +20,14 @@ interface RecipeFormUrlParams {
 type RecipeFormProps = RouteComponentProps<RecipeFormUrlParams>;
 
 function RecipeForm(props: RecipeFormProps): React.ReactElement {
+    const [appState, reducer] = useContext(AppStateContext);
     const [recipe, setRecipe] = useState(emptyRecipe);
     const [editing, setEditing] = useState(false);
 
     const editingId = props.match.params.id;
     useEffect(() => {
         if (editingId) {
-            const loaded = RecipesRepository.byId(editingId);
+            const loaded = appState.recipes[editingId];
             if (loaded) {
                 setRecipe(loaded);
                 setEditing(true);
@@ -28,22 +35,10 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
         }
     }, [editingId]);
 
-    const repoAction = (
-        action: (ingredient: Ingredient, recipe: Recipe) => Recipe,
-    ): ((ingredient: Ingredient) => void) => {
-        return (ingredient: Ingredient) => {
-            setRecipe((prev) => action(ingredient, prev));
-        };
-    };
-
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        if (editing) {
-            RecipesRepository.update(recipe);
-        } else {
-            RecipesRepository.create(recipe);
-        }
-        props.history.push("/recipes");
+        const action = editing ? updateAction(recipe) : createAction(recipe);
+        reducer(action).then(() => props.history.push("/recipes"));
     };
 
     const onNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -71,11 +66,31 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
             <IngredientsTable
                 emptyItem={emptyIngredient}
                 ingredients={recipe.ingredients.filter((ingredient) => !ingredient.isDeleted)}
-                foods={FoodsRepository.load()}
-                onCreate={repoAction(IngredientsRepository.create)}
-                onUpdate={repoAction(IngredientsRepository.update)}
-                onDelete={repoAction(IngredientsRepository.delete)}
-                onUndoDelete={repoAction(IngredientsRepository.undoDelete)}
+                foods={Object.values(appState.foods)}
+                onCreate={(item) =>
+                    new Promise((resolve) => {
+                        setRecipe(addIngredient(item, recipe));
+                        resolve();
+                    })
+                }
+                onUpdate={(item) =>
+                    new Promise((resolve) => {
+                        setRecipe(updateIngredient(item, recipe));
+                        resolve();
+                    })
+                }
+                onDelete={(item) =>
+                    new Promise((resolve) => {
+                        setRecipe(deleteIngredient(item, recipe));
+                        resolve();
+                    })
+                }
+                onUndoDelete={(item) =>
+                    new Promise((resolve) => {
+                        setRecipe(undoDeleteIngredient(item, recipe));
+                        resolve();
+                    })
+                }
                 footer={footer}
             />
         </>

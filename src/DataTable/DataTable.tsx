@@ -13,20 +13,25 @@ export interface Column<ItemType> {
     header?: React.ReactElement;
 }
 
+export type TableEventHandler<ItemType> = (item: ItemType) => Promise<void>;
+
+export interface BaseTableProps<ItemType> {
+    emptyItem: ItemType;
+    onCreate: TableEventHandler<ItemType>;
+    onUpdate: TableEventHandler<ItemType>;
+    onDelete: TableEventHandler<ItemType>;
+    onUndoDelete: TableEventHandler<ItemType>;
+    onDuplicate?: TableEventHandler<ItemType>;
+}
+
 type ItemId = string;
 
-interface TableProps<ItemType> {
+interface TableProps<ItemType> extends BaseTableProps<ItemType> {
     className: string;
     columns: Column<ItemType>[];
     items: ItemType[];
-    emptyItem: ItemType;
     idGetter: (item: ItemType) => ItemId;
     labelGetter: (item: ItemType) => string;
-    onCreate: (newItem: ItemType) => void;
-    onUpdate: (newItem: ItemType) => void;
-    onDelete: (item: ItemType) => void;
-    onUndoDelete: (item: ItemType) => void;
-    onDuplicate?: (item: ItemType) => void;
     rows?: Partial<Rows<ItemType>>;
     createButtonLabel?: string;
     editUrl?: {

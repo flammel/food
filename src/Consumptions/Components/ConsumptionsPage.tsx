@@ -1,23 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import flatpickr from "flatpickr";
-import { Consumption } from "./Data";
-import { emptyFood } from "../Foods/Data";
-import { dateToString } from "../Utilities";
-import ConsumptionsTable from "./ConsumptionsTable";
-import Repository from "./ConsumptionsRepository";
-import FoodsRepository from "../Foods/FoodsRepository";
-import RecipesRepository from "../Recipes/RecipesRepository";
 import { Instance } from "flatpickr/dist/types/instance";
-import { nilUUID } from "../UUID";
+import { Consumption, emptyConsumption, consumptionsByDate } from "../Data";
+import { dateToString } from "../../Utilities";
+import ConsumptionsTable from "./ConsumptionsTable";
+import { AppStateContext } from "../../AppState/Context";
+import { createAction, updateAction, deleteAction, undoDeleteAction } from "../Actions";
 
 interface ConsumptionsUrlParams {
     date: string;
 }
-
 type ConsumptionsPageProps = RouteComponentProps<ConsumptionsUrlParams>;
 
 export default function ConsumptionsPage(props: ConsumptionsPageProps): React.ReactElement {
+    const [appState, reducer] = useContext(AppStateContext);
     const date = new Date(props.match.params.date || new Date().valueOf());
     const [consumptions, setConsumptions] = useState<Consumption[]>([]);
     const datePickerRef = useRef<HTMLInputElement>(null);
@@ -28,24 +25,8 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
     const nextDay = new Date(date);
     nextDay.setDate(nextDay.getDate() + 1);
 
-    const emptyConsumption: Consumption = {
-        id: nilUUID,
-        date: date,
-        consumable: emptyFood,
-        quantity: 1,
-        isDeleted: false,
-    };
-
-    const repoAction = (action: (c: Consumption) => void): ((c: Consumption) => void) => {
-        return (consumption) => {
-            action(consumption);
-            setConsumptions(Repository.load(date));
-        };
-    };
-
     useEffect(() => {
-        setConsumptions(Repository.load(date));
-        const datesWithData = Repository.datesWithData();
+        setConsumptions(consumptionsByDate(appState, date));
         flatpickrInstance.current = flatpickr(datePickerRef.current as Node, {
             defaultDate: date,
             // Need to use any because "below center" was added to flatpickr but they
@@ -54,7 +35,7 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
             position: "below center" as any,
             disableMobile: true,
             onDayCreate: (_dObj, _dStr, _fp, dayElem) => {
-                if (datesWithData.has(dateToString(dayElem.dateObj))) {
+                if (appState.datesWithConsumptions.has(dateToString(dayElem.dateObj))) {
                     dayElem.innerHTML += "<span class='flatpickr-day-with-data-marker'></span>";
                 }
             },
@@ -62,7 +43,7 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
                 props.history.push("/log/" + dateStr);
             },
         });
-    }, [dateToString(date)]);
+    }, [dateToString(date), appState]);
 
     return (
         <>
@@ -76,13 +57,14 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
                 </Link>
             </div>
             <ConsumptionsTable
-                emptyItem={emptyConsumption}
                 consumptions={consumptions}
-                consumables={[...FoodsRepository.load(), ...RecipesRepository.load()]}
-                onCreate={repoAction(Repository.create)}
-                onUpdate={repoAction(Repository.update)}
-                onDelete={repoAction(Repository.delete)}
-                onUndoDelete={repoAction(Repository.undoDelete)}
+                consumables={[...Object.values(appState.foods), ...Object.values(appState.recipes)]}
+                settings={appState.settings}
+                emptyItem={emptyConsumption(date)}
+                onCreate={(item) => reducer(createAction(item))}
+                onUpdate={(item) => reducer(updateAction(item))}
+                onDelete={(item) => reducer(deleteAction(item))}
+                onUndoDelete={(item) => reducer(undoDeleteAction(item))}
             />
         </>
     );

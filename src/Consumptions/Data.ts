@@ -1,8 +1,10 @@
 import { Quantity, NutritionData, Calories, NutritionValue } from "../Types";
 import { recipeLabel, nutritionData as recipeNutritionData } from "../Recipes/Data";
-import { Food, foodLabel } from "../Foods/Data";
+import { Food, foodLabel, emptyFood } from "../Foods/Data";
 import { Consumable } from "../Consumable";
-import { UUID } from "../UUID";
+import { UUID, nilUUID } from "../UUID";
+import { dateToString } from "../Utilities";
+import { AppState } from "../AppState/Types";
 
 type ConsumptionId = UUID;
 export interface Consumption {
@@ -11,6 +13,18 @@ export interface Consumption {
     readonly quantity: Quantity;
     readonly date: Date;
     readonly isDeleted: boolean;
+    readonly sort: number;
+}
+
+export function emptyConsumption(date: Date): Consumption {
+    return {
+        id: nilUUID,
+        date: date,
+        consumable: emptyFood,
+        quantity: 1,
+        isDeleted: false,
+        sort: 0,
+    };
 }
 
 export function consumableIsFood(consumable: Consumable): consumable is Food {
@@ -74,4 +88,16 @@ export function formatCalories(calories: Calories): string {
 
 export function formatNutritionValue(value: NutritionValue): string {
     return isNaN(value) ? "" : value.toFixed(1);
+}
+
+function dateFilter(filterDate: Date): (consumption: Consumption) => boolean {
+    const filterDateString = dateToString(filterDate);
+    return (consumption) => dateToString(consumption.date) === filterDateString;
+}
+
+export function consumptionsByDate(appState: AppState, date: Date): Consumption[] {
+    return Object.values(appState.consumptions)
+        .filter(dateFilter(date))
+        .filter((consumption) => !consumption.isDeleted)
+        .sort((a, b) => a.date.valueOf() - b.date.valueOf());
 }

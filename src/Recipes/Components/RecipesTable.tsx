@@ -1,18 +1,13 @@
 import React, { useState } from "react";
-import { emptyRecipe, Recipe, nutritionData } from "./Data";
-import { formatNutritionValue, formatCalories } from "../Types";
-import DataTable, { ColumnDefinition } from "../DataTable/DataTable";
 import { Link } from "react-router-dom";
 import Fuse from "fuse.js";
+import { Recipe, nutritionData } from "../Data";
+import { formatNutritionValue, formatCalories } from "../../Types";
+import DataTable, { ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
 
-interface RecipesTableProps {
+interface RecipesTableProps extends BaseTableProps<Recipe> {
     recipes: Recipe[];
-    onCreate: (newItem: Recipe) => void;
-    onUpdate: (newItem: Recipe) => void;
-    onDelete: (item: Recipe) => void;
-    onUndoDelete: (item: Recipe) => void;
     goToEdit: (item: Recipe) => void;
-    onDuplicate: (item: Recipe) => void;
 }
 
 function CreateForm(): React.ReactElement {
@@ -90,7 +85,7 @@ export default function RecipesTable(props: RecipesTableProps): React.ReactEleme
             columns={columns}
             className={"recipes-table"}
             items={filteredRecipes}
-            emptyItem={emptyRecipe}
+            emptyItem={props.emptyItem}
             idGetter={(item: Recipe) => item.id + ""}
             labelGetter={(item: Recipe) => item.name}
             onCreate={props.onCreate}

@@ -1,17 +1,13 @@
 import React, { useRef, useState } from "react";
-import { emptyFood, Food, Brand, foodLabel, formatServingSize } from "./Data";
-import { isUnit, formatNutritionValue, formatCalories } from "../Types";
-import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
+import { Food, Brand, foodLabel, formatServingSize } from "../Data";
+import { isUnit, formatNutritionValue, formatCalories } from "../../Types";
+import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
 import Fuse from "fuse.js";
-import ComboBox from "../ComboBox/ComboBox";
+import ComboBox from "../../ComboBox/ComboBox";
 
-interface FoodsTableProps {
+interface FoodsTableProps extends BaseTableProps<Food> {
     foods: Food[];
     brands: Brand[];
-    onCreate: (newItem: Food) => void;
-    onUpdate: (newItem: Food) => void;
-    onDelete: (item: Food) => void;
-    onUndoDelete: (item: Food) => void;
 }
 
 function filterBrands(brands: Brand[], search: string): Brand[] {
@@ -238,7 +234,7 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             columns={columns}
             className={"foods-table"}
             items={filteredFoods}
-            emptyItem={emptyFood}
+            emptyItem={props.emptyItem}
             idGetter={(item: Food) => item.id + ""}
             labelGetter={(item: Food) => foodLabel(item)}
             onCreate={props.onCreate}

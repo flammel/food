@@ -1,5 +1,6 @@
 import { NutritionData, Quantity, Unit } from "../Types";
 import { UUID, nilUUID } from "../UUID";
+import { AppState } from "../AppState/Types";
 
 export type FoodId = UUID;
 export type Brand = string;
@@ -11,7 +12,6 @@ export interface Food extends NutritionData {
     readonly quantity: Quantity;
     readonly servingSize: ServingSize;
     readonly unit: Unit;
-    readonly next?: FoodId;
     readonly isDeleted: boolean;
     readonly sort: number;
 }
@@ -46,4 +46,14 @@ export function foodLabel(food: Food): string {
         return food.name;
     }
     return food.name + " (" + food.brand + ")";
+}
+
+export function sortedFoods(appState: AppState): Food[] {
+    return Object.values(appState.foods)
+        .filter((food) => !food.isDeleted)
+        .sort((a, b) => b.sort - a.sort);
+}
+
+export function brands(appState: AppState): Brand[] {
+    return Array.from(new Set(sortedFoods(appState).map((f) => f.brand)));
 }

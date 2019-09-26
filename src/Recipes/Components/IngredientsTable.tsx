@@ -1,20 +1,15 @@
 import React from "react";
-import { Ingredient, ingredientNutritionData } from "./Data";
-import { Food, foodLabel } from "../Foods/Data";
-import { formatCalories, formatNutritionValue } from "../Types";
-import DataTable, { ItemSetter, ColumnDefinition } from "../DataTable/DataTable";
-import ComboBox from "../ComboBox/ComboBox";
+import { Ingredient, ingredientNutritionData } from "../Data";
+import { Food, foodLabel } from "../../Foods/Data";
+import { formatCalories, formatNutritionValue } from "../../Types";
+import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps } from "../../DataTable/DataTable";
+import ComboBox from "../../ComboBox/ComboBox";
 import Fuse from "fuse.js";
-import { ConsumableQuantityInput } from "../Consumable";
+import { ConsumableQuantityInput } from "../../Consumable";
 
-interface IngredientsTableProps {
+interface IngredientsTableProps extends BaseTableProps<Ingredient> {
     ingredients: Ingredient[];
     foods: Food[];
-    emptyItem: Ingredient;
-    onCreate: (ingredient: Ingredient) => void;
-    onUpdate: (ingredient: Ingredient) => void;
-    onDelete: (ingredient: Ingredient) => void;
-    onUndoDelete: (ingredient: Ingredient) => void;
     footer: React.ReactElement;
 }
 

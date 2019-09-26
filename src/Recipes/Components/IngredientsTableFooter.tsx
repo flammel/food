@@ -1,6 +1,6 @@
 import React from "react";
-import { Recipe, nutritionData, formatServings } from "./Data";
-import { formatCalories, formatNutritionValue } from "../Types";
+import { Recipe, nutritionData, formatServings } from "../Data";
+import { formatCalories, formatNutritionValue } from "../../Types";
 
 interface IngredientsTableFooterProps {
     recipe: Recipe;
