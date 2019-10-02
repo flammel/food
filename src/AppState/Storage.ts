@@ -4,7 +4,6 @@ import { Consumption, consumableIsFood } from "../Consumptions/Data";
 import { isUnit, notEmpty } from "../Types";
 import { AppState, AppStateFoods, AppStateRecipes, AppStateConsumptions } from "./Types";
 import { Settings } from "../Settings/Data";
-import { dateToString } from "../Utilities";
 import Ajv from "ajv";
 import { Consumable } from "../Consumable";
 
@@ -162,8 +161,7 @@ function reviveJson(json: JsonData): AppState {
     const recipes = readRecipes(json.recipes, foods);
     const consumptions = readConsumptions(json.consumptions, foods, recipes);
     const settings = readSettings(json.settings);
-    const datesWithConsumptions = new Set(Object.values(consumptions).map((c) => dateToString(c.date)));
-    return { consumptions, foods, recipes, settings, datesWithConsumptions };
+    return { consumptions, foods, recipes, settings };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

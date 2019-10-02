@@ -26,6 +26,7 @@ export default function Nav(): React.ReactElement {
                     </NavItem>
                 </ul>
                 <ul className="navbar-nav">
+                    <NavItem to="/statistics">Statistics</NavItem>
                     <NavItem to="/settings">Settings</NavItem>
                     <NavItem to="/about">About</NavItem>
                 </ul>

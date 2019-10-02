@@ -14,7 +14,6 @@ export type AppStateRecipes = MapOf<Recipe>;
 
 export interface AppState {
     consumptions: AppStateConsumptions;
-    datesWithConsumptions: Set<string>;
     foods: AppStateFoods;
     recipes: AppStateRecipes;
     settings: Settings;

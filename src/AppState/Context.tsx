@@ -4,7 +4,6 @@ import { loadAppState, storeAppState } from "./Storage";
 
 export const initialAppState: AppState = {
     consumptions: {},
-    datesWithConsumptions: new Set(),
     foods: {},
     recipes: {},
     settings: {
@@ -24,7 +23,9 @@ export const AppStateProvider: FunctionComponent = ({ children }): React.ReactEl
     const [appState, setAppState] = useState<AppState>(initialAppState);
     const reducer = (fn: Action): Promise<void> => {
         const newState = fn(appState);
-        return storeAppState(newState).then(setAppState).catch(err => console.error(err));
+        return storeAppState(newState)
+            .then(setAppState)
+            .catch((err) => console.error(err));
     };
     useEffect(() => {
         loadAppState()

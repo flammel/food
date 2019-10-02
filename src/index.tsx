@@ -10,6 +10,7 @@ import Settings from "./Settings/Components/SettingsPage";
 import About from "./About";
 import { AppStateProvider } from "./AppState/Context";
 import "./index.scss";
+import StatisticsPage from "./Statistics/Components/StatisticsPage";
 
 ReactDOM.render(
     <Router>
@@ -21,6 +22,14 @@ ReactDOM.render(
                 render={(props) => (
                     <AppStateProvider>
                         <Consumptions {...props} />
+                    </AppStateProvider>
+                )}
+            />
+            <Route
+                path="/statistics"
+                render={() => (
+                    <AppStateProvider>
+                        <StatisticsPage />
                     </AppStateProvider>
                 )}
             />

@@ -17,8 +17,8 @@ export function consumptionsByDate(appState: AppState, date: Date): Consumption[
         .sort((a, b) => b.sort - a.sort);
 }
 
-export function consumablesForSelect(appState: AppState): Consumable[] {
-    return [...sortedFoods(appState), ...sortedRecipes(appState)];
+function allConsumptions(appState: AppState): Consumption[] {
+    return Object.values(appState.consumptions).filter((consumption) => !consumption.isDeleted);
 }
 
 export function sortedFoods(appState: AppState): Food[] {
@@ -27,12 +27,20 @@ export function sortedFoods(appState: AppState): Food[] {
         .sort((a, b) => b.sort - a.sort);
 }
 
-export function brands(appState: AppState): Brand[] {
-    return Array.from(new Set(sortedFoods(appState).map((f) => f.brand)));
-}
-
 export function sortedRecipes(appState: AppState): Recipe[] {
     return Object.values(appState.recipes)
         .filter((recipe) => !recipe.isDeleted)
         .sort((a, b) => b.sort - a.sort);
+}
+
+export function consumablesForSelect(appState: AppState): Consumable[] {
+    return [...sortedFoods(appState), ...sortedRecipes(appState)];
+}
+
+export function brands(appState: AppState): Brand[] {
+    return Array.from(new Set(sortedFoods(appState).map((f) => f.brand)));
+}
+
+export function datesWithConsumptions(appState: AppState): Set<string> {
+    return new Set(allConsumptions(appState).map((c) => dateToString(c.date)));
 }

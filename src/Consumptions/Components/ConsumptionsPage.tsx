@@ -7,7 +7,7 @@ import { dateToString } from "../../Utilities";
 import ConsumptionsTable from "./ConsumptionsTable";
 import { AppStateContext } from "../../AppState/Context";
 import { createAction, updateAction, deleteAction, undoDeleteAction } from "../Actions";
-import { consumptionsByDate, consumablesForSelect } from "../../AppState/Functions";
+import { consumptionsByDate, consumablesForSelect, datesWithConsumptions } from "../../AppState/Functions";
 
 interface ConsumptionsUrlParams {
     date: string;
@@ -36,7 +36,7 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
             position: "below center" as any,
             disableMobile: true,
             onDayCreate: (_dObj, _dStr, _fp, dayElem) => {
-                if (appState.datesWithConsumptions.has(dateToString(dayElem.dateObj))) {
+                if (datesWithConsumptions(appState).has(dateToString(dayElem.dateObj))) {
                     dayElem.innerHTML += "<span class='flatpickr-day-with-data-marker'></span>";
                 }
             },
