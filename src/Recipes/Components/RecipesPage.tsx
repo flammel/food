@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
 import { withRouter, RouteComponentProps } from "react-router";
-import { Recipe, emptyRecipe, sortedRecipes } from "../Data";
+import { Recipe, emptyRecipe } from "../Data";
 import RecipesTable from "./RecipesTable";
 import { createAction, updateAction, deleteAction, undoDeleteAction, duplicateAction } from "../Actions";
 import { AppStateContext } from "../../AppState/Context";
+import { sortedRecipes } from "../../AppState/Functions";
 
 type RecipesPageProps = RouteComponentProps;
 

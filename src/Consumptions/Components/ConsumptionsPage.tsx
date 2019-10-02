@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import flatpickr from "flatpickr";
 import { Instance } from "flatpickr/dist/types/instance";
-import { Consumption, emptyConsumption, consumptionsByDate } from "../Data";
+import { Consumption, emptyConsumption } from "../Data";
 import { dateToString } from "../../Utilities";
 import ConsumptionsTable from "./ConsumptionsTable";
 import { AppStateContext } from "../../AppState/Context";
 import { createAction, updateAction, deleteAction, undoDeleteAction } from "../Actions";
+import { consumptionsByDate, consumablesForSelect } from "../../AppState/Functions";
 
 interface ConsumptionsUrlParams {
     date: string;
@@ -58,7 +59,7 @@ export default function ConsumptionsPage(props: ConsumptionsPageProps): React.Re
             </div>
             <ConsumptionsTable
                 consumptions={consumptions}
-                consumables={[...Object.values(appState.foods), ...Object.values(appState.recipes)]}
+                consumables={consumablesForSelect(appState)}
                 settings={appState.settings}
                 emptyItem={emptyConsumption(date)}
                 onCreate={(item) => reducer(createAction(item))}

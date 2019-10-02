@@ -3,8 +3,6 @@ import { recipeLabel, nutritionData as recipeNutritionData } from "../Recipes/Da
 import { Food, foodLabel, emptyFood } from "../Foods/Data";
 import { Consumable } from "../Consumable";
 import { UUID, nilUUID } from "../UUID";
-import { dateToString } from "../Utilities";
-import { AppState } from "../AppState/Types";
 
 export type ConsumptionId = UUID;
 export interface Consumption {
@@ -88,16 +86,4 @@ export function formatCalories(calories: Calories): string {
 
 export function formatNutritionValue(value: NutritionValue): string {
     return isNaN(value) ? "" : value.toFixed(1);
-}
-
-function dateFilter(filterDate: Date): (consumption: Consumption) => boolean {
-    const filterDateString = dateToString(filterDate);
-    return (consumption) => dateToString(consumption.date) === filterDateString;
-}
-
-export function consumptionsByDate(appState: AppState, date: Date): Consumption[] {
-    return Object.values(appState.consumptions)
-        .filter(dateFilter(date))
-        .filter((consumption) => !consumption.isDeleted)
-        .sort((a, b) => b.sort - a.sort);
 }

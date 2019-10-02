@@ -1,7 +1,6 @@
 import { Quantity, NutritionData, formatQuantity } from "../Types";
 import { emptyFood, Food } from "../Foods/Data";
 import { UUID, nilUUID, uuidv4 } from "../UUID";
-import { AppState } from "../AppState/Types";
 
 type IngredientId = UUID;
 export interface Ingredient {
@@ -108,10 +107,4 @@ export function undoDeleteIngredient(ingredient: Ingredient, recipe: Recipe): Re
             current.id === ingredient.id ? { ...current, isDeleted: false } : current,
         ),
     };
-}
-
-export function sortedRecipes(appState: AppState): Recipe[] {
-    return Object.values(appState.recipes)
-        .filter((recipe) => !recipe.isDeleted)
-        .sort((a, b) => b.sort - a.sort);
 }

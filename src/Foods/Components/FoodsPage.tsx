@@ -3,7 +3,8 @@ import { RouteComponentProps } from "react-router";
 import FoodsTable from "./FoodsTable";
 import { createAction, updateAction, deleteAction, undoDeleteAction } from "../Actions";
 import { AppStateContext } from "../../AppState/Context";
-import { emptyFood, sortedFoods, brands } from "../Data";
+import { emptyFood } from "../Data";
+import { sortedFoods, brands } from "../../AppState/Functions";
 
 export default function FoodsPage(): React.ReactElement<RouteComponentProps> {
     const [appState, reducer] = useContext(AppStateContext);
