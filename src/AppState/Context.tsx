@@ -24,7 +24,7 @@ export const AppStateProvider: FunctionComponent = ({ children }): React.ReactEl
     const [appState, setAppState] = useState<AppState>(initialAppState);
     const reducer = (fn: Action): Promise<void> => {
         const newState = fn(appState);
-        return storeAppState(newState).then(setAppState);
+        return storeAppState(newState).then(setAppState).catch(err => console.error(err));
     };
     useEffect(() => {
         loadAppState()

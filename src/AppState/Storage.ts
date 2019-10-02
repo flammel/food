@@ -297,12 +297,17 @@ function isJsonData(json: any): json is JsonData {
     }
 }
 
+function setChecksum(json: string): void {
+    window.sessionStorage.setItem("foodlog-checksum", json);
+}
+
 function loadJson(): Promise<JsonData> {
     return new Promise((resolve, reject) => {
         const json = window.localStorage.getItem("foodlog");
         if (json) {
             const parsed = JSON.parse(json);
             if (isJsonData(parsed)) {
+                setChecksum(json);
                 resolve(parsed);
             } else {
                 reject("Data does not conform to schema");
@@ -356,6 +361,12 @@ function serialize(state: AppState): JsonData {
     };
 }
 
+function checksumIsOk(): boolean {
+    const appState = window.localStorage.getItem("foodlog");
+    const checksum = window.sessionStorage.getItem("foodlog-checksum");
+    return appState === checksum;
+}
+
 export function loadAppState(): Promise<AppState> {
     return loadJson().then((json) => reviveJson(json));
 }
@@ -364,15 +375,15 @@ export function storeAppState(newState: AppState): Promise<AppState> {
     return new Promise((resolve, reject) => {
         const json = JSON.stringify(serialize(newState));
         if (isJsonData(JSON.parse(json))) {
-            window.localStorage.setItem(
-                "foodlog-backup-" + new Date().toISOString(),
-                window.localStorage.getItem("foodlog") || "",
-            );
-            window.localStorage.setItem("foodlog", json);
-            resolve(newState);
+            if (checksumIsOk()) {
+                setChecksum(json);
+                window.localStorage.setItem("foodlog", json);
+                resolve(newState);
+            } else {
+                reject("Checksum check failed");
+            }
         } else {
-            console.error("Did not save invalid JSON");
-            reject("Persisting failed");
+            reject("Persisting failed: Invalid JSON");
         }
     });
 }
