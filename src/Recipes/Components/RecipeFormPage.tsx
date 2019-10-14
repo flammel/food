@@ -12,6 +12,7 @@ import IngredientsTable from "./IngredientsTable";
 import IngredientsTableFooter from "./IngredientsTableFooter";
 import { AppStateContext } from "../../AppState/Context";
 import { updateAction, createAction } from "../Actions";
+import { sortedFoods } from "../../AppState/Functions";
 
 interface RecipeFormUrlParams {
     id: string;
@@ -66,7 +67,7 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
             <IngredientsTable
                 emptyItem={emptyIngredient}
                 ingredients={recipe.ingredients.filter((ingredient) => !ingredient.isDeleted)}
-                foods={Object.values(appState.foods)}
+                foods={sortedFoods(appState)}
                 onCreate={(item) =>
                     new Promise((resolve) => {
                         setRecipe(addIngredient(item, recipe));
