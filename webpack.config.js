@@ -47,4 +47,8 @@ module.exports = {
             filename: "app.css",
         }),
     ],
+    devServer: {
+        contentBase: path.join(__dirname, 'public'),
+        historyApiFallback: true,
+    }
 };
