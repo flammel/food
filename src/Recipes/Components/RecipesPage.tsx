@@ -1,32 +1,38 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import { Recipe, emptyRecipe } from "../Data";
 import RecipesTable from "./RecipesTable";
-import { createAction, updateAction, deleteAction, undoDeleteAction, duplicateAction } from "../Actions";
-import { AppStateContext } from "../../AppState/Context";
-import { sortedRecipes } from "../../AppState/Functions";
+import { ApiContext } from "../../Api/Context";
 
 type RecipesPageProps = RouteComponentProps;
 
 function Recipes(props: RecipesPageProps): React.ReactElement {
-    const [appState, reducer] = useContext(AppStateContext);
+    const api = useContext(ApiContext);
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
+
+    const fetchRecipes = async () => {
+        const result = await api.recipes.load();
+        setRecipes(result);
+    };
+
+    useEffect(() => {
+        fetchRecipes();
+    }, []);
+
     const goToEdit = (item: Recipe): void => {
         props.history.push("/recipes/" + item.id);
     };
+
     return (
         <>
             <RecipesTable
-                recipes={sortedRecipes(appState)}
+                recipes={recipes}
                 emptyItem={emptyRecipe}
-                onCreate={(item) => reducer(createAction(item))}
-                onUpdate={(item) => reducer(updateAction(item))}
-                onDelete={(item) => reducer(deleteAction(item))}
-                onUndoDelete={(item) => reducer(undoDeleteAction(item))}
-                onDuplicate={(item) => reducer(duplicateAction(item))}
-                // onDuplicate={(recipe) => {
-                //     const duplicate = RecipesRepository.duplicate(recipe);
-                //     goToEdit(duplicate);
-                // }}
+                onCreate={(item) => api.recipes.create(item)}
+                onUpdate={(item) => api.recipes.update(item)}
+                onDelete={(item) => api.recipes.delete(item).then(fetchRecipes)}
+                onUndoDelete={(item) => api.recipes.undoDelete(item).then(fetchRecipes)}
+                onDuplicate={(item) => api.recipes.duplicate(item).then(fetchRecipes)}
                 goToEdit={goToEdit}
             />
         </>

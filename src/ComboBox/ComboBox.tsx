@@ -1,22 +1,25 @@
-import React, { MutableRefObject } from "react";
+import React, { MutableRefObject, useState, useEffect } from "react";
 import Downshift, { GetItemPropsOptions } from "downshift";
 
 interface ComboBoxProps<ItemType> {
-    items: ItemType[];
     onSelect: (item: ItemType) => void;
     onChange?: (value: string) => void;
     selected: ItemType;
     placeholder: string;
     itemLabel: (item: ItemType) => string;
     itemKey: (item: ItemType) => string;
-    search: (items: ItemType[], search: string) => ItemType[];
+    search: (search: string) => Promise<ItemType[]>;
     autoFocus?: boolean;
     inputRef?: MutableRefObject<HTMLInputElement | null>;
     isInvalid?: boolean;
 }
 
 export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): React.ReactElement {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [items, setItems] = useState<ItemType[]>([]);
+
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setSearchTerm(e.target.value);
         if (props.onChange) {
             props.onChange(e.target.value);
         }
@@ -28,14 +31,20 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
         }
     };
 
+    useEffect(() => {
+        const fetchItems = async () => {
+            const items = await props.search(searchTerm);
+            setItems(items);
+        };
+        fetchItems();
+    }, [searchTerm]);
+
     const comboItems = (
-        inputValue: string | null,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         getItemProps: (options: GetItemPropsOptions<ItemType>) => any,
         highlightedIndex: number | null,
         selectedItem: ItemType,
     ): React.ReactElement[] => {
-        const items = props.search(props.items, inputValue || "");
         if (items.length === 0) {
             return [
                 <li key="not-found" className="combo--item">
@@ -68,7 +77,7 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
             itemToString={(item) => (item ? props.itemLabel(item) : "")}
             selectedItem={props.selected}
         >
-            {({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, highlightedIndex, selectedItem }) => (
+            {({ getInputProps, getItemProps, getMenuProps, isOpen, highlightedIndex, selectedItem }) => (
                 <div className="input-group input-group--combo" data-foo={JSON.stringify(selectedItem)}>
                     <input
                         {...getInputProps({
@@ -82,7 +91,7 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
                     />
                     {isOpen ? (
                         <ul {...getMenuProps({ className: "combo" })}>
-                            {comboItems(inputValue, getItemProps, highlightedIndex, selectedItem)}
+                            {comboItems(getItemProps, highlightedIndex, selectedItem)}
                         </ul>
                     ) : null}
                 </div>

@@ -4,22 +4,13 @@ import { Food, foodLabel } from "../../Foods/Data";
 import { formatCalories, formatNutritionValue } from "../../Types";
 import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps, ColumnId } from "../../DataTable/DataTable";
 import ComboBox from "../../ComboBox/ComboBox";
-import Fuse from "fuse.js";
 import { ConsumableQuantityInput } from "../../Consumable";
 import { nilUUID } from "../../UUID";
 
 interface IngredientsTableProps extends BaseTableProps<Ingredient> {
     ingredients: Ingredient[];
-    foods: Food[];
     footer: React.ReactElement;
-}
-
-function search(foods: Food[], search: string): Food[] {
-    const fuse = new Fuse(foods, {
-        keys: ["name", "brand"],
-    });
-    const result = fuse.search(search);
-    return result;
+    foodSearch: (search: string) => Promise<Food[]>;
 }
 
 function onSelect(setItem: ItemSetter<Ingredient>): (food: Food) => void {
@@ -39,13 +30,12 @@ export default function IngredientsTable(props: IngredientsTableProps): React.Re
             value: (item: Ingredient) => foodLabel(item.food),
             form: (item: Ingredient, setItem: ItemSetter<Ingredient>, isInvalid: boolean) => (
                 <ComboBox
-                    items={props.foods}
                     onSelect={onSelect(setItem)}
                     selected={item.food}
                     placeholder="Food"
                     itemLabel={(food) => foodLabel(food)}
                     itemKey={(food) => food.id.toString()}
-                    search={search}
+                    search={props.foodSearch}
                     inputRef={foodInputRef}
                     isInvalid={isInvalid}
                 />

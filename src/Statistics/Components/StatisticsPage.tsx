@@ -1,80 +1,53 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { AppStateContext } from "../../AppState/Context";
-import { Calories, NutritionValue } from "../../Types";
-import { dateToString } from "../../Utilities";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { formatCalories, formatNutritionValue } from "../../Types";
-import { AppState } from "../../AppState/Types";
-import { Consumption, nutritionData } from "../../Consumptions/Data";
-import { datesWithConsumptions, consumptionsByDate } from "../../AppState/Functions";
-
-interface StatisticsDay {
-    date: string;
-    calories: Calories;
-    fat: NutritionValue;
-    carbs: NutritionValue;
-    protein: NutritionValue;
-}
-function getStatisticsDays(appState: AppState): StatisticsDay[] {
-    const dates = [...datesWithConsumptions(appState).values()].sort();
-    if (dates.length === 0) {
-        return [];
-    }
-    const reducer = (acc: StatisticsDay, curr: Consumption): StatisticsDay => {
-        const data = nutritionData(curr);
-        return {
-            date: acc.date,
-            calories: acc.calories + data.calories,
-            fat: acc.fat + data.fat,
-            carbs: acc.carbs + data.carbs,
-            protein: acc.protein + data.protein,
-        };
-    };
-    const today = new Date();
-    const current = new Date(dates[0]);
-    const result: { [key: string]: StatisticsDay } = {};
-    while (dateToString(current) < dateToString(today)) {
-        result[dateToString(current)] = consumptionsByDate(appState, current).reduce(reducer, {
-            date: dateToString(current),
-            calories: 0,
-            fat: 0,
-            carbs: 0,
-            protein: 0,
-        });
-        current.setDate(current.getDate() + 1);
-    }
-    return Object.values(result).sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
-}
+import { Statistics, emptyStatistics } from "../Data";
+import { emptySettings, Settings } from "../../Settings/Data";
+import { ApiContext } from "../../Api/Context";
 
 export default function StatisticsPage(): React.ReactElement {
-    const [appState] = useContext(AppStateContext);
-    const days = getStatisticsDays(appState);
+    const api = useContext(ApiContext);
+    const [statistics, setStatistics] = useState<Statistics>(emptyStatistics);
+    const [settings, setSettings] = useState<Settings>(emptySettings);
     const plotlyDivRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const fetchStatistics = async () => {
+            const result = await api.statistics.load();
+            setStatistics(result);
+        };
+        const fetchSettings = async () => {
+            const result = await api.settings.load();
+            setSettings(result);
+        };
+        fetchStatistics();
+        fetchSettings();
+    }, []);
 
     useEffect(() => {
         const data = [
             {
-                x: days.map((day) => day.date),
-                y: days.map((day) => formatCalories(day.calories)),
+                x: statistics.days.map((day) => day.date),
+                y: statistics.days.map((day) => formatCalories(day.calories)),
                 name: "Calories",
                 type: "scatter",
             },
             {
-                x: days.map((day) => day.date),
-                y: days.map((day) => formatNutritionValue(day.fat)),
+                x: statistics.days.map((day) => day.date),
+                y: statistics.days.map((day) => formatNutritionValue(day.fat)),
                 name: "Fat",
                 yaxis: "y2",
                 type: "scatter",
             },
             {
-                x: days.map((day) => day.date),
-                y: days.map((day) => formatNutritionValue(day.carbs)),
+                x: statistics.days.map((day) => day.date),
+                y: statistics.days.map((day) => formatNutritionValue(day.carbs)),
                 name: "Carbs",
                 yaxis: "y2",
                 type: "scatter",
             },
             {
-                x: days.map((day) => day.date),
-                y: days.map((day) => formatNutritionValue(day.protein)),
+                x: statistics.days.map((day) => day.date),
+                y: statistics.days.map((day) => formatNutritionValue(day.protein)),
                 name: "Protein",
                 yaxis: "y2",
                 type: "scatter",
@@ -93,7 +66,7 @@ export default function StatisticsPage(): React.ReactElement {
         };
 
         Plotly.newPlot(plotlyDivRef.current, data, layout);
-    }, [plotlyDivRef.current, days]);
+    }, [plotlyDivRef.current, statistics]);
 
     return (
         <>
@@ -113,7 +86,7 @@ export default function StatisticsPage(): React.ReactElement {
                             Protein
                         </div>
                     </div>
-                    {days.map((day) => (
+                    {statistics.days.map((day) => (
                         <div className="data-table__row data-table__row--show" key={day.date}>
                             <div className="data-table__cell  data-table__cell--id-date">
                                 <span className="data-table__value">{day.date}</span>
@@ -122,9 +95,7 @@ export default function StatisticsPage(): React.ReactElement {
                                 <span
                                     className={
                                         "data-table__value " +
-                                        (appState.settings.targetCalories - day.calories >= 0
-                                            ? "text-success"
-                                            : "text-danger")
+                                        (settings.targetCalories - day.calories >= 0 ? "text-success" : "text-danger")
                                     }
                                 >
                                     {day.calories === 0 ? "" : formatCalories(day.calories)}
@@ -134,7 +105,7 @@ export default function StatisticsPage(): React.ReactElement {
                                 <span
                                     className={
                                         "data-table__value " +
-                                        (appState.settings.targetFat - day.fat >= 0 ? "text-success" : "text-danger")
+                                        (settings.targetFat - day.fat >= 0 ? "text-success" : "text-danger")
                                     }
                                 >
                                     {day.fat === 0 ? "" : formatNutritionValue(day.fat)}
@@ -144,9 +115,7 @@ export default function StatisticsPage(): React.ReactElement {
                                 <span
                                     className={
                                         "data-table__value " +
-                                        (appState.settings.targetCarbs - day.carbs >= 0
-                                            ? "text-success"
-                                            : "text-danger")
+                                        (settings.targetCarbs - day.carbs >= 0 ? "text-success" : "text-danger")
                                     }
                                 >
                                     {day.carbs === 0 ? "" : formatNutritionValue(day.carbs)}
@@ -156,9 +125,7 @@ export default function StatisticsPage(): React.ReactElement {
                                 <span
                                     className={
                                         "data-table__value " +
-                                        (appState.settings.targetProtein - day.protein >= 0
-                                            ? "text-success"
-                                            : "text-danger")
+                                        (settings.targetProtein - day.protein >= 0 ? "text-success" : "text-danger")
                                     }
                                 >
                                     {day.protein === 0 ? "" : formatNutritionValue(day.protein)}
@@ -171,7 +138,7 @@ export default function StatisticsPage(): React.ReactElement {
                 <textarea
                     className="statistics-textarea"
                     readOnly
-                    value={days
+                    value={statistics.days
                         .map(
                             (day) =>
                                 day.date +

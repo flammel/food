@@ -10,15 +10,17 @@ interface FoodsTableProps extends BaseTableProps<Food> {
     brands: Brand[];
 }
 
-function filterBrands(brands: Brand[], search: string): Brand[] {
-    // Fuse needs an array of objects, but the brands parameter is an array
-    // of strings. So we first transform to an array of objects and
-    // in the return statement extract the brand name.
-    const fuse = new Fuse(brands.map((brand) => ({ brand })), {
-        keys: ["brand"],
-    });
-    const result = fuse.search(search);
-    return result.map((brand) => brand.brand);
+function filterBrands(brands: Brand[]): (search: string) => Promise<Brand[]> {
+    return async (search: string) => {
+        // Fuse needs an array of objects, but the brands parameter is an array
+        // of strings. So we first transform to an array of objects and
+        // in the return statement extract the brand name.
+        const fuse = new Fuse(brands.map((brand) => ({ brand })), {
+            keys: ["brand"],
+        });
+        const result = fuse.search(search);
+        return result.map((brand) => brand.brand);
+    };
 }
 
 function filterByName(foods: Food[], name: string): Food[] {
@@ -93,14 +95,13 @@ export default function FoodsTable(props: FoodsTableProps): React.ReactElement {
             value: (f: Food) => f.brand,
             form: (f: Food, setItem: ItemSetter<Food>) => (
                 <ComboBox
-                    items={props.brands}
                     onSelect={(brand) => onChange(setItem, { brand })}
                     onChange={(brand) => onChange(setItem, { brand })}
                     selected={f.brand}
                     placeholder="Brand"
                     itemLabel={(brand) => brand}
                     itemKey={(brand) => brand}
-                    search={filterBrands}
+                    search={filterBrands(props.brands)}
                 />
             ),
             header: (

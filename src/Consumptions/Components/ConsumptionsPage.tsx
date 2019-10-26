@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
-import flatpickr from "flatpickr";
-import { Instance } from "flatpickr/dist/types/instance";
+import React, { useState, useEffect, useContext } from "react";
+import { RouteComponentProps } from "react-router-dom";
+import Fuse from "fuse.js";
 import { Consumption, emptyConsumption } from "../Data";
 import { dateToString } from "../../Utilities";
 import ConsumptionsTable from "./ConsumptionsTable";
-import { AppStateContext } from "../../AppState/Context";
-import { createAction, updateAction, deleteAction, undoDeleteAction } from "../Actions";
-import { consumptionsByDate, consumablesForSelect, datesWithConsumptions } from "../../AppState/Functions";
+import { Settings, emptySettings } from "../../Settings/Data";
+import DateNavigation from "./DateNavigation";
+import { ApiContext } from "../../Api/Context";
+import { Consumable } from "../../Consumable";
 
 interface ConsumptionsUrlParams {
     date: string;
@@ -15,57 +15,62 @@ interface ConsumptionsUrlParams {
 type ConsumptionsPageProps = RouteComponentProps<ConsumptionsUrlParams>;
 
 export default function ConsumptionsPage(props: ConsumptionsPageProps): React.ReactElement {
-    const [appState, reducer] = useContext(AppStateContext);
+    const api = useContext(ApiContext);
     const date = new Date(props.match.params.date || new Date().valueOf());
     const [consumptions, setConsumptions] = useState<Consumption[]>([]);
-    const datePickerRef = useRef<HTMLInputElement>(null);
-    const flatpickrInstance = useRef<Instance>();
+    const [settings, setSettings] = useState<Settings>(emptySettings);
+    const [datesWithConsumptions, setDatesWithConsumptions] = useState<Set<string>>(new Set());
 
-    const previousDay = new Date(date);
-    previousDay.setDate(previousDay.getDate() - 1);
-    const nextDay = new Date(date);
-    nextDay.setDate(nextDay.getDate() + 1);
+    const fetchConsumptions = async () => {
+        const result = await api.consumptions.load(date);
+        setConsumptions(result);
+    };
 
     useEffect(() => {
-        setConsumptions(consumptionsByDate(appState, date));
-        flatpickrInstance.current = flatpickr(datePickerRef.current as Node, {
-            defaultDate: date,
-            // Need to use any because "below center" was added to flatpickr but they
-            // did not update their types.
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            position: "below center" as any,
-            disableMobile: true,
-            onDayCreate: (_dObj, _dStr, _fp, dayElem) => {
-                if (datesWithConsumptions(appState).has(dateToString(dayElem.dateObj))) {
-                    dayElem.innerHTML += "<span class='flatpickr-day-with-data-marker'></span>";
-                }
-            },
-            onChange: (_selected, dateStr) => {
-                props.history.push("/log/" + dateStr);
-            },
+        fetchConsumptions();
+    }, [dateToString(date)]);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const result = await api.settings.load();
+            setSettings(result);
+        };
+        fetchSettings();
+    }, []);
+
+    useEffect(() => {
+        const fetchDatesWithConsumptions = async () => {
+            const result = await api.consumptions.loadDatesWithData();
+            setDatesWithConsumptions(result);
+        };
+        fetchDatesWithConsumptions();
+    }, []);
+
+    const consumableSearch = async (search: string): Promise<Consumable[]> => {
+        const consumables = await api.consumables.autocomplete(search);
+        const fuse = new Fuse(consumables, {
+            keys: ["name", "brand"],
         });
-    }, [dateToString(date), appState]);
+        const result = fuse.search(search);
+        return result;
+    };
 
     return (
         <>
-            <div className="consumptions-header">
-                <Link className="consumptions-header__nav-link" to={"/log/" + dateToString(previousDay)}>
-                    prev
-                </Link>
-                <input type="text" className="consumptions-header__date-input" ref={datePickerRef} />
-                <Link className="consumptions-header__nav-link" to={"/log/" + dateToString(nextDay)}>
-                    next
-                </Link>
-            </div>
+            <DateNavigation
+                date={date}
+                onChange={(dateStr: string) => props.history.push("/log/" + dateStr)}
+                datesWithConsumptions={datesWithConsumptions}
+            />
             <ConsumptionsTable
                 consumptions={consumptions}
-                consumables={consumablesForSelect(appState)}
-                settings={appState.settings}
+                settings={settings}
                 emptyItem={emptyConsumption(date)}
-                onCreate={(item) => reducer(createAction(item))}
-                onUpdate={(item) => reducer(updateAction(item))}
-                onDelete={(item) => reducer(deleteAction(item))}
-                onUndoDelete={(item) => reducer(undoDeleteAction(item))}
+                onCreate={(item) => api.consumptions.create(item).then(fetchConsumptions)}
+                onUpdate={(item) => api.consumptions.update(item).then(fetchConsumptions)}
+                onDelete={(item) => api.consumptions.delete(item).then(fetchConsumptions)}
+                onUndoDelete={(item) => api.consumptions.undoDelete(item).then(fetchConsumptions)}
+                consumableSearch={consumableSearch}
             />
         </>
     );

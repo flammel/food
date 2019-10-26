@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import Fuse from "fuse.js";
 import { Consumption, consumableLabel, nutritionData, formatCalories, formatNutritionValue } from "../Data";
 import DataTable, { ItemSetter, ColumnDefinition, BaseTableProps, ColumnId } from "../../DataTable/DataTable";
 import ComboBox from "../../ComboBox/ComboBox";
@@ -10,16 +9,8 @@ import { nilUUID } from "../../UUID";
 
 interface ConsumptionsTableProps extends BaseTableProps<Consumption> {
     consumptions: Consumption[];
-    consumables: Consumable[];
     settings: Settings;
-}
-
-function search(consumables: Consumable[], search: string): Consumable[] {
-    const fuse = new Fuse(consumables, {
-        keys: ["name", "brand"],
-    });
-    const result = fuse.search(search);
-    return result;
+    consumableSearch: (search: string) => Promise<Consumable[]>;
 }
 
 function onSelect(setItem: ItemSetter<Consumption>): (c: Consumable) => void {
@@ -40,13 +31,12 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             value: (consumption: Consumption) => consumableLabel(consumption.consumable),
             form: (consumption: Consumption, setItem: ItemSetter<Consumption>, isInvalid: boolean) => (
                 <ComboBox
-                    items={props.consumables}
                     onSelect={onSelect(setItem)}
                     selected={consumption.consumable}
                     placeholder="Food or Recipe"
                     itemLabel={(consumable) => consumableLabel(consumable)}
                     itemKey={(consumable) => consumable.id.toString()}
-                    search={search}
+                    search={props.consumableSearch}
                     autoFocus={true}
                     inputRef={consumableInputRef}
                     isInvalid={isInvalid}

@@ -330,7 +330,7 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>): React.
         clearTimeout(deletedTimeout.current);
         props.onDelete(item);
         setDeleted([props.items.indexOf(item), item]);
-        deletedTimeout.current = setTimeout(() => setDeleted(undefined), 4000);
+        deletedTimeout.current = window.setTimeout(() => setDeleted(undefined), 4000);
     };
     const onUndoDelete = (item: ItemType): void => {
         clearTimeout(deletedTimeout.current);

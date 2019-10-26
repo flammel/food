@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import Fuse from "fuse.js";
 import {
     emptyRecipe,
     emptyIngredient,
@@ -10,9 +11,8 @@ import {
 import { withRouter, RouteComponentProps } from "react-router";
 import IngredientsTable from "./IngredientsTable";
 import IngredientsTableFooter from "./IngredientsTableFooter";
-import { AppStateContext } from "../../AppState/Context";
-import { updateAction, createAction } from "../Actions";
-import { sortedFoods } from "../../AppState/Functions";
+import { ApiContext } from "../../Api/Context";
+import { Food } from "../../Foods/Data";
 
 interface RecipeFormUrlParams {
     id: string;
@@ -21,25 +21,33 @@ interface RecipeFormUrlParams {
 type RecipeFormProps = RouteComponentProps<RecipeFormUrlParams>;
 
 function RecipeForm(props: RecipeFormProps): React.ReactElement {
-    const [appState, reducer] = useContext(AppStateContext);
+    const api = useContext(ApiContext);
     const [recipe, setRecipe] = useState(emptyRecipe);
     const [editing, setEditing] = useState(false);
 
     const editingId = props.match.params.id;
     useEffect(() => {
         if (editingId) {
-            const loaded = appState.recipes[editingId];
-            if (loaded) {
+            const fetchRecipe = async () => {
+                const loaded = await api.recipes.read(editingId);
                 setRecipe(loaded);
                 setEditing(true);
-            }
+            };
+            fetchRecipe();
         }
-    }, [editingId, appState]);
+    }, [editingId]);
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const action = editing ? updateAction(recipe) : createAction(recipe);
-        reducer(action).then(() => props.history.push("/recipes"));
+        const persist = async () => {
+            if (editing) {
+                await api.recipes.update(recipe);
+            } else {
+                await api.recipes.create(recipe);
+            }
+            props.history.push("/recipes");
+        };
+        persist();
     };
 
     const onNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -61,13 +69,22 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
         />
     );
 
+    const foodSearch = async (search: string): Promise<Food[]> => {
+        const consumables = await api.foods.autocomplete(search);
+        const fuse = new Fuse(consumables, {
+            keys: ["name", "brand"],
+        });
+        const result = fuse.search(search);
+        return result;
+    };
+
     return (
         <>
             <h1>{editing ? "Editing Recipe" : "New Recipe"}</h1>
             <IngredientsTable
+                foodSearch={foodSearch}
                 emptyItem={emptyIngredient}
                 ingredients={recipe.ingredients.filter((ingredient) => !ingredient.isDeleted)}
-                foods={sortedFoods(appState)}
                 onCreate={(item) =>
                     new Promise((resolve) => {
                         setRecipe(addIngredient(item, recipe));
