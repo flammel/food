@@ -93,7 +93,7 @@ export default function RecipesTable(props: RecipesTableProps): React.ReactEleme
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
             onDuplicate={props.onDuplicate}
-            rows={{ subHeader: <CreateForm /> }}
+            rows={{ create: <CreateForm /> }}
             editUrl={{
                 url: (item: Recipe) => "/recipes/" + item.id,
                 redirect: props.goToEdit,

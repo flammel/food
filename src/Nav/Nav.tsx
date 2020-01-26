@@ -8,7 +8,7 @@ export default function Nav(): React.ReactElement {
         setShow((prev) => !prev);
     };
     return (
-        <nav className="navbar navbar-expand-md navbar-light bg-light mb-3">
+        <nav className="navbar navbar-expand-md navbar-light bg-light">
             <Link className="navbar-brand" to="/">
                 FoodLog
             </Link>

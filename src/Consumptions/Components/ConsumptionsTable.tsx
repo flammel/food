@@ -45,26 +45,54 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
         },
         ConsumableQuantityInput((consumption: Consumption) => consumption.consumable),
         {
-            id: "calories",
-            label: "Calories",
-            value: (consumption: Consumption) => formatCalories(nutritionData(consumption).calories),
-        },
-        {
-            id: "fat",
-            label: "Fat",
-            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).fat),
-        },
-        {
-            id: "carbs",
-            label: "Carbs",
-            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).carbs),
-        },
-        {
-            id: "protein",
-            label: "Protein",
-            value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).protein),
-        },
+            group: "macros",
+            columns: [
+                {
+                    id: "calories",
+                    label: "Calories",
+                    value: (consumption: Consumption) => formatCalories(nutritionData(consumption).calories),
+                },
+                {
+                    id: "fat",
+                    label: "Fat",
+                    value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).fat),
+                },
+                {
+                    id: "carbs",
+                    label: "Carbs",
+                    value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).carbs),
+                },
+                {
+                    id: "protein",
+                    label: "Protein",
+                    value: (consumption: Consumption) => formatNutritionValue(nutritionData(consumption).protein),
+                },
+            ],
+        }
     ];
+
+
+    const caloriesSum = props.consumptions.reduce((acc, cur) => acc + nutritionData(cur).calories, 0);
+    const carbsSum = props.consumptions.reduce((acc, cur) => acc + nutritionData(cur).carbs, 0);
+    const fatSum = props.consumptions.reduce((acc, cur) => acc + nutritionData(cur).fat, 0);
+    const proteinSum = props.consumptions.reduce((acc, cur) => acc + nutritionData(cur).protein, 0);
+    const preHeader = 
+    <div className="data-table__row data-table__row--show">
+        <div className="data-table__group--macros">
+            <div className="data-table__cell  data-table__cell--id-calories">
+                <span className="data-table__value" data-label="Calories" data-suffix={"/" + props.settings.targetCalories}>{formatCalories(caloriesSum)}</span>
+            </div>
+            <div className="data-table__cell  data-table__cell--id-carbs">
+                <span className="data-table__value" data-label="Carbs" data-suffix={"/" + props.settings.targetCarbs}>{formatNutritionValue(carbsSum)}</span>
+            </div>
+            <div className="data-table__cell  data-table__cell--id-fat">
+                <span className="data-table__value" data-label="Fat" data-suffix={"/" + props.settings.targetFat}>{formatNutritionValue(fatSum)}</span>
+            </div>
+            <div className="data-table__cell  data-table__cell--id-protein">
+                <span className="data-table__value" data-label="Protein" data-suffix={"/" + props.settings.targetProtein}>{formatNutritionValue(proteinSum)}</span>
+            </div>
+        </div>
+    </div>;
 
     return (
         <DataTable
@@ -79,7 +107,7 @@ export default function ConsumptionsTable(props: ConsumptionsTableProps): React.
             onUpdate={props.onUpdate}
             onDelete={props.onDelete}
             onUndoDelete={props.onUndoDelete}
-            rows={{ footer: <ConsumptionsTableTotals consumptions={props.consumptions} settings={props.settings} /> }}
+            rows={{preHeader: preHeader}}
             validator={(item: Consumption): Set<ColumnId> => {
                 const invalidFields = new Set<ColumnId>();
                 if (item.consumable.id === nilUUID) {

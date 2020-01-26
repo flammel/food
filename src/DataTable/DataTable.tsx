@@ -7,7 +7,11 @@ export type ColumnForm<ItemType> = (
     setItem: ItemSetter<ItemType>,
     isInvalid: boolean,
 ) => React.ReactElement;
-export type ColumnDefinition<ItemType> = Column<ItemType>[];
+
+interface ColumnGroup<ItemType> {
+    group: string;
+    columns: Column<ItemType>[]
+}
 
 export type ColumnId = string;
 export interface Column<ItemType> {
@@ -16,7 +20,11 @@ export interface Column<ItemType> {
     value: (item: ItemType) => string;
     form?: ColumnForm<ItemType>;
     header?: React.ReactElement;
+    group?: string;
 }
+
+export type ColumnDefinitionItem<ItemType> = Column<ItemType> | ColumnGroup<ItemType>;
+export type ColumnDefinition<ItemType> = ColumnDefinitionItem<ItemType>[];
 
 export type TableEventHandler<ItemType> = (item: ItemType) => Promise<void>;
 
@@ -49,8 +57,9 @@ interface TableProps<ItemType> extends BaseTableProps<ItemType> {
 
 interface Rows<ItemType> {
     first: React.ReactElement | null;
+    preHeader: React.ReactElement | null;
     header: React.ReactElement;
-    subHeader: React.ReactElement;
+    create: React.ReactElement;
     show: (item: ItemType) => React.ReactElement;
     edit: (item: ItemType) => React.ReactElement;
     deleted: (item: ItemType) => React.ReactElement;
@@ -78,17 +87,29 @@ function hasItem<ItemType>(props: ColumnsProps<ItemType>): props is ColumnsWithI
     return Object.prototype.hasOwnProperty.call(props, "item");
 }
 
+function isColumnGroup<ItemType>(val: ColumnDefinitionItem<ItemType>): val is ColumnGroup<ItemType> {
+    return val.hasOwnProperty("group");
+}
+
 function Columns<ItemType>(props: ColumnsProps<ItemType>): React.ReactElement {
+    const columnRenderer = (column: Column<ItemType>) => (
+        <div key={column.id} className={"data-table__cell " + (props.cellClass || "") + " data-table__cell--id-" + column.id}>
+            {hasItem(props) ? props.children(column, props.item) : props.children(column)}
+        </div>
+    );
     return (
         <>
-            {props.columns.map((column) => (
-                <div
-                    key={column.id}
-                    className={"data-table__cell " + (props.cellClass || "") + " data-table__cell--id-" + column.id}
-                >
-                    {hasItem(props) ? props.children(column, props.item) : props.children(column)}
-                </div>
-            ))}
+            {props.columns.map((columnOrGroup) => {
+                if (isColumnGroup(columnOrGroup)) {
+                    return (
+                        <div key={columnOrGroup.group} className={"data-table__group--" + columnOrGroup.group}>
+                            {columnOrGroup.columns.map(columnRenderer)}
+                        </div>
+                    );
+                } else {
+                    return columnRenderer(columnOrGroup);
+                }
+            })}
         </>
     );
 }
@@ -191,7 +212,7 @@ function ShowRow<ItemType>(props: ShowRowProps<ItemType>): React.ReactElement {
     const onDuplicate = props.onDuplicate ? props.onDuplicate : () => {};
     return (
         <div
-            className="data-table__row data-table__row--show"
+            className={"data-table__row data-table__row--show" + (isHovering ? " data-table__row--active" : "")}
             onDoubleClick={() => props.onEditStart(props.item)}
             onMouseOver={() => setHovering(true)}
             onMouseOut={() => setHovering(false)}
@@ -347,7 +368,8 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>): React.
     const defaultRows: Rows<ItemType> = {
         first: null,
         header: <HeaderRow columns={props.columns} />,
-        subHeader: (
+        preHeader: null,
+        create: (
             <CreateRow
                 columns={props.columns}
                 emptyItem={props.emptyItem}
@@ -390,8 +412,9 @@ export default function DataTable<ItemType>(props: TableProps<ItemType>): React.
     return (
         <div className={"data-table " + props.className}>
             {rows.first}
+            {rows.preHeader}
             {rows.header}
-            {rows.subHeader}
+            {rows.create}
             {props.items.map(
                 (item: ItemType, idx: number): React.ReactElement => {
                     return (

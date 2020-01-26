@@ -39,13 +39,13 @@ export default function DateNavigation(props: Props): React.ReactElement {
     }, [dateToString(props.date), props.datesWithConsumptions]);
 
     return (
-        <div className="consumptions-header">
-            <Link className="consumptions-header__nav-link" to={"/log/" + dateToString(previousDay)}>
-                prev
+        <div className="date-navigation">
+            <Link className="date-navigation__nav-link date-navigation__nav-link--prev" to={"/log/" + dateToString(previousDay)}>
+                <svg width="13" height="26"viewBox="0 0 8 16" version="1.1"><path fill-rule="evenodd" d="M5.5 3L7 4.5 3.25 8 7 11.5 5.5 13l-5-5 5-5z"></path></svg>
             </Link>
-            <input type="text" className="consumptions-header__date-input" ref={datePickerRef} />
-            <Link className="consumptions-header__nav-link" to={"/log/" + dateToString(nextDay)}>
-                next
+            <input type="text" className="date-navigation__date-input" ref={datePickerRef} />
+            <Link className="date-navigation__nav-link date-navigation__nav-link--next" to={"/log/" + dateToString(nextDay)}>
+                <svg width="13" height="26" viewBox="0 0 8 16" version="1.1"><path fill-rule="evenodd" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path></svg>
             </Link>
         </div>
     );

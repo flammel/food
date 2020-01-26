@@ -30,12 +30,11 @@
             align-content: space-between;
 
             .action {
-                visibility: hidden;
+                display: none;
                 flex-grow: 1;
                 margin-left: $table-cell-padding;
 
                 &.action--visible {
-                    visibility: visible;
                     display: inline-block;
                 }
 
