@@ -101,7 +101,7 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
                         setConsumption((prev) => ({ ...prev, quantity }));
                     }} />
                     <span className="input-group__suffix">
-                        {Formatter.consumableUnit(consumption.consumable)}
+                        {Formatter.consumableUnit(consumption.consumable, consumption.quantity)}
                     </span>
                 </div>
                 <div className="input-group">

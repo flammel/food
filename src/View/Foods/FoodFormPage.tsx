@@ -88,7 +88,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Default Quantity</label>
-                    <input className="input-group__input" type="number" min="0" step="1" name="quantity" required value={Formatter.quantity(food.defaultQuantity)} onChange={(e) => {
+                    <input className="input-group__input" type="number" min="0" step="1" required value={Formatter.quantity(food.defaultQuantity)} onChange={(e) => {
                         const defaultQuantity = parseInt(e.target.value);
                         setFood((prev) => ({ ...prev, defaultQuantity }));
                     }} />
@@ -99,28 +99,28 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                 <div className="macro-inputs">
                     <div className="input-group">
                         <label className="input-group__label">Calories</label>
-                        <input className="input-group__input" type="number" min="0" step="1" name="calories" required value={Formatter.calories(food.calories)} onChange={(e) => {
+                        <input className="input-group__input" type="number" min="0" step="1" required value={Formatter.calories(food.calories)} onChange={(e) => {
                             const calories = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, calories }));
                         }} />
                     </div>
                     <div className="input-group">
                         <label className="input-group__label">Carbs</label>
-                        <input className="input-group__input" type="number" min="0" step="0.1" name="carbs" required value={Formatter.macro(food.carbs)} onChange={(e) => {
+                        <input className="input-group__input" type="number" min="0" step="0.1" required value={Formatter.macro(food.carbs)} onChange={(e) => {
                             const carbs = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, carbs }));
                         }} />
                     </div>
                     <div className="input-group">
                         <label className="input-group__label">Fat</label>
-                        <input className="input-group__input" type="number" min="0" step="0.1" name="fat" required value={Formatter.macro(food.fat)} onChange={(e) => {
+                        <input className="input-group__input" type="number" min="0" step="0.1" required value={Formatter.macro(food.fat)} onChange={(e) => {
                             const fat = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, fat }));
                         }} />
                     </div>
                     <div className="input-group">
                         <label className="input-group__label">Protein</label>
-                        <input className="input-group__input" type="number" min="0" step="0.1" name="protein" required value={Formatter.macro(food.protein)} onChange={(e) => {
+                        <input className="input-group__input" type="number" min="0" step="0.1" required value={Formatter.macro(food.protein)} onChange={(e) => {
                             const protein = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, protein }));
                         }} />

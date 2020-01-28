@@ -8,14 +8,15 @@ export default function AboutPage(): React.ReactElement {
                 <MenuButton />
                 About
             </TopBar>
-            <h1>About</h1>
-            <p>
-                Source on{" "}
-                <a target="_blank" rel="noopener noreferrer" href="https://github.com/flammel/food">
-                    GitHub
-                </a>
-                .
-            </p>
+            <div className="container">
+                <p>
+                    Source on{" "}
+                    <a target="_blank" rel="noopener noreferrer" href="https://github.com/flammel/food">
+                        GitHub
+                    </a>
+                    .
+                </p>
+            </div>
         </>
     );
 }

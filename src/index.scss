@@ -2,7 +2,7 @@
 @import "./View/Foods/Foods";
 @import "./View/Consumptions/Consumptions";
 @import "./View/ComboBox/ComboBox";
-// @import "./Recipes/Recipes";
+@import "./View/Recipes/Recipes";
 // @import "./Statistics/Statistics";
 
 :root {
@@ -39,6 +39,10 @@ body {
     padding-bottom: 6rem;
 }
 
+.container {
+    padding: var(--padding-m);
+}
+
 .fab {
     position: fixed;
     right: 1.5rem;
@@ -62,7 +66,14 @@ body {
     &__buttons {
         display: flex;
         justify-content: flex-end;
-
+    }
+    fieldset {
+        display: contents;
+        legend {
+            font-size: var(--text-larger);
+            padding: 0;
+            margin-bottom: var(--padding-l)
+        }
     }
 }
 
@@ -142,7 +153,7 @@ body {
 
 .top-bar {
     display: flex;
-    background: var(--color-dark-primary);
+    background: var(--color-default-primary);
     position: relative;
     align-items: center;
 
@@ -152,6 +163,7 @@ body {
         border: none;
         padding: var(--padding-m);
         color: var(--color-text-primary);
+        display: block;
     }
 
     &__nav-icon,

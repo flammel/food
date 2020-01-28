@@ -12,11 +12,11 @@ export default function FoodsPage(): React.ReactElement {
 
     useEffect(() => {
         const fetchFoods = async () => {
-            const result = await api.foods.load();
+            const result = await api.foods.search(search);
             setFoods(result);
         };
         fetchFoods();
-    }, []);
+    }, [search]);
 
     return (
         <>
@@ -52,7 +52,7 @@ export default function FoodsPage(): React.ReactElement {
                     </Link>
                 );
             })}
-            <Link className="fab" to={"/foods/add"}>
+            <Link className="fab" to="/foods/add">
                 <svg className="fab__icon" viewBox="0 0 12 16" version="1.1" aria-hidden="true"><path fillRule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path></svg>
             </Link>
         </>

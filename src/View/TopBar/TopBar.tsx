@@ -93,7 +93,7 @@ export function MenuButton(): React.ReactElement {
 export const BackButton = withRouter((props: RouteComponentProps): React.ReactElement => {
     return (
         <button className="top-bar__nav-button" onClick={() => {props.history.goBack()}}>
-            <svg className="top-bar__nav-icon" viewBox="0 0 10 16" version="1.1" aria-hidden="true"><path fillRule="evenodd" d="M6 3L0 8l6 5v-3h4V6H6V3z"></path></svg>
+            <svg className="top-bar__nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
         </button>
         );
 });

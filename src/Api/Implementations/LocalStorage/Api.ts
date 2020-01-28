@@ -102,11 +102,28 @@ const api: Api = {
         undoDelete: async (food: Food): Promise<void> => {
             return setState((prev) => ({ foods: { ...prev.foods, [food.id]: { ...food, isDeleted: false } } }));
         },
-        autocomplete: async (_str: string): Promise<Food[]> => {
-            return getState(sortedFoods);
+        autocomplete: async (search: string): Promise<Food[]> => {
+            const allFoods = await getState(sortedFoods);
+            if (search === "") {
+                return allFoods;
+            }
+            const fuse = new Fuse(allFoods, {
+                keys: ["name", "brand"],
+            });
+            return fuse.search(search);
         },
         read: async (id: FoodId): Promise<Food> => {
             return getState((appState) => appState.foods[id]);
+        },
+        search: async (search: string): Promise<Food[]> => {
+            const allFoods = await getState(sortedFoods);
+            if (search === "") {
+                return allFoods;
+            }
+            const fuse = new Fuse(allFoods, {
+                keys: ["name", "brand"],
+            });
+            return fuse.search(search);
         },
     },
     recipes: {
@@ -139,6 +156,16 @@ const api: Api = {
         },
         read: async (id: RecipeId): Promise<Recipe> => {
             return getState((appState) => appState.recipes[id]);
+        },
+        search: async (search: string): Promise<Recipe[]> => {
+            const allRecipes = await getState(sortedRecipes);
+            if (search === "") {
+                return allRecipes;
+            }
+            const fuse = new Fuse(allRecipes, {
+                keys: ["name"],
+            });
+            return fuse.search(search);
         },
     },
     settings: {

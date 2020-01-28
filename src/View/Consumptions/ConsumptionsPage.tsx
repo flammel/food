@@ -109,7 +109,11 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
                 return (
                     <Link to={"/log/" + dateToString(date) + "/" + consumption.id} className="consumption" key={consumption.id}>
                         <div className="consumption__consumable">{Formatter.consumable(consumption.consumable)}</div>
-                        <div className="consumption__quantity">{Formatter.quantity(consumption.quantity)}</div>
+                        <div className="consumption__quantity">
+                            {Formatter.quantity(consumption.quantity)}
+                            &nbsp;
+                            {Formatter.consumableUnit(consumption.consumable, consumption.quantity)}
+                        </div>
                         <div className="consumption__macros">
                             <div className="consumption__macro" data-label="Calories">
                                 {Formatter.calories(values.calories)}

@@ -19,16 +19,18 @@ interface ConsumptionsApi extends CrudApi<Consumption, ConsumptionId> {
 }
 
 interface ConsumablesApi {
-    autocomplete: (str: string) => Promise<Consumable[]>;
+    autocomplete: (search: string) => Promise<Consumable[]>;
 }
 
 interface FoodsApi extends CrudApi<Food, FoodId> {
     load: () => Promise<Food[]>;
+    search: (search: string) => Promise<Food[]>;
     autocomplete: (search: string) => Promise<Food[]>;
 }
 
 interface RecipesApi extends CrudApi<Recipe, RecipeId> {
     load: () => Promise<Recipe[]>;
+    search: (search: string) => Promise<Recipe[]>;
     duplicate: (recipe: Recipe) => Promise<void>;
 }
 

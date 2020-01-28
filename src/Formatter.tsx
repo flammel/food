@@ -3,6 +3,7 @@ import { nilUUID } from "./Domain/UUID";
 import { Consumable } from "./Domain/Consumable";
 import { Macro, Calories } from "./Domain/NutritionData";
 import { Quantity } from "./Domain/Quantity";
+import { Recipe } from "./Domain/Recipe";
 
 const foodLabel = (food: Food) => {
     if (food.id === nilUUID) {
@@ -16,6 +17,7 @@ const foodLabel = (food: Food) => {
 
 export default {
     food: foodLabel,
+    recipe: (recipe: Recipe) => recipe.name,
     consumable: (consumable: Consumable) => {
         if (consumable.type === "food") {
             return foodLabel(consumable.value);
@@ -23,11 +25,11 @@ export default {
             return consumable.value.name;
         }
     },
-    consumableUnit: (consumable: Consumable) => {
+    consumableUnit: (consumable: Consumable, quantity: Quantity) => {
         if (consumable.type === "food") {
             return consumable.value.unit;
         } else {
-            return "serv";
+            return quantity === 1 ? "serving" : "servings";
         }
     },
     quantity: (value: Quantity) => isNaN(value) ? "0" : value.toFixed(0),

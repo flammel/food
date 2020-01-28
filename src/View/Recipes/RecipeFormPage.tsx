@@ -11,6 +11,8 @@ import {
 import { withRouter, RouteComponentProps } from "react-router";
 import { ApiContext } from "../../Api/Context";
 import { Food } from "../../Domain/Food";
+import TopBar, { BackButton, Action } from "../TopBar/TopBar";
+import Formatter from "../../Formatter";
 
 interface RecipeFormUrlParams {
     id: string;
@@ -48,17 +50,6 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
         persist();
     };
 
-    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const name = e.currentTarget.value;
-        setRecipe((prev) => ({ ...prev, name }));
-    };
-
-    const onServingsChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const servings = parseInt(e.currentTarget.value);
-        setRecipe((prev) => ({ ...prev, servings }));
-    };
-
-
     const foodSearch = async (search: string): Promise<Food[]> => {
         const consumables = await api.foods.autocomplete(search);
         const fuse = new Fuse(consumables, {
@@ -68,9 +59,56 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
         return result;
     };
 
+    const onDelete = (): void => {
+        const deleteFn = async () => {
+            await api.recipes.delete(recipe)
+            props.history.push("/recipes");
+        };
+        deleteFn();
+    };
+
     return (
         <>
-            <h1>{editing ? "Editing Recipe" : "New Recipe"}</h1>
+            <TopBar>
+                <BackButton />
+                {editing ? "Edit Recipe" : "New Recipe"}
+                {editing ? <Action icon="delete" action={onDelete} /> : null}
+            </TopBar>
+
+            <form onSubmit={onSubmit} className="form">
+                <div className="input-group">
+                    <label className="input-group__label">Name</label>
+                    <input className="input-group__input" type="text" required value={recipe.name} onChange={(e) => {
+                        const name = e.target.value;
+                        setRecipe((prev) => ({ ...prev, name: name }));
+                    }} />
+                </div>
+                <div className="input-group">
+                    <label className="input-group__label">Servings</label>
+                    <input className="input-group__input" type="number" min="0" step="1" required value={Formatter.quantity(recipe.servings)} onChange={(e) => {
+                        const servings = parseInt(e.target.value);
+                        setRecipe((prev) => ({ ...prev, servings }));
+                    }} />
+                </div>
+                <div className="input-group">
+                    <label className="input-group__label">Ingredients</label>
+                </div>
+                {recipe.ingredients.map((ingredient) => {
+                    return (
+                        <div className="ingredient" key={ingredient.id}>
+                            <div className="ingredient__name">{Formatter.food(ingredient.food)}</div>
+                            <div className="ingredient__quantity">
+                                {Formatter.quantity(ingredient.food.defaultQuantity)}
+                                &nbsp;
+                                {ingredient.food.unit}
+                            </div>
+                        </div>
+                    );
+                })}
+                <div className="form__buttons">
+                    <button type="submit" className="button button--primary">Save</button>
+                </div>
+            </form>
         </>
     );
 }
