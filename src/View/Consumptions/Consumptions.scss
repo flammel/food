@@ -1,52 +1,5 @@
 @import "~flatpickr/dist/flatpickr.css";
 
-.date-navigation {
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    padding: var(--padding-m) 0;
-    background-color: var(--color-default-primary);
-    position: relative;
-    &__date-input {
-        margin: 0;
-        border: 0;
-        padding: 0;
-        background-color: var(--color-default-primary);
-        color: var(--color-text-primary);
-        font-size: var(--text-larger);
-        text-align: center;
-        width: 15rem;
-        &:focus {
-            outline: none;
-        }
-    }
-    &__nav-link {
-        display: flex;
-        align-items: center;
-        flex-grow: 1;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 3rem;
-        justify-content: center;
-        &--prev {
-            left: 0;
-        }
-        &--next {
-            right: 0;
-        }
-    }
-    &__nav-icon {
-        height: var(--text-larger);
-        fill: var(--color-text-primary);
-    }
-}
-
-.flatpickr-calendar:before,
-.flatpickr-calendar:after {
-    left: 50%;
-}
-
 .flatpickr-day-with-data-marker {
     position: absolute;
     width: 3px;
