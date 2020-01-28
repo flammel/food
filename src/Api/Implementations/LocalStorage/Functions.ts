@@ -1,9 +1,9 @@
-import { Statistics, StatisticsDay } from "../../../Statistics/Data";
+import { Statistics, StatisticsDay } from "../../../Domain/Statistics";
 import { AppState } from "./StorageTypes";
-import { Food } from "../../../Foods/Data";
-import { Recipe } from "../../../Recipes/Data";
+import { Food } from "../../../Domain/Food";
+import { Recipe } from "../../../Domain/Recipe";
 import { dateToString } from "../../../Utilities";
-import { Consumption, nutritionData } from "../../../Consumptions/Data";
+import { Consumption, nutritionData } from "../../../Domain/Consumption";
 
 export function sortedFoods(appState: AppState): Food[] {
     return Object.values(appState.foods)

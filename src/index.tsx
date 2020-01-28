@@ -1,35 +1,41 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Nav from "./Nav/Nav";
-import Foods from "./Foods/Components/FoodsPage";
-import Consumptions from "./Consumptions/Components/ConsumptionsPage";
-import Recipes from "./Recipes/Components/RecipesPage";
-import RecipeForm from "./Recipes/Components/RecipeFormPage";
-import Settings from "./Settings/Components/SettingsPage";
-import About from "./About";
-import "./index.scss";
-import StatisticsPage from "./Statistics/Components/StatisticsPage";
+import Foods from "./View/Foods/FoodsPage";
+import FoodsForm from "./View/Foods/FoodFormPage";
+import Consumptions from "./View/Consumptions/ConsumptionsPage";
+import ConsumptionsForm from "./View/Consumptions/ConsumptionsFormPage";
+import Recipes from "./View/Recipes/RecipesPage";
+import RecipeForm from "./View/Recipes/RecipeFormPage";
+import Settings from "./View/Settings/SettingsPage";
+import About from "./View/About";
+import Statistics from "./View/Statistics/StatisticsPage";
 import { ApiProvider } from "./Api/Context";
+import "./index.scss";
 
 ReactDOM.render(
     <Router>
-        <Nav />
-        <div className="container-fluid mb-3">
-            <ApiProvider>
-                <Route path="/" exact component={Consumptions} />
-                <Route path="/statistics" component={StatisticsPage} />
-                <Route path="/settings" component={Settings} />
-                <Route path="/about" component={About} />
-                <Route path="/foods" component={Foods} />
-                <Route path="/recipes" exact component={Recipes} />
-                <Switch>
-                    <Route path="/recipes/new" component={RecipeForm} />
-                    <Route path="/recipes/:id" component={RecipeForm} />
-                </Switch>
+        <ApiProvider>
+            <Route path="/" exact component={Consumptions} />
+            <Route path="/statistics" component={Statistics} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/about" component={About} />
+            <Route path="/foods" exact component={Foods} />
+            <Switch>
+                <Route path="/foods/add" component={FoodsForm} />
+                <Route path="/foods/:id" component={FoodsForm} />
+            </Switch>
+            <Route path="/recipes" exact component={Recipes} />
+            <Switch>
+                <Route path="/recipes/add" component={RecipeForm} />
+                <Route path="/recipes/:id" component={RecipeForm} />
+            </Switch>
+            <Switch>
+                <Route path="/log/:date/add" component={ConsumptionsForm} />
+                <Route path="/log/:date/:id" component={ConsumptionsForm} />
                 <Route path="/log/:date" component={Consumptions} />
-            </ApiProvider>
-        </div>
+            </Switch>
+        </ApiProvider>
     </Router>,
     document.getElementById("app"),
 );

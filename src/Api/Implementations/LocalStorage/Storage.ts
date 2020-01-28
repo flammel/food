@@ -1,7 +1,6 @@
-import { Food } from "../../../Foods/Data";
-import { Recipe } from "../../../Recipes/Data";
-import { Consumption, consumableIsFood } from "../../../Consumptions/Data";
-import { isUnit, notEmpty } from "../../../Types";
+import { Food } from "../../../Domain/Food";
+import { Recipe } from "../../../Domain/Recipe";
+import { Consumption } from "../../../Domain/Consumption";
 import {
     AppState,
     AppStateFoods,
@@ -14,9 +13,15 @@ import {
     JsonData,
     JsonConsumable,
 } from "./StorageTypes";
-import { Settings } from "../../../Settings/Data";
-import { Consumable } from "../../../Consumable";
+import { Settings } from "../../../Domain/Settings";
+import { Consumable } from "../../../Domain/Consumable";
 import isJsonData from "./Validator";
+import { isUnit } from "../../../Domain/Unit";
+
+
+function notEmpty<T>(value: T | null | undefined): value is T {
+    return value !== null && value !== undefined;
+}
 
 function readFood(json: JsonFood): Food | null {
     const unit = json.unit;
@@ -71,11 +76,11 @@ function readRecipes(json: JsonRecipe[], foods: AppStateFoods): AppStateRecipes 
 
 function readConsumption(json: JsonConsumption, foods: AppStateFoods, recipes: AppStateRecipes): Consumption | null {
     const date = new Date(json.date);
-    let consumable;
+    let consumable: Consumable;
     if (json.consumable.type === "food") {
-        consumable = foods[json.consumable.id];
+        consumable = {type: "food", value: foods[json.consumable.id]};
     } else if (json.consumable.type === "recipe") {
-        consumable = recipes[json.consumable.id];
+        consumable = {type: "recipe", value: recipes[json.consumable.id]};
     } else {
         console.error("Invalid consumable type", json.consumable);
         return null;
@@ -137,17 +142,10 @@ function loadJson(): JsonData {
 }
 
 function jsonConsumable(consumable: Consumable): JsonConsumable {
-    if (consumableIsFood(consumable)) {
-        return {
-            type: "food",
-            id: consumable.id,
-        };
-    } else {
-        return {
-            type: "recipe",
-            id: consumable.id,
-        };
-    }
+    return {
+        type: consumable.type,
+        id: consumable.value.id,
+    };
 }
 
 function serialize(state: AppState): JsonData {

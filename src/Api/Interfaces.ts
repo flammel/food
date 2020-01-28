@@ -1,16 +1,20 @@
-import { Consumption } from "../Consumptions/Data";
-import { Consumable } from "../Consumable";
-import { Settings } from "../Settings/Data";
-import { Food } from "../Foods/Data";
-import { Recipe, RecipeId } from "../Recipes/Data";
-import { Statistics } from "../Statistics/Data";
+import { Consumption, ConsumptionId } from "../Domain/Consumption";
+import { Consumable } from "../Domain/Consumable";
+import { Settings } from "../Domain/Settings";
+import { Food, FoodId, Brand } from "../Domain/Food";
+import { Recipe, RecipeId } from "../Domain/Recipe";
+import { Statistics } from "../Domain/Statistics";
 
-interface ConsumptionsApi {
+interface CrudApi<DataType, IdType> {
+    create: (data: DataType) => Promise<void>;
+    read: (id: IdType) => Promise<DataType>;
+    update: (data: DataType) => Promise<void>;
+    delete: (data: DataType) => Promise<void>;
+    undoDelete: (data: DataType) => Promise<void>;
+}
+
+interface ConsumptionsApi extends CrudApi<Consumption, ConsumptionId> {
     load: (date: Date) => Promise<Consumption[]>;
-    create: (consumption: Consumption) => Promise<void>;
-    update: (consumption: Consumption) => Promise<void>;
-    delete: (consumption: Consumption) => Promise<void>;
-    undoDelete: (consumption: Consumption) => Promise<void>;
     loadDatesWithData: () => Promise<Set<string>>;
 }
 
@@ -18,23 +22,14 @@ interface ConsumablesApi {
     autocomplete: (str: string) => Promise<Consumable[]>;
 }
 
-interface FoodsApi {
+interface FoodsApi extends CrudApi<Food, FoodId> {
     load: () => Promise<Food[]>;
-    create: (food: Food) => Promise<void>;
-    update: (food: Food) => Promise<void>;
-    delete: (food: Food) => Promise<void>;
-    undoDelete: (food: Food) => Promise<void>;
-    autocomplete: (str: string) => Promise<Food[]>;
+    autocomplete: (search: string) => Promise<Food[]>;
 }
 
-interface RecipesApi {
+interface RecipesApi extends CrudApi<Recipe, RecipeId> {
     load: () => Promise<Recipe[]>;
-    create: (recipe: Recipe) => Promise<void>;
-    update: (recipe: Recipe) => Promise<void>;
-    delete: (recipe: Recipe) => Promise<void>;
-    undoDelete: (recipe: Recipe) => Promise<void>;
     duplicate: (recipe: Recipe) => Promise<void>;
-    read: (id: RecipeId) => Promise<Recipe>;
 }
 
 interface SettingsApi {
@@ -46,6 +41,10 @@ interface StatisticsApi {
     load: () => Promise<Statistics>;
 }
 
+interface BrandsApi {
+    autocomplete: (search: string) => Promise<Brand[]>;
+}
+
 export interface Api {
     consumptions: ConsumptionsApi;
     consumables: ConsumablesApi;
@@ -53,4 +52,5 @@ export interface Api {
     recipes: RecipesApi;
     settings: SettingsApi;
     statistics: StatisticsApi;
+    brands: BrandsApi;
 }

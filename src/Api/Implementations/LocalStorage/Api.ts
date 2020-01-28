@@ -1,12 +1,13 @@
+import Fuse from "fuse.js";
 import { Api } from "../../Interfaces";
-import { Statistics } from "../../../Statistics/Data";
-import { Consumption } from "../../../Consumptions/Data";
-import { Recipe, RecipeId } from "../../../Recipes/Data";
-import { Settings } from "../../../Settings/Data";
-import { Food } from "../../../Foods/Data";
-import { Consumable } from "../../../Consumable";
+import { Statistics } from "../../../Domain/Statistics";
+import { Consumption, ConsumptionId } from "../../../Domain/Consumption";
+import { Recipe, RecipeId } from "../../../Domain/Recipe";
+import { Settings } from "../../../Domain/Settings";
+import { Food, FoodId, Brand } from "../../../Domain/Food";
+import { Consumable } from "../../../Domain/Consumable";
 import { loadAppState, storeAppState } from "./Storage";
-import { uuidv4 } from "../../../UUID";
+import { uuidv4 } from "../../../Domain/UUID";
 import { AppState } from "./StorageTypes";
 import { getStatistics, datesWithConsumptions, consumptionsByDate, sortedRecipes, sortedFoods } from "./Functions";
 
@@ -63,10 +64,20 @@ const api: Api = {
         loadDatesWithData: async (): Promise<Set<string>> => {
             return getState(datesWithConsumptions);
         },
+        read: async (id: ConsumptionId): Promise<Consumption> => {
+            return getState((appState) => appState.consumptions[id]);
+        },
     },
     consumables: {
-        autocomplete: async (_str: string): Promise<Consumable[]> => {
-            return getState((appState) => [...sortedFoods(appState), ...sortedRecipes(appState)]);
+        autocomplete: async (search: string): Promise<Consumable[]> => {
+            const allConsumables = await getState((appState) => [
+                ...sortedFoods(appState).map((food): Consumable => ({type: "food", value: food})),
+                ...sortedRecipes(appState).map((recipe): Consumable => ({type: "recipe", value: recipe}))
+            ]);
+            const fuse = new Fuse(allConsumables, {
+                keys: ["value.name", "value.brand"],
+            });
+            return fuse.search(search);
         },
     },
     foods: {
@@ -93,6 +104,9 @@ const api: Api = {
         },
         autocomplete: async (_str: string): Promise<Food[]> => {
             return getState(sortedFoods);
+        },
+        read: async (id: FoodId): Promise<Food> => {
+            return getState((appState) => appState.foods[id]);
         },
     },
     recipes: {
@@ -138,6 +152,17 @@ const api: Api = {
     statistics: {
         load: async (): Promise<Statistics> => {
             return getState(getStatistics);
+        },
+    },
+    brands: {
+        autocomplete: async (search: string): Promise<Brand[]> => {
+            const allBrands = await getState((appState) => [...new Set(sortedFoods(appState).map(food => food.brand))]);
+            const fuse = new Fuse(
+                allBrands.map(brand => ({id: brand, name: brand})),
+                {keys: ["name"]}
+            );
+            const result = fuse.search(search);
+            return result.map(brand => brand.name);
         },
     },
 };

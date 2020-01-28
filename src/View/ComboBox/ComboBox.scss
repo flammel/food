@@ -1,0 +1,30 @@
+.combo {
+    position: relative;
+    width: 100%;
+    &__list {
+        position: absolute;
+        background: #fff;
+        top: 100%;
+        width: 100%;
+        margin-top: -1px;
+        border: 1px solid var(--color-divider);
+        list-style: none;
+        padding: 0;
+        z-index: 2;
+        max-height: 50vh;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+    &__item {
+        padding: var(--padding-s);
+        &--highlighted {
+            background: var(--color-divider);
+        }
+        &--selected {
+            font-weight: bold;
+        }
+    }
+    &__input {
+        width: 100%;
+    }
+}

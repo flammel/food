@@ -1,7 +1,7 @@
-import { Consumption } from "../../../Consumptions/Data";
-import { Food } from "../../../Foods/Data";
-import { Recipe } from "../../../Recipes/Data";
-import { Settings } from "../../../Settings/Data";
+import { Consumption } from "../../../Domain/Consumption";
+import { Food } from "../../../Domain/Food";
+import { Recipe } from "../../../Domain/Recipe";
+import { Settings } from "../../../Domain/Settings";
 
 interface MapOf<ItemType> {
     [key: string]: ItemType;
@@ -23,8 +23,7 @@ export interface JsonFood {
     readonly id: string;
     readonly name: string;
     readonly brand: string;
-    readonly quantity: number;
-    readonly servingSize: number;
+    readonly defaultQuantity: number;
     readonly unit: string;
     readonly isDeleted: boolean;
     readonly sort: number;
