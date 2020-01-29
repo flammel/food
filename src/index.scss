@@ -1,7 +1,4 @@
 @import "~flatpickr/dist/flatpickr.css";
-@import "./View/Foods/Foods";
-@import "./View/ComboBox/ComboBox";
-@import "./View/Recipes/Recipes";
 
 :root {
     --padding-s: 0.375rem;
@@ -26,6 +23,22 @@
     --icon-size: 1rem;
     --top-bar-height: 3.5rem;
     --top-bar-font-size: 1.1rem;
+}
+
+@mixin icon-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+@mixin icon-button-icon($color) {
+    fill: $color;
+    height: var(--icon-size);
+    width: var(--icon-size);
 }
 
 html {
@@ -57,9 +70,7 @@ body {
     align-items: center;
     justify-content: center;
     &__icon {
-        width: var(--icon-size);
-        height: var(--icon-size);
-        fill: var(--color-text-primary);
+        @include icon-button-icon(var(--color-primary-text));
     }
 }
 
@@ -141,22 +152,14 @@ body {
 
     &__nav-button,
     &__action-button {
-        background: none;
-        border: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        @include icon-button();
         height: var(--top-bar-height);
         width: var(--top-bar-height);
-        padding: 0;
-        color: var(--color-primary-text);
     }
 
     &__nav-icon,
     &__action-icon {
-        fill: currentColor;
-        width: var(--icon-size);
-        height: var(--icon-size);
+        @include icon-button-icon(var(--color-primary-text));
     }
 
     &__title {
@@ -274,10 +277,8 @@ body {
     &__macro {
         display: flex;
         flex-direction: column;
-        line-height: 1.2;
-        font-size: 1rem;
-        color: var(--color-primary-text);
         align-items: center;
+        line-height: 1.2;
         &::before {
             content: attr(data-label);
             font-size: var(--text-smaller);
@@ -301,16 +302,120 @@ body {
     &--totals {
         padding-top: 2rem;
         padding-bottom: 2rem;
+        font-size: var(--text-larger);
     }
     &--only-macros {
         grid-template-rows: 1fr;
         grid-template-areas: "macros macros";
     }
-    &--only-macros &__macro {
-        font-size: var(--text-larger);
+}
+
+.combo {
+    flex-grow: 1;
+
+    &__list {
+        position: absolute;
+        background: #fff;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin-top: -1px;
+        border: 1px solid var(--color-divider);
+        list-style: none;
+        padding: 0;
+        z-index: 2;
+        max-height: 50vh;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+    &__item {
+        padding: var(--padding-m);
+        &--highlighted {
+            background: var(--color-divider);
+        }
+        &--selected {
+            font-weight: bold;
+        }
+        &--empty {
+            color: var(--color-secondary-text);
+        }
+    }
+    &__inner {
+        display: flex;
+        position: relative;
+    }
+    &__button {
+        @include icon-button();
+        height: 1rem;
+        width: 1rem;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        margin-top: -0.5rem;
+    }
+    &__icon {
+        @include icon-button-icon(var(--color-secondary-text));
+        position: absolute;
+        right: 0;
+        top: 0;
     }
 }
 
-.form .consumption {
-    border: none;
+.recipe-form {
+    .ingredients {
+        padding: var(--padding-m);
+        margin-bottom: var(--padding-m);
+
+        &__header {
+            display: flex;
+            align-items: center;
+        }
+
+        &__label {
+            flex-grow: 1;
+            color: var(--color-secondary-text);
+            display: block;
+        }
+    }
+
+    .ingredient {
+        display: flex;
+        margin-top: var(--padding-m);
+        position: relative;
+
+        &__button {
+            @include icon-button();
+            height: 2rem;
+            width: 2rem;
+        }
+
+        &__icon {
+            margin-top: -4px;
+            @include icon-button-icon(var(--color-secondary-text));
+        }
+
+        &__name,
+        &__quantity,
+        &__unit,
+        .combo {
+            display: block;
+            border: none;
+            border-bottom: 1px solid var(--color-divider);
+            padding: var(--padding-s) 0;
+            font-size: 1rem;
+        }
+        .combo {
+            flex-grow: 1;
+            margin-right: var(--padding-s);
+        }
+        &__quantity {
+            width: 3rem;
+            flex-grow: 0;
+            text-align: right;
+            padding-right: var(--padding-s);
+        }
+        &__unit {
+            color: var(--color-secondary-text);
+        }
+    }
 }
