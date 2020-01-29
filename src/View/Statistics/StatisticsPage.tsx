@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
+import * as Plotly from 'plotly.js';
 import { Statistics, emptyStatistics } from "../../Domain/Statistics";
 import { emptySettings, Settings } from "../../Domain/Settings";
 import { ApiContext } from "../../Api/Context";
 import Formatter from "../../Formatter";
-import TopBar, { MenuButton } from "../TopBar/TopBar";
+import TopBar, { MenuButton, Title } from "../TopBar/TopBar";
 
 export default function StatisticsPage(): React.ReactElement {
     const api = useContext(ApiContext);
@@ -25,7 +26,7 @@ export default function StatisticsPage(): React.ReactElement {
     }, []);
 
     useEffect(() => {
-        const data = [
+        const data: Partial<Plotly.PlotData>[] = [
             {
                 x: statistics.days.map((day) => day.date),
                 y: statistics.days.map((day) => Formatter.calories(day.calories)),
@@ -55,7 +56,7 @@ export default function StatisticsPage(): React.ReactElement {
             },
         ];
 
-        const layout = {
+        const layout: Partial<Plotly.Layout> = {
             yaxis: {
                 title: "Calories",
             },
@@ -66,14 +67,16 @@ export default function StatisticsPage(): React.ReactElement {
             },
         };
 
-        Plotly.newPlot(plotlyDivRef.current, data, layout);
+        if (plotlyDivRef.current !== null) {
+            Plotly.newPlot(plotlyDivRef.current, data, layout);
+        }
     }, [plotlyDivRef.current, statistics]);
 
     return (
         <>
             <TopBar>
                 <MenuButton />
-                Statistics
+                <Title>Statistics</Title>
             </TopBar>
             <div ref={plotlyDivRef}></div>
             <div className="statistics-container">

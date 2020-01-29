@@ -1,6 +1,5 @@
-// @import "./DataTable/DataTable";
+@import "~flatpickr/dist/flatpickr.css";
 @import "./View/Foods/Foods";
-@import "./View/Consumptions/Consumptions";
 @import "./View/ComboBox/ComboBox";
 @import "./View/Recipes/Recipes";
 // @import "./Statistics/Statistics";
@@ -19,11 +18,15 @@
     --color-dark-primary: #001970;
     --color-default-primary: #303f9f;
     --color-light-primary: #666ad1;
-    --color-text-primary: #FFFFFF;
+    --color-text-primary: #ffffff;
     --color-accent: #009688;
     --color-primary-text: #212121;
     --color-secondary-text: #757575;
-    --color-divider: #BDBDBD;
+    --color-divider: #bdbdbd;
+
+    --icon-size: 1rem;
+    --top-bar-height: 3rem;
+    --top-bar-font-size: 1.1rem;
 }
 
 html {
@@ -55,60 +58,56 @@ body {
     align-items: center;
     justify-content: center;
     &__icon {
-        height: 1.5rem;
+        width: var(--icon-size);
+        height: var(--icon-size);
         fill: var(--color-text-primary);
     }
 }
 
 .form {
-    padding: var(--padding-m);
-
     &__buttons {
         display: flex;
         justify-content: flex-end;
+        padding: var(--padding-m);
     }
     fieldset {
         display: contents;
         legend {
             font-size: var(--text-larger);
-            padding: 0;
-            margin-bottom: var(--padding-l)
+            padding: var(--padding-m);
+            margin-bottom: 0;
         }
     }
 }
 
 .input-group {
     display: flex;
-    flex-wrap: wrap;
-    margin-bottom: var(--padding-m);
+    border-bottom: 1px solid var(--color-divider);
+    padding: var(--padding-m);
+    position: relative;
 
     &__label {
-        width: 100%;
-        flex-shrink: 0;
         display: block;
-        margin-bottom: var(--padding-s);
+        color: var(--color-secondary-text);
+        margin-right: var(--padding-m);
+        white-space: nowrap;
     }
     &__input {
         display: block;
+        width: 20%;
         flex-grow: 1;
         box-sizing: border-box;
-        border: 1px solid var(--color-divider);
-        padding: var(--padding-m);
+        border: none;
+        padding: 0;
         color: var(--color-primary-text);
         font-family: var(--font-family);
         font-size: 1rem;
-        // Makes date inputs same height as other inputs. Without this, they are higher.
-        &[type="date"] {
-            padding-top: calc(var(--padding-m) - 3px);
-            padding-bottom: calc(var(--padding-m) - 3px);
+        &:focus {
+            outline: none;
         }
     }
     &__suffix {
-        background: var(--color-divider);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0 var(--padding-l);
+        color: var(--color-secondary-text);
     }
 }
 
@@ -133,50 +132,49 @@ body {
     }
 }
 
-.search {
-    position: relative;
-    padding: var(--padding-m);
-
-    &__input {
-        padding-right: 2.5rem;
-    }
-
-    &__icon {
-        position: absolute;
-        right: 1.5rem;
-        height: 1rem;
-        top: 50%;
-        margin-top: -0.5rem;
-        fill: var(--color-primary-text);
-    }
-}
-
 .top-bar {
     display: flex;
-    background: var(--color-default-primary);
     position: relative;
     align-items: center;
+    border-bottom: 1px solid var(--color-divider);
+    height: var(--top-bar-height);
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)!important;
 
     &__nav-button,
     &__action-button {
         background: none;
         border: none;
-        padding: var(--padding-m);
-        color: var(--color-text-primary);
-        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: var(--top-bar-height);
+        width: var(--top-bar-height);
+        padding: 0;
     }
 
     &__nav-icon,
     &__action-icon {
         fill: currentColor;
-        height: var(--text-larger);
-        width: var(--text-larger);
+        width: var(--icon-size);
+        height: var(--icon-size);
     }
 
     &__title {
         flex-grow: 1;
-        font-size: 1.2rem;
-        color: var(--color-text-primary);
+        font-size: var(--top-bar-font-size);
+    }
+
+    &__search {
+        border: none;
+        padding: 0 var(--padding-m) 0 0;
+        font-size: var(--top-bar-font-size);
+        font-family: var(--font-family);
+        color: var(--color-primary-text);
+        flex-grow: 1;
+
+        &:focus {
+            outline: none;
+        }
     }
 }
 
@@ -204,6 +202,7 @@ body {
     &__divider {
         border: none;
         border-bottom: 1px solid var(--color-divider);
+        margin: 0;
     }
 
     &__list {
@@ -238,4 +237,79 @@ body {
     &--visible {
         display: block;
     }
+}
+
+.flatpickr-day-with-data-marker {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 150px;
+    bottom: 3px;
+    left: calc(50% - 1.5px);
+    content: " ";
+    display: block;
+    background: #3d8eb9;
+}
+
+.consumption,
+.food,
+.recipe {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    grid-template-rows: repeat(2, max-content);
+    grid-template-areas: "consumable quantity" "macros macros";
+    row-gap: var(--padding-m);
+    padding: var(--padding-m);
+    text-decoration: none;
+    color: var(--color-primary-text);
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--color-divider);
+    &__macros {
+        display: flex;
+        grid-area: macros;
+        justify-content: space-between;
+    }
+    &__macro {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+        font-size: 1rem;
+        color: var(--color-primary-text);
+        align-items: center;
+        &::before {
+            content: attr(data-label);
+            font-size: var(--text-smaller);
+            color: var(--color-secondary-text);
+        }
+        &::after {
+            content: attr(data-suffix);
+            font-size: var(--text-smaller);
+            color: var(--color-secondary-text);
+        }
+    }
+    &__consumable,
+    &__name {
+        grid-area: consumable;
+    }
+    &__quantity,
+    &__servings {
+        grid-area: quantity;
+        text-align: right;
+    }
+    &--totals {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    &--only-macros {
+        grid-template-rows: 1fr;
+        grid-template-areas: "macros macros";
+    }
+    &--only-macros &__macro {
+        font-size: var(--text-larger);
+    }
+}
+
+.form .consumption {
+    border: none;
 }

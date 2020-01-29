@@ -15,6 +15,10 @@ const foodLabel = (food: Food) => {
     return food.name + " (" + food.brand + ")";
 };
 
+const servings = (quantity: Quantity): string => {
+    return quantity === 1 ? "serving" : "servings";
+}
+
 export default {
     food: foodLabel,
     recipe: (recipe: Recipe) => recipe.name,
@@ -29,10 +33,11 @@ export default {
         if (consumable.type === "food") {
             return consumable.value.unit;
         } else {
-            return quantity === 1 ? "serving" : "servings";
+            return servings(quantity);
         }
     },
-    quantity: (value: Quantity) => isNaN(value) ? "0" : value.toFixed(0),
-    calories: (value: Calories) => isNaN(value) ? "0" : value.toFixed(0),
-    macro: (value: Macro) => isNaN(value) ? "0" : value.toFixed(1),
+    servings: servings,
+    quantity: (value: Quantity) => (isNaN(value) ? "0" : value.toFixed(0)),
+    calories: (value: Calories) => (isNaN(value) ? "0" : value.toFixed(0)),
+    macro: (value: Macro) => (isNaN(value) ? "0" : value.toFixed(1)),
 };

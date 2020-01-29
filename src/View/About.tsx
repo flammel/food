@@ -1,12 +1,12 @@
 import React from "react";
-import TopBar, { MenuButton } from "./TopBar/TopBar";
+import TopBar, { MenuButton, Title } from "./TopBar/TopBar";
 
 export default function AboutPage(): React.ReactElement {
     return (
         <>
             <TopBar>
                 <MenuButton />
-                About
+                <Title>About</Title>
             </TopBar>
             <div className="container">
                 <p>
@@ -14,7 +14,6 @@ export default function AboutPage(): React.ReactElement {
                     <a target="_blank" rel="noopener noreferrer" href="https://github.com/flammel/food">
                         GitHub
                     </a>
-                    .
                 </p>
             </div>
         </>

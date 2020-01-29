@@ -19,7 +19,7 @@ export function emptyConsumption(date: Date): Consumption {
     return {
         id: nilUUID,
         date: date,
-        consumable: {type: "food", value: emptyFood},
+        consumable: { type: "food", value: emptyFood },
         quantity: 1,
         isDeleted: false,
         sort: 0,
@@ -29,14 +29,10 @@ export function emptyConsumption(date: Date): Consumption {
 export function nutritionData(consumption: Consumption): NutritionData {
     if (consumption.consumable.type === "food") {
         return {
-            calories:
-                (consumption.consumable.value.calories / 100) * consumption.quantity,
-            fat:
-                (consumption.consumable.value.fat / 100) * consumption.quantity,
-            carbs:
-                (consumption.consumable.value.carbs / 100) * consumption.quantity,
-            protein:
-                (consumption.consumable.value.protein / 100) * consumption.quantity,
+            calories: (consumption.consumable.value.calories / 100) * consumption.quantity,
+            fat: (consumption.consumable.value.fat / 100) * consumption.quantity,
+            carbs: (consumption.consumable.value.carbs / 100) * consumption.quantity,
+            protein: (consumption.consumable.value.protein / 100) * consumption.quantity,
         };
     } else {
         const nutrition = recipeNutritionData(consumption.consumable.value);

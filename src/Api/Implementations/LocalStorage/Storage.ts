@@ -18,7 +18,6 @@ import { Consumable } from "../../../Domain/Consumable";
 import isJsonData from "./Validator";
 import { isUnit } from "../../../Domain/Unit";
 
-
 function notEmpty<T>(value: T | null | undefined): value is T {
     return value !== null && value !== undefined;
 }
@@ -78,9 +77,9 @@ function readConsumption(json: JsonConsumption, foods: AppStateFoods, recipes: A
     const date = new Date(json.date);
     let consumable: Consumable;
     if (json.consumable.type === "food") {
-        consumable = {type: "food", value: foods[json.consumable.id]};
+        consumable = { type: "food", value: foods[json.consumable.id] };
     } else if (json.consumable.type === "recipe") {
-        consumable = {type: "recipe", value: recipes[json.consumable.id]};
+        consumable = { type: "recipe", value: recipes[json.consumable.id] };
     } else {
         console.error("Invalid consumable type", json.consumable);
         return null;

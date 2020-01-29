@@ -1,10 +1,12 @@
 .combo {
-    position: relative;
-    width: 100%;
+    flex-grow: 1;
+
     &__list {
         position: absolute;
         background: #fff;
         top: 100%;
+        left: 0;
+        right: 0;
         width: 100%;
         margin-top: -1px;
         border: 1px solid var(--color-divider);
@@ -24,7 +26,7 @@
             font-weight: bold;
         }
     }
-    &__input {
+    &__input.input-group__input {
         width: 100%;
     }
 }

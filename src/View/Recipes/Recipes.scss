@@ -1,10 +1,65 @@
-.ingredient {
-    display: flex;
-    padding: var(--padding-m) 0;
+.recipe-form {
+    .ingredients {
+        padding: var(--padding-m);
+        margin-bottom: var(--padding-m);
 
+        &__header {
+            display: flex;
+            align-items: center;
+        }
 
-    &__name {
-        flex-grow: 1;
-        margin-right: var(--padding-m);
+        &__label {
+            flex-grow: 1;
+            color: var(--color-secondary-text);
+            display: block;
+        }
+    }
+    
+    .ingredient {
+        display: flex;
+        margin-top: var(--padding-m);
+        position: relative;
+    
+        &__button {
+            background: none;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            height: 2rem;
+            width: 2rem;
+        }
+    
+        &__icon {
+            margin-top: -4px;
+            width: var(--icon-size);
+            height: var(--icon-size);
+            fill: var(--color-secondary-text);
+        }
+    
+        &__name,
+        &__quantity,
+        &__unit,
+        .combo {
+            display: block;
+            border: none;
+            border-bottom: 1px solid var(--color-divider);
+            padding: var(--padding-s) 0;
+            font-size: 1rem;
+        }
+        .combo {
+            flex-grow: 1;
+            margin-right: var(--padding-s);
+        }
+        &__quantity {
+            width: 3rem;
+            flex-grow: 0;
+            text-align: right;
+            padding-right: var(--padding-s);
+        }
+        &__unit {
+            color: var(--color-secondary-text);
+        }
     }
 }

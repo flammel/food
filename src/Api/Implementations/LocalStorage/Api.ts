@@ -71,8 +71,8 @@ const api: Api = {
     consumables: {
         autocomplete: async (search: string): Promise<Consumable[]> => {
             const allConsumables = await getState((appState) => [
-                ...sortedFoods(appState).map((food): Consumable => ({type: "food", value: food})),
-                ...sortedRecipes(appState).map((recipe): Consumable => ({type: "recipe", value: recipe}))
+                ...sortedFoods(appState).map((food): Consumable => ({ type: "food", value: food })),
+                ...sortedRecipes(appState).map((recipe): Consumable => ({ type: "recipe", value: recipe })),
             ]);
             const fuse = new Fuse(allConsumables, {
                 keys: ["value.name", "value.brand"],
@@ -183,13 +183,15 @@ const api: Api = {
     },
     brands: {
         autocomplete: async (search: string): Promise<Brand[]> => {
-            const allBrands = await getState((appState) => [...new Set(sortedFoods(appState).map(food => food.brand))]);
+            const allBrands = await getState((appState) => [
+                ...new Set(sortedFoods(appState).map((food) => food.brand)),
+            ]);
             const fuse = new Fuse(
-                allBrands.map(brand => ({id: brand, name: brand})),
-                {keys: ["name"]}
+                allBrands.map((brand) => ({ id: brand, name: brand })),
+                { keys: ["name"] },
             );
             const result = fuse.search(search);
-            return result.map(brand => brand.name);
+            return result.map((brand) => brand.name);
         },
     },
 };

@@ -82,7 +82,8 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
                     <input
                         {...getInputProps({
                             type: "text",
-                            className: "input-group__input combo__input" + (props.isInvalid ? " form-control__invalid" : ""),
+                            className:
+                                "input-group__input combo__input" + (props.isInvalid ? " form-control__invalid" : ""),
                             placeholder: props.placeholder || "",
                             onChange: onInputChange,
                             autoFocus: props.autoFocus,

@@ -6,7 +6,7 @@ import { dateToString } from "../../Utilities";
 import { Settings, emptySettings } from "../../Domain/Settings";
 import { ApiContext } from "../../Api/Context";
 import Formatter from "../../Formatter";
-import TopBar, { MenuButton } from "../TopBar/TopBar";
+import TopBar, { MenuButton, Title } from "../TopBar/TopBar";
 import { Instance } from "flatpickr/dist/types/instance";
 
 interface UrlParams {
@@ -77,20 +77,33 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
         <>
             <TopBar>
                 <MenuButton />
-                {dateToString(date)}
+                <Title>{dateToString(date)}</Title>
                 <Link className="top-bar__action-button" to={"/log/" + dateToString(previousDay)}>
-                    <svg className="top-bar__action-icon" viewBox="0 0 8 16" version="1.1"><path fillRule="evenodd" d="M5.5 3L7 4.5 3.25 8 7 11.5 5.5 13l-5-5 5-5z"></path></svg>
+                    <svg className="top-bar__action-icon" viewBox="0 0 8 16" version="1.1">
+                        <path fillRule="evenodd" d="M5.5 3L7 4.5 3.25 8 7 11.5 5.5 13l-5-5 5-5z"></path>
+                    </svg>
                 </Link>
                 <button className="top-bar__action-button" ref={datePickerRef}>
-                    <svg className="top-bar__action-icon" viewBox="0 0 14 16" version="1.1" aria-hidden="true"><path fillRule="evenodd" d="M13 2h-1v1.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5V2H6v1.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5V2H2c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h11c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm0 12H2V5h11v9zM5 3H4V1h1v2zm6 0h-1V1h1v2zM6 7H5V6h1v1zm2 0H7V6h1v1zm2 0H9V6h1v1zm2 0h-1V6h1v1zM4 9H3V8h1v1zm2 0H5V8h1v1zm2 0H7V8h1v1zm2 0H9V8h1v1zm2 0h-1V8h1v1zm-8 2H3v-1h1v1zm2 0H5v-1h1v1zm2 0H7v-1h1v1zm2 0H9v-1h1v1zm2 0h-1v-1h1v1zm-8 2H3v-1h1v1zm2 0H5v-1h1v1zm2 0H7v-1h1v1zm2 0H9v-1h1v1z"></path></svg>
+                    <svg className="top-bar__action-icon" viewBox="0 0 14 16" version="1.1" aria-hidden="true">
+                        <path
+                            fillRule="evenodd"
+                            d="M13 2h-1v1.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5V2H6v1.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5V2H2c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h11c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm0 12H2V5h11v9zM5 3H4V1h1v2zm6 0h-1V1h1v2zM6 7H5V6h1v1zm2 0H7V6h1v1zm2 0H9V6h1v1zm2 0h-1V6h1v1zM4 9H3V8h1v1zm2 0H5V8h1v1zm2 0H7V8h1v1zm2 0H9V8h1v1zm2 0h-1V8h1v1zm-8 2H3v-1h1v1zm2 0H5v-1h1v1zm2 0H7v-1h1v1zm2 0H9v-1h1v1zm2 0h-1v-1h1v1zm-8 2H3v-1h1v1zm2 0H5v-1h1v1zm2 0H7v-1h1v1zm2 0H9v-1h1v1z"
+                        ></path>
+                    </svg>
                 </button>
                 <Link className="top-bar__action-button" to={"/log/" + dateToString(nextDay)}>
-                    <svg className="top-bar__action-icon" viewBox="0 0 8 16" version="1.1"><path fillRule="evenodd" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path></svg>
+                    <svg className="top-bar__action-icon" viewBox="0 0 8 16" version="1.1">
+                        <path fillRule="evenodd" d="M7.5 8l-5 5L1 11.5 4.75 8 1 4.5 2.5 3l5 5z"></path>
+                    </svg>
                 </Link>
             </TopBar>
             <div className="consumption consumption--totals consumption--only-macros">
                 <div className="consumption__macros">
-                    <div className="consumption__macro" data-label="Calories" data-suffix={"/" + settings.targetCalories}>
+                    <div
+                        className="consumption__macro"
+                        data-label="Calories"
+                        data-suffix={"/" + settings.targetCalories}
+                    >
                         {Formatter.calories(caloriesSum)}
                     </div>
                     <div className="consumption__macro" data-label="Carbs" data-suffix={"/" + settings.targetCarbs}>
@@ -107,7 +120,11 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
             {consumptions.map((consumption) => {
                 const values = nutritionData(consumption);
                 return (
-                    <Link to={"/log/" + dateToString(date) + "/" + consumption.id} className="consumption" key={consumption.id}>
+                    <Link
+                        to={"/log/" + dateToString(date) + "/" + consumption.id}
+                        className="consumption"
+                        key={consumption.id}
+                    >
                         <div className="consumption__consumable">{Formatter.consumable(consumption.consumable)}</div>
                         <div className="consumption__quantity">
                             {Formatter.quantity(consumption.quantity)}
@@ -132,7 +149,9 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
                 );
             })}
             <Link className="fab" to={"/log/" + dateToString(date) + "/add"}>
-                <svg className="fab__icon" viewBox="0 0 12 16" version="1.1" aria-hidden="true"><path fillRule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path></svg>
+                <svg className="fab__icon" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
+                    <path fillRule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path>
+                </svg>
             </Link>
         </>
     );

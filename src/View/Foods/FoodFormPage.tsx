@@ -4,7 +4,7 @@ import { ApiContext } from "../../Api/Context";
 import ComboBox from "../ComboBox/ComboBox";
 import { emptyFood, Brand } from "../../Domain/Food";
 import Formatter from "../../Formatter";
-import TopBar, { BackButton, Action } from "../TopBar/TopBar";
+import TopBar, { BackButton, Action, Title } from "../TopBar/TopBar";
 
 interface FoodFormPageUrlParams {
     id: string;
@@ -53,7 +53,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
 
     const onDelete = (): void => {
         const deleteFn = async () => {
-            await api.foods.delete(food)
+            await api.foods.delete(food);
             props.history.push("/foods");
         };
         deleteFn();
@@ -63,16 +63,22 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
         <>
             <TopBar>
                 <BackButton />
-                {editing ? "Edit Food" : "New Food"}
+                <Title>{editing ? "Edit Food" : "New Food"}</Title>
                 {editing ? <Action icon="delete" action={onDelete} /> : null}
             </TopBar>
             <form onSubmit={onSubmit} className="form">
                 <div className="input-group">
                     <label className="input-group__label">Name</label>
-                    <input className="input-group__input" type="text" required value={food.name} onChange={(e) => {
-                        const name = e.target.value;
-                        setFood((prev) => ({ ...prev, name: name }));
-                    }} />
+                    <input
+                        className="input-group__input"
+                        type="text"
+                        required
+                        value={food.name}
+                        onChange={(e) => {
+                            const name = e.target.value;
+                            setFood((prev) => ({ ...prev, name: name }));
+                        }}
+                    />
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Brand</label>
@@ -88,46 +94,88 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Default Quantity</label>
-                    <input className="input-group__input" type="number" min="0" step="1" required value={Formatter.quantity(food.defaultQuantity)} onChange={(e) => {
-                        const defaultQuantity = parseInt(e.target.value);
-                        setFood((prev) => ({ ...prev, defaultQuantity }));
-                    }} />
-                    <span className="input-group__suffix">
-                        g
-                    </span>
+                    <input
+                        className="input-group__input"
+                        type="number"
+                        min="0"
+                        step="1"
+                        required
+                        value={Formatter.quantity(food.defaultQuantity)}
+                        onChange={(e) => {
+                            const defaultQuantity = parseInt(e.target.value);
+                            setFood((prev) => ({ ...prev, defaultQuantity }));
+                        }}
+                    />
+                    <span className="input-group__suffix">g</span>
                 </div>
-                <div className="macro-inputs">
-                    <div className="input-group">
-                        <label className="input-group__label">Calories</label>
-                        <input className="input-group__input" type="number" min="0" step="1" required value={Formatter.calories(food.calories)} onChange={(e) => {
+                <div className="input-group">
+                    <label className="input-group__label">Calories</label>
+                    <input
+                        className="input-group__input"
+                        type="number"
+                        min="0"
+                        step="1"
+                        required
+                        value={Formatter.calories(food.calories)}
+                        onChange={(e) => {
                             const calories = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, calories }));
-                        }} />
-                    </div>
-                    <div className="input-group">
-                        <label className="input-group__label">Carbs</label>
-                        <input className="input-group__input" type="number" min="0" step="0.1" required value={Formatter.macro(food.carbs)} onChange={(e) => {
+                        }}
+                    />
+                    <span className="input-group__suffix">kcal/100 g</span>
+                </div>
+                <div className="input-group">
+                    <label className="input-group__label">Carbs</label>
+                    <input
+                        className="input-group__input"
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        required
+                        value={Formatter.macro(food.carbs)}
+                        onChange={(e) => {
                             const carbs = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, carbs }));
-                        }} />
-                    </div>
-                    <div className="input-group">
-                        <label className="input-group__label">Fat</label>
-                        <input className="input-group__input" type="number" min="0" step="0.1" required value={Formatter.macro(food.fat)} onChange={(e) => {
+                        }}
+                    />
+                    <span className="input-group__suffix">g/100 g</span>
+                </div>
+                <div className="input-group">
+                    <label className="input-group__label">Fat</label>
+                    <input
+                        className="input-group__input"
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        required
+                        value={Formatter.macro(food.fat)}
+                        onChange={(e) => {
                             const fat = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, fat }));
-                        }} />
-                    </div>
-                    <div className="input-group">
-                        <label className="input-group__label">Protein</label>
-                        <input className="input-group__input" type="number" min="0" step="0.1" required value={Formatter.macro(food.protein)} onChange={(e) => {
+                        }}
+                    />
+                    <span className="input-group__suffix">g/100 g</span>
+                </div>
+                <div className="input-group">
+                    <label className="input-group__label">Protein</label>
+                    <input
+                        className="input-group__input"
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        required
+                        value={Formatter.macro(food.protein)}
+                        onChange={(e) => {
                             const protein = parseFloat(e.target.value);
                             setFood((prev) => ({ ...prev, protein }));
-                        }} />
-                    </div>
+                        }}
+                    />
+                    <span className="input-group__suffix">g/100 g</span>
                 </div>
                 <div className="form__buttons">
-                    <button type="submit" className="button button--primary">Save</button>
+                    <button type="submit" className="button button--primary">
+                        Save
+                    </button>
                 </div>
             </form>
         </>
