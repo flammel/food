@@ -2,9 +2,11 @@ import React, { useState, useContext, useEffect } from "react";
 import { Settings, emptySettings } from "../../Domain/Settings";
 import { ApiContext } from "../../Api/Context";
 import TopBar, { MenuButton, Title } from "../TopBar/TopBar";
+import { SnackbarContext, Snackbar } from "../Snackbar";
 
 export default function SettingsPage(): React.ReactElement {
     const api = useContext(ApiContext);
+    const snackbar = useContext(SnackbarContext);
     const [settings, setSettings] = useState<Settings>(emptySettings);
 
     useEffect(() => {
@@ -19,6 +21,7 @@ export default function SettingsPage(): React.ReactElement {
         e.preventDefault();
         const update = async (): Promise<void> => {
             await api.settings.update(settings);
+            snackbar.show(<Snackbar text="Settings saved" />)
         };
         update();
     };

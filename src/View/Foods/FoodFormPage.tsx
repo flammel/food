@@ -5,6 +5,7 @@ import ComboBox from "../ComboBox/ComboBox";
 import { emptyFood, Brand } from "../../Domain/Food";
 import Formatter from "../../Formatter";
 import TopBar, { BackButton, Action, Title } from "../TopBar/TopBar";
+import { SnackbarContext, Snackbar } from "../Snackbar";
 
 interface FoodFormPageUrlParams {
     id: string;
@@ -13,13 +14,14 @@ type FoodFormPagePageProps = RouteComponentProps<FoodFormPageUrlParams>;
 
 export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactElement {
     const api = useContext(ApiContext);
+    const snackbar = useContext(SnackbarContext);
     const [food, setFood] = useState(emptyFood);
     const [formValues, setFormValues] = useState({
         defaultQuantity: "1",
-        calories: "0",
-        carbs: "0.0",
-        fat: "0.0",
-        protein: "0.0",
+        calories: "",
+        carbs: "",
+        fat: "",
+        protein: "",
     });
     const [editing, setEditing] = useState(false);
 
@@ -71,6 +73,12 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
         const deleteFn = async (): Promise<void> => {
             await api.foods.delete(food);
             props.history.push("/foods");
+            snackbar.show(
+                <Snackbar
+                    text={"Deleted " + Formatter.food(food)}
+                    action={{ text: "Undo", fn: () => api.foods.undoDelete(food) }}
+                />,
+            );
         };
         deleteFn();
     };
@@ -146,6 +154,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         type="number"
                         min="0"
                         step="1"
+                        placeholder="0"
                         required
                         value={formValues.calories}
                         onChange={(e) => {
@@ -166,6 +175,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         type="number"
                         min="0"
                         step="0.1"
+                        placeholder="0.0"
                         required
                         value={formValues.carbs}
                         onChange={(e) => {
@@ -186,6 +196,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         type="number"
                         min="0"
                         step="0.1"
+                        placeholder="0.0"
                         required
                         value={formValues.fat}
                         onChange={(e) => {
@@ -206,6 +217,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         type="number"
                         min="0"
                         step="0.1"
+                        placeholder="0.0"
                         required
                         value={formValues.protein}
                         onChange={(e) => {

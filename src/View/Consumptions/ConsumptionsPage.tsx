@@ -8,6 +8,7 @@ import { ApiContext } from "../../Api/Context";
 import Formatter from "../../Formatter";
 import TopBar, { MenuButton, Title } from "../TopBar/TopBar";
 import { Instance } from "flatpickr/dist/types/instance";
+import FloatingActionButton from "../FloatingActionButton";
 
 interface UrlParams {
     date: string;
@@ -117,6 +118,11 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
                     </div>
                 </div>
             </div>
+            {consumptions.length === 0 ? (
+                <p className="no-items">
+                    No consumptions. <Link to={"/log/" + dateToString(date) + "/add"}>Create one?</Link>
+                </p>
+            ) : null}
             {consumptions.map((consumption) => {
                 const values = nutritionData(consumption);
                 return (
@@ -148,11 +154,7 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
                     </Link>
                 );
             })}
-            <Link className="fab" to={"/log/" + dateToString(date) + "/add"}>
-                <svg className="fab__icon" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path>
-                </svg>
-            </Link>
+            <FloatingActionButton target={"/log/" + dateToString(date) + "/add"} />
         </>
     );
 }

@@ -4,6 +4,7 @@ import { ApiContext } from "../../Api/Context";
 import Formatter from "../../Formatter";
 import TopBar, { Search, MenuButton } from "../TopBar/TopBar";
 import { Food } from "../../Domain/Food";
+import FloatingActionButton from "../FloatingActionButton";
 
 export default function FoodsPage(): React.ReactElement {
     const api = useContext(ApiContext);
@@ -24,6 +25,11 @@ export default function FoodsPage(): React.ReactElement {
                 <MenuButton />
                 <Search placeholder="Search Foods" value={search} onChange={setSearch} />
             </TopBar>
+            {foods.length === 0 ? (
+                <p className="no-items">
+                    No foods. <Link to="/foods/add">Create one?</Link>
+                </p>
+            ) : null}
             {foods.map((food) => {
                 return (
                     <Link to={"/foods/" + food.id} className="food" key={food.id}>
@@ -50,11 +56,7 @@ export default function FoodsPage(): React.ReactElement {
                     </Link>
                 );
             })}
-            <Link className="fab" to="/foods/add">
-                <svg className="fab__icon" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path>
-                </svg>
-            </Link>
+            <FloatingActionButton target="/foods/add" />
         </>
     );
 }

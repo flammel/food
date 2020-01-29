@@ -13,9 +13,11 @@ import { Food, emptyFood } from "../../Domain/Food";
 import TopBar, { BackButton, Action, Title } from "../TopBar/TopBar";
 import Formatter from "../../Formatter";
 import ComboBox from "../ComboBox/ComboBox";
+import { Snackbar, SnackbarContext } from "../Snackbar";
 
 export default function RecipeForm(): React.ReactElement {
     const history = useHistory();
+    const snackbar = useContext(SnackbarContext);
     const params = useParams<{ id: string }>();
     const api = useContext(ApiContext);
     const [recipe, setRecipe] = useState(emptyRecipe);
@@ -59,6 +61,12 @@ export default function RecipeForm(): React.ReactElement {
         const deleteFn = async (): Promise<void> => {
             await api.recipes.delete(recipe);
             history.push("/recipes");
+            snackbar.show(
+                <Snackbar
+                    text={"Deleted " + Formatter.recipe(recipe)}
+                    action={{ text: "Undo", fn: () => api.recipes.undoDelete(recipe) }}
+                />,
+            );
         };
         deleteFn();
     };

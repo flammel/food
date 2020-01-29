@@ -11,16 +11,21 @@
 
     --font-family: sans-serif;
 
-    --color-dark-primary: #001970;
-    --color-default-primary: #303f9f;
-    --color-light-primary: #666ad1;
-    --color-text-primary: #ffffff;
-    --color-accent: #009688;
-    --color-primary-text: #212121;
-    --color-secondary-text: #757575;
+    --color-primary: hsl(232, 54%, 41%);
+    --color-primary-text: #ffffff;
+
+    --color-secondary: hsl(232, 54%, 41%);
+    --color-secondary-light: hsl(232, 100%, 80%);
+    // --color-secondary-light: hsl(174, 80%, 50%);
+    --color-secondary-text: #ffffff;
+
+    --color-text: #212121;
+    --color-text-light: #757575;
+
     --color-divider: #bdbdbd;
 
     --icon-size: 1rem;
+
     --top-bar-height: 3.5rem;
     --top-bar-font-size: 1.1rem;
 }
@@ -49,7 +54,7 @@ body {
     margin: 0;
     min-width: 320px;
     font-family: var(--font-family);
-    color: var(--color-primary-text);
+    color: var(--color-text);
     font-size: 1rem;
     padding-bottom: 6rem;
 }
@@ -62,7 +67,7 @@ body {
     position: fixed;
     right: 1.5rem;
     bottom: 1.5rem;
-    background: var(--color-accent);
+    background: var(--color-secondary);
     border-radius: 50%;
     width: 3.5rem;
     height: 3.5rem;
@@ -70,7 +75,7 @@ body {
     align-items: center;
     justify-content: center;
     &__icon {
-        @include icon-button-icon(var(--color-primary-text));
+        @include icon-button-icon(var(--color-secondary-text));
     }
 }
 
@@ -98,7 +103,7 @@ body {
 
     &__label {
         display: block;
-        color: var(--color-secondary-text);
+        color: var(--color-text-light);
         margin-right: var(--padding-m);
         white-space: nowrap;
     }
@@ -109,7 +114,7 @@ body {
         box-sizing: border-box;
         border: none;
         padding: 0;
-        color: var(--color-primary-text);
+        color: var(--color-text);
         font-family: var(--font-family);
         font-size: 1rem;
         &:focus {
@@ -117,7 +122,7 @@ body {
         }
     }
     &__suffix {
-        color: var(--color-secondary-text);
+        color: var(--color-text-light);
     }
 }
 
@@ -132,12 +137,7 @@ body {
     }
 
     &--primary {
-        background: var(--color-default-primary);
-        color: var(--color-text-primary);
-    }
-
-    &--secondary {
-        background: var(--color-divider);
+        background: var(--color-primary);
         color: var(--color-primary-text);
     }
 }
@@ -159,7 +159,7 @@ body {
 
     &__nav-icon,
     &__action-icon {
-        @include icon-button-icon(var(--color-primary-text));
+        @include icon-button-icon(var(--color-text));
     }
 
     &__title {
@@ -172,7 +172,7 @@ body {
         padding: 0 var(--padding-m) 0 0;
         font-size: var(--top-bar-font-size);
         font-family: var(--font-family);
-        color: var(--color-primary-text);
+        color: var(--color-text);
         flex-grow: 1;
 
         &:focus {
@@ -196,7 +196,7 @@ body {
 
     &__title {
         font-size: var(--text-largest);
-        color: var(--color-primary-text);
+        color: var(--color-text);
         text-decoration: none;
         padding: 0 var(--padding-m);
         display: block;
@@ -216,10 +216,13 @@ body {
     }
 
     &__link {
-        color: var(--color-primary-text);
+        color: var(--color-text);
         text-decoration: none;
         display: block;
-        padding: var(--padding-m);
+        padding: var(--padding-l);
+    }
+    &__item--active &__link {
+        font-weight: bold;
     }
 
     &--visible {
@@ -265,7 +268,7 @@ body {
     row-gap: var(--padding-m);
     padding: var(--padding-m);
     text-decoration: none;
-    color: var(--color-primary-text);
+    color: var(--color-text);
     width: 100%;
     box-sizing: border-box;
     border-bottom: 1px solid var(--color-divider);
@@ -282,12 +285,12 @@ body {
         &::before {
             content: attr(data-label);
             font-size: var(--text-smaller);
-            color: var(--color-secondary-text);
+            color: var(--color-text-light);
         }
         &::after {
             content: attr(data-suffix);
             font-size: var(--text-smaller);
-            color: var(--color-secondary-text);
+            color: var(--color-text-light);
         }
     }
     &__consumable,
@@ -331,13 +334,13 @@ body {
     &__item {
         padding: var(--padding-m);
         &--highlighted {
-            background: var(--color-divider);
+            background: #e8e8e8;
         }
         &--selected {
             font-weight: bold;
         }
         &--empty {
-            color: var(--color-secondary-text);
+            color: var(--color-text-light);
         }
     }
     &__inner {
@@ -354,7 +357,7 @@ body {
         margin-top: -0.5rem;
     }
     &__icon {
-        @include icon-button-icon(var(--color-secondary-text));
+        @include icon-button-icon(var(--color-text-light));
         position: absolute;
         right: 0;
         top: 0;
@@ -373,7 +376,7 @@ body {
 
         &__label {
             flex-grow: 1;
-            color: var(--color-secondary-text);
+            color: var(--color-text-light);
             display: block;
         }
     }
@@ -391,7 +394,7 @@ body {
 
         &__icon {
             margin-top: -4px;
-            @include icon-button-icon(var(--color-secondary-text));
+            @include icon-button-icon(var(--color-text-light));
         }
 
         &__name,
@@ -415,7 +418,39 @@ body {
             padding-right: var(--padding-s);
         }
         &__unit {
-            color: var(--color-secondary-text);
+            color: var(--color-text-light);
         }
+    }
+}
+
+.no-items {
+    text-align: center;
+    a {
+        color: var(--color-primary);
+    }
+}
+
+.snackbar {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
+    &__text {
+        flex-grow: 1;
+        margin: 0;
+        padding: var(--padding-m);
+    }
+    &__action {
+        border: none;
+        background: none;
+        font-size: 1rem;
+        color: var(--color-secondary-light);
+        padding: var(--padding-m);
+    }
+    &--fab {
+        bottom: 6rem;
     }
 }

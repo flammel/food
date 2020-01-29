@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import flatpickr from "flatpickr";
 import { ApiContext } from "../../Api/Context";
 import ComboBox from "../ComboBox/ComboBox";
 import { emptyConsumption, nutritionData } from "../../Domain/Consumption";
@@ -8,6 +9,8 @@ import { dateToString } from "../../Utilities";
 import Formatter from "../../Formatter";
 import { nilUUID } from "../../Domain/UUID";
 import TopBar, { Action, BackButton, Title } from "../TopBar/TopBar";
+import { Instance } from "flatpickr/dist/types/instance";
+import { Snackbar, SnackbarContext } from "../Snackbar";
 
 interface ConsumptionUrlParams {
     date: string;
@@ -17,9 +20,12 @@ type ConsumptionPageProps = RouteComponentProps<ConsumptionUrlParams>;
 
 export default function ConsumptionFormPage(props: ConsumptionPageProps): React.ReactElement {
     const api = useContext(ApiContext);
+    const snackbar = useContext(SnackbarContext);
     const date = new Date(props.match.params.date || new Date().valueOf());
     const [consumption, setConsumption] = useState(emptyConsumption(date));
     const [editing, setEditing] = useState(false);
+    const datePickerRef = useRef<HTMLInputElement>(null);
+    const flatpickrInstance = useRef<Instance>();
 
     const editingId = props.match.params.id;
     useEffect(() => {
@@ -64,9 +70,27 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
         const deleteFn = async (): Promise<void> => {
             await api.consumptions.delete(consumption);
             props.history.push("/log/" + dateToString(date));
+            snackbar.show(
+                <Snackbar
+                    text={"Deleted " + Formatter.consumable(consumption.consumable)}
+                    action={{ text: "Undo", fn: () => api.consumptions.undoDelete(consumption) }}
+                />,
+            );
         };
         deleteFn();
     };
+
+    useEffect(() => {
+        flatpickrInstance.current = flatpickr(datePickerRef.current as Node, {
+            defaultDate: date,
+            position: "below",
+            disableMobile: true,
+            onChange: (selected) => {
+                setConsumption((prev) => ({ ...prev, date: selected[0] }));
+            },
+        });
+        return flatpickrInstance.current?.destroy;
+    }, []);
 
     const macros = nutritionData(consumption);
 
@@ -89,6 +113,7 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
                             const date = new Date(e.target.value);
                             setConsumption((prev) => ({ ...prev, date }));
                         }}
+                        ref={datePickerRef}
                     />
                 </div>
                 <div className="input-group">
