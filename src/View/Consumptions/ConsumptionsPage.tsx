@@ -62,6 +62,7 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
                 props.history.push("/log/" + dateStr);
             },
         });
+        return flatpickrInstance.current?.destroy;
     }, [dateToString(date), datesWithConsumptions]);
 
     const caloriesSum = consumptions.reduce((acc, cur) => acc + nutritionData(cur).calories, 0);
