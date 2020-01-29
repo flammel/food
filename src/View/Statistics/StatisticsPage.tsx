@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
-import * as Plotly from 'plotly.js';
 import { Statistics, emptyStatistics } from "../../Domain/Statistics";
 import { emptySettings, Settings } from "../../Domain/Settings";
 import { ApiContext } from "../../Api/Context";
@@ -25,52 +24,7 @@ export default function StatisticsPage(): React.ReactElement {
         fetchSettings();
     }, []);
 
-    useEffect(() => {
-        const data: Partial<Plotly.PlotData>[] = [
-            {
-                x: statistics.days.map((day) => day.date),
-                y: statistics.days.map((day) => Formatter.calories(day.calories)),
-                name: "Calories",
-                type: "scatter",
-            },
-            {
-                x: statistics.days.map((day) => day.date),
-                y: statistics.days.map((day) => Formatter.macro(day.fat)),
-                name: "Fat",
-                yaxis: "y2",
-                type: "scatter",
-            },
-            {
-                x: statistics.days.map((day) => day.date),
-                y: statistics.days.map((day) => Formatter.macro(day.carbs)),
-                name: "Carbs",
-                yaxis: "y2",
-                type: "scatter",
-            },
-            {
-                x: statistics.days.map((day) => day.date),
-                y: statistics.days.map((day) => Formatter.macro(day.protein)),
-                name: "Protein",
-                yaxis: "y2",
-                type: "scatter",
-            },
-        ];
-
-        const layout: Partial<Plotly.Layout> = {
-            yaxis: {
-                title: "Calories",
-            },
-            yaxis2: {
-                title: "Macros",
-                side: "right",
-                overlaying: "y",
-            },
-        };
-
-        if (plotlyDivRef.current !== null) {
-            Plotly.newPlot(plotlyDivRef.current, data, layout);
-        }
-    }, [plotlyDivRef.current, statistics]);
+    useEffect(() => {}, [plotlyDivRef.current, statistics]);
 
     return (
         <>
