@@ -7,28 +7,24 @@ import {
     deleteIngredient,
     Ingredient,
 } from "../../Domain/Recipe";
-import { withRouter, RouteComponentProps } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { ApiContext } from "../../Api/Context";
-import { Food } from "../../Domain/Food";
+import { Food, emptyFood } from "../../Domain/Food";
 import TopBar, { BackButton, Action, Title } from "../TopBar/TopBar";
 import Formatter from "../../Formatter";
 import ComboBox from "../ComboBox/ComboBox";
 
-interface RecipeFormUrlParams {
-    id: string;
-}
-
-type RecipeFormProps = RouteComponentProps<RecipeFormUrlParams>;
-
-function RecipeForm(props: RecipeFormProps): React.ReactElement {
+export default function RecipeForm(): React.ReactElement {
+    const history = useHistory();
+    const params = useParams<{ id: string }>();
     const api = useContext(ApiContext);
     const [recipe, setRecipe] = useState(emptyRecipe);
     const [editing, setEditing] = useState(false);
 
-    const editingId = props.match.params.id;
+    const editingId = params.id;
     useEffect(() => {
         if (editingId) {
-            const fetchRecipe = async () => {
+            const fetchRecipe = async (): Promise<void> => {
                 const loaded = await api.recipes.read(editingId);
                 setRecipe(loaded);
                 setEditing(true);
@@ -39,13 +35,13 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const persist = async () => {
+        const persist = async (): Promise<void> => {
             if (editing) {
                 await api.recipes.update(recipe);
             } else {
                 await api.recipes.create(recipe);
             }
-            props.history.push("/recipes");
+            history.push("/recipes");
         };
         persist();
     };
@@ -54,14 +50,15 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
         return await api.foods.autocomplete(search);
     };
 
-    const onSelect = (ingredient: Ingredient)=> {
-        return (food: Food) => setRecipe((prev) => updateIngredient({...ingredient, food}, prev));
-    }
+    const onSelect = (ingredient: Ingredient) => {
+        return (food: Food | null) =>
+            setRecipe((prev) => updateIngredient({ ...ingredient, food: food || emptyFood }, prev));
+    };
 
     const onDelete = (): void => {
-        const deleteFn = async () => {
+        const deleteFn = async (): Promise<void> => {
             await api.recipes.delete(recipe);
-            props.history.push("/recipes");
+            history.push("/recipes");
         };
         deleteFn();
     };
@@ -73,7 +70,7 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
         };
     };
 
-    const onIngredientAdd = (e: React.FormEvent<HTMLButtonElement>) => {
+    const onIngredientAdd = (e: React.FormEvent<HTMLButtonElement>): void => {
         e.preventDefault();
         setRecipe((prev) => addIngredient(emptyIngredient, prev));
     };
@@ -119,7 +116,9 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
                     <div className="ingredients__header">
                         <label className="ingredients__label">Ingredients</label>
                         <button className="ingredient__button" type="button" onClick={onIngredientAdd}>
-                            <svg className="ingredient__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg>
+                            <svg className="ingredient__icon" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
+                            </svg>
                         </button>
                     </div>
                     {recipe.ingredients
@@ -127,16 +126,6 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
                         .map((ingredient) => {
                             return (
                                 <div className="ingredient" key={ingredient.id}>
-                                    <button
-                                        className="ingredient__button"
-                                        type="button"
-                                        onClick={onIngredientDelete(ingredient)}
-                                    >
-                                        <svg className="ingredient__icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
-                                        </svg>
-                                    </button>
-
                                     <ComboBox
                                         onSelect={onSelect(ingredient)}
                                         selected={ingredient.food}
@@ -153,11 +142,20 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
                                         min="0"
                                         value={Formatter.quantity(ingredient.quantity)}
                                         onChange={(e) => {
-                                            const changed = {...ingredient, quantity: parseInt(e.target.value)};
+                                            const changed = { ...ingredient, quantity: parseInt(e.target.value) };
                                             setRecipe((prev) => updateIngredient(changed, prev));
                                         }}
                                     />
                                     <span className="ingredient__unit">{ingredient.food.unit}</span>
+                                    <button
+                                        className="ingredient__button"
+                                        type="button"
+                                        onClick={onIngredientDelete(ingredient)}
+                                    >
+                                        <svg className="ingredient__icon" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             );
                         })}
@@ -171,5 +169,3 @@ function RecipeForm(props: RecipeFormProps): React.ReactElement {
         </>
     );
 }
-
-export default withRouter(RecipeForm);

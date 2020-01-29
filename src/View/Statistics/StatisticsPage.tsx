@@ -12,11 +12,11 @@ export default function StatisticsPage(): React.ReactElement {
     const plotlyDivRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const fetchStatistics = async () => {
+        const fetchStatistics = async (): Promise<void> => {
             const result = await api.statistics.load();
             setStatistics(result);
         };
-        const fetchSettings = async () => {
+        const fetchSettings = async (): Promise<void> => {
             const result = await api.settings.load();
             setSettings(result);
         };
@@ -24,7 +24,7 @@ export default function StatisticsPage(): React.ReactElement {
         fetchSettings();
     }, []);
 
-    useEffect(() => {}, [plotlyDivRef.current, statistics]);
+    // useEffect(() => {}, [plotlyDivRef.current, statistics]);
 
     return (
         <>

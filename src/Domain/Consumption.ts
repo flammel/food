@@ -1,8 +1,7 @@
 import { Quantity } from "./Quantity";
 import { NutritionData } from "./NutritionData";
 import { nutritionData as recipeNutritionData } from "./Recipe";
-import { emptyFood } from "./Food";
-import { Consumable } from "./Consumable";
+import { Consumable, emptyConsumable } from "./Consumable";
 import { UUID, nilUUID } from "./UUID";
 
 export type ConsumptionId = UUID;
@@ -19,7 +18,7 @@ export function emptyConsumption(date: Date): Consumption {
     return {
         id: nilUUID,
         date: date,
-        consumable: { type: "food", value: emptyFood },
+        consumable: emptyConsumable,
         quantity: 1,
         isDeleted: false,
         sort: 0,

@@ -14,12 +14,12 @@
             display: block;
         }
     }
-    
+
     .ingredient {
         display: flex;
         margin-top: var(--padding-m);
         position: relative;
-    
+
         &__button {
             background: none;
             border: none;
@@ -30,14 +30,14 @@
             height: 2rem;
             width: 2rem;
         }
-    
+
         &__icon {
             margin-top: -4px;
             width: var(--icon-size);
             height: var(--icon-size);
             fill: var(--color-secondary-text);
         }
-    
+
         &__name,
         &__quantity,
         &__unit,

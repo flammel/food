@@ -14,7 +14,7 @@ import { getStatistics, datesWithConsumptions, consumptionsByDate, sortedRecipes
 let currentAppState = loadAppState();
 
 function setState(diff: (prev: AppState) => Partial<AppState>): Promise<void> {
-    return new Promise((res, _err) => {
+    return new Promise((res) => {
         const diffed = diff(currentAppState);
         currentAppState = { ...currentAppState, ...diffed };
         storeAppState(currentAppState);
@@ -23,7 +23,7 @@ function setState(diff: (prev: AppState) => Partial<AppState>): Promise<void> {
 }
 
 function getState<T>(fn: (current: AppState) => T): Promise<T> {
-    return new Promise((res, _err) => {
+    return new Promise((res) => {
         res(fn(currentAppState));
     });
 }
@@ -74,6 +74,9 @@ const api: Api = {
                 ...sortedFoods(appState).map((food): Consumable => ({ type: "food", value: food })),
                 ...sortedRecipes(appState).map((recipe): Consumable => ({ type: "recipe", value: recipe })),
             ]);
+            if (search === "") {
+                return allConsumables;
+            }
             const fuse = new Fuse(allConsumables, {
                 keys: ["value.name", "value.brand"],
             });
@@ -173,7 +176,7 @@ const api: Api = {
             return getState((appState) => appState.settings);
         },
         update: async (settings: Settings): Promise<void> => {
-            return setState((_prev) => ({ settings }));
+            return setState(() => ({ settings }));
         },
     },
     statistics: {
@@ -186,6 +189,9 @@ const api: Api = {
             const allBrands = await getState((appState) => [
                 ...new Set(sortedFoods(appState).map((food) => food.brand)),
             ]);
+            if (search === "") {
+                return allBrands;
+            }
             const fuse = new Fuse(
                 allBrands.map((brand) => ({ id: brand, name: brand })),
                 { keys: ["name"] },

@@ -24,7 +24,7 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
     const flatpickrInstance = useRef<Instance>();
 
     useEffect(() => {
-        const fetchConsumptions = async () => {
+        const fetchConsumptions = async (): Promise<void> => {
             const result = await api.consumptions.load(date);
             setConsumptions(result);
         };
@@ -32,7 +32,7 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
     }, [dateToString(date)]);
 
     useEffect(() => {
-        const fetchSettings = async () => {
+        const fetchSettings = async (): Promise<void> => {
             const result = await api.settings.load();
             setSettings(result);
         };
@@ -40,7 +40,7 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
     }, []);
 
     useEffect(() => {
-        const fetchDatesWithConsumptions = async () => {
+        const fetchDatesWithConsumptions = async (): Promise<void> => {
             const result = await api.consumptions.loadDatesWithData();
             setDatesWithConsumptions(result);
         };

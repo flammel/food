@@ -4,8 +4,9 @@ import { Consumable } from "./Domain/Consumable";
 import { Macro, Calories } from "./Domain/NutritionData";
 import { Quantity } from "./Domain/Quantity";
 import { Recipe } from "./Domain/Recipe";
+import { Unit } from "./Domain/Unit";
 
-const foodLabel = (food: Food) => {
+const foodLabel = (food: Food): string => {
     if (food.id === nilUUID) {
         return "";
     }
@@ -17,9 +18,10 @@ const foodLabel = (food: Food) => {
 
 const servings = (quantity: Quantity): string => {
     return quantity === 1 ? "serving" : "servings";
-}
+};
 
 export default {
+    unit: (unit: Unit) => unit,
     food: foodLabel,
     recipe: (recipe: Recipe) => recipe.name,
     consumable: (consumable: Consumable) => {

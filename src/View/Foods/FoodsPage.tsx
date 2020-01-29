@@ -11,7 +11,7 @@ export default function FoodsPage(): React.ReactElement {
     const [search, setSearch] = useState<string>("");
 
     useEffect(() => {
-        const fetchFoods = async () => {
+        const fetchFoods = async (): Promise<void> => {
             const result = await api.foods.search(search);
             setFoods(result);
         };
@@ -28,7 +28,11 @@ export default function FoodsPage(): React.ReactElement {
                 return (
                     <Link to={"/foods/" + food.id} className="food" key={food.id}>
                         <div className="food__consumable">{Formatter.food(food)}</div>
-                        <div className="food__quantity">{Formatter.quantity(food.defaultQuantity)}</div>
+                        <div className="food__quantity">
+                            {Formatter.quantity(food.defaultQuantity)}
+                            &nbsp;
+                            {Formatter.unit(food.unit)}
+                        </div>
                         <div className="food__macros">
                             <div className="food__macro" data-label="Calories">
                                 {Formatter.calories(food.calories)}

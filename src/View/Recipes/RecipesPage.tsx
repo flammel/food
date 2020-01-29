@@ -11,7 +11,7 @@ export default function RecipesPage(): React.ReactElement {
     const [search, setSearch] = useState<string>("");
 
     useEffect(() => {
-        const fetchRecipes = async () => {
+        const fetchRecipes = async (): Promise<void> => {
             const result = await api.recipes.search(search);
             setRecipes(result);
         };

@@ -14,14 +14,28 @@ type FoodFormPagePageProps = RouteComponentProps<FoodFormPageUrlParams>;
 export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactElement {
     const api = useContext(ApiContext);
     const [food, setFood] = useState(emptyFood);
+    const [formValues, setFormValues] = useState({
+        defaultQuantity: "1",
+        calories: "0",
+        carbs: "0.0",
+        fat: "0.0",
+        protein: "0.0",
+    });
     const [editing, setEditing] = useState(false);
 
     const editingId = props.match.params.id;
     useEffect(() => {
         if (editingId) {
-            const fetchFn = async () => {
+            const fetchFn = async (): Promise<void> => {
                 const loaded = await api.foods.read(editingId);
                 setFood(loaded);
+                setFormValues({
+                    defaultQuantity: Formatter.quantity(loaded.defaultQuantity),
+                    calories: Formatter.calories(loaded.calories),
+                    carbs: Formatter.macro(loaded.carbs),
+                    fat: Formatter.macro(loaded.fat),
+                    protein: Formatter.macro(loaded.protein),
+                });
                 setEditing(true);
             };
             fetchFn();
@@ -32,19 +46,21 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
         return await api.brands.autocomplete(search);
     };
 
-    const onSelect = (brand: Brand): void =>
-        setFood((prev) => ({
-            ...prev,
-            brand,
-        }));
-
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const persist = async () => {
+        const values = {
+            ...food,
+            defaultQuantity: parseInt(formValues.defaultQuantity),
+            calories: parseInt(formValues.calories),
+            carbs: parseFloat(formValues.carbs),
+            fat: parseFloat(formValues.fat),
+            protein: parseFloat(formValues.protein),
+        };
+        const persist = async (): Promise<void> => {
             if (editing) {
-                await api.foods.update(food);
+                await api.foods.update(values);
             } else {
-                await api.foods.create(food);
+                await api.foods.create(values);
             }
             props.history.push("/foods");
         };
@@ -52,7 +68,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
     };
 
     const onDelete = (): void => {
-        const deleteFn = async () => {
+        const deleteFn = async (): Promise<void> => {
             await api.foods.delete(food);
             props.history.push("/foods");
         };
@@ -70,6 +86,7 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                 <div className="input-group">
                     <label className="input-group__label">Name</label>
                     <input
+                        autoFocus={editing ? false : true}
                         className="input-group__input"
                         type="text"
                         required
@@ -83,12 +100,22 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                 <div className="input-group">
                     <label className="input-group__label">Brand</label>
                     <ComboBox
-                        onSelect={onSelect}
+                        onSelect={(brand: Brand | null): void =>
+                            setFood((prev) => ({
+                                ...prev,
+                                brand: brand || "",
+                            }))
+                        }
+                        onChange={(brand: Brand): void =>
+                            setFood((prev) => ({
+                                ...prev,
+                                brand,
+                            }))
+                        }
                         selected={food.brand}
                         itemLabel={(brand) => brand}
                         itemKey={(brand) => brand}
                         search={brandSearch}
-                        autoFocus={true}
                         isInvalid={false}
                     />
                 </div>
@@ -100,10 +127,14 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         min="0"
                         step="1"
                         required
-                        value={Formatter.quantity(food.defaultQuantity)}
+                        value={formValues.defaultQuantity}
                         onChange={(e) => {
-                            const defaultQuantity = parseInt(e.target.value);
-                            setFood((prev) => ({ ...prev, defaultQuantity }));
+                            const defaultQuantity = e.target.value;
+                            setFormValues((prev) => ({ ...prev, defaultQuantity }));
+                        }}
+                        onBlur={(e) => {
+                            const defaultQuantity = Formatter.quantity(parseInt(e.target.value));
+                            setFormValues((prev) => ({ ...prev, defaultQuantity }));
                         }}
                     />
                     <span className="input-group__suffix">g</span>
@@ -116,10 +147,14 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         min="0"
                         step="1"
                         required
-                        value={Formatter.calories(food.calories)}
+                        value={formValues.calories}
                         onChange={(e) => {
-                            const calories = parseFloat(e.target.value);
-                            setFood((prev) => ({ ...prev, calories }));
+                            const calories = e.target.value;
+                            setFormValues((prev) => ({ ...prev, calories }));
+                        }}
+                        onBlur={(e) => {
+                            const calories = Formatter.calories(parseInt(e.target.value));
+                            setFormValues((prev) => ({ ...prev, calories }));
                         }}
                     />
                     <span className="input-group__suffix">kcal/100 g</span>
@@ -132,10 +167,14 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         min="0"
                         step="0.1"
                         required
-                        value={Formatter.macro(food.carbs)}
+                        value={formValues.carbs}
                         onChange={(e) => {
-                            const carbs = parseFloat(e.target.value);
-                            setFood((prev) => ({ ...prev, carbs }));
+                            const carbs = e.target.value;
+                            setFormValues((prev) => ({ ...prev, carbs }));
+                        }}
+                        onBlur={(e) => {
+                            const carbs = Formatter.macro(parseFloat(e.target.value));
+                            setFormValues((prev) => ({ ...prev, carbs }));
                         }}
                     />
                     <span className="input-group__suffix">g/100 g</span>
@@ -148,10 +187,14 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         min="0"
                         step="0.1"
                         required
-                        value={Formatter.macro(food.fat)}
+                        value={formValues.fat}
                         onChange={(e) => {
-                            const fat = parseFloat(e.target.value);
-                            setFood((prev) => ({ ...prev, fat }));
+                            const fat = e.target.value;
+                            setFormValues((prev) => ({ ...prev, fat }));
+                        }}
+                        onBlur={(e) => {
+                            const fat = Formatter.macro(parseFloat(e.target.value));
+                            setFormValues((prev) => ({ ...prev, fat }));
                         }}
                     />
                     <span className="input-group__suffix">g/100 g</span>
@@ -164,10 +207,14 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                         min="0"
                         step="0.1"
                         required
-                        value={Formatter.macro(food.protein)}
+                        value={formValues.protein}
                         onChange={(e) => {
-                            const protein = parseFloat(e.target.value);
-                            setFood((prev) => ({ ...prev, protein }));
+                            const protein = e.target.value;
+                            setFormValues((prev) => ({ ...prev, protein }));
+                        }}
+                        onBlur={(e) => {
+                            const protein = Formatter.macro(parseFloat(e.target.value));
+                            setFormValues((prev) => ({ ...prev, protein }));
                         }}
                     />
                     <span className="input-group__suffix">g/100 g</span>

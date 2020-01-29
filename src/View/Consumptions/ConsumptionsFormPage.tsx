@@ -3,7 +3,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { ApiContext } from "../../Api/Context";
 import ComboBox from "../ComboBox/ComboBox";
 import { emptyConsumption, nutritionData } from "../../Domain/Consumption";
-import { Consumable } from "../../Domain/Consumable";
+import { Consumable, emptyConsumable } from "../../Domain/Consumable";
 import { dateToString } from "../../Utilities";
 import Formatter from "../../Formatter";
 import { nilUUID } from "../../Domain/UUID";
@@ -24,7 +24,7 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
     const editingId = props.match.params.id;
     useEffect(() => {
         if (editingId) {
-            const fetchFn = async () => {
+            const fetchFn = async (): Promise<void> => {
                 const loaded = await api.consumptions.read(editingId);
                 setConsumption(loaded);
                 setEditing(true);
@@ -37,19 +37,19 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
         return await api.consumables.autocomplete(search);
     };
 
-    const onSelect = (consumable: Consumable): void =>
+    const onSelect = (consumable: Consumable | null): void =>
         setConsumption((prev) => ({
             ...prev,
             quantity:
-                prev.consumable.value.id === nilUUID && consumable.type === "food"
+                prev.consumable.value.id === nilUUID && consumable !== null && consumable.type === "food"
                     ? consumable.value.defaultQuantity
                     : prev.quantity,
-            consumable,
+            consumable: consumable || emptyConsumable,
         }));
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const persist = async () => {
+        const persist = async (): Promise<void> => {
             if (editing) {
                 await api.consumptions.update(consumption);
             } else {
@@ -61,7 +61,7 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
     };
 
     const onDelete = (): void => {
-        const deleteFn = async () => {
+        const deleteFn = async (): Promise<void> => {
             await api.consumptions.delete(consumption);
             props.history.push("/log/" + dateToString(date));
         };

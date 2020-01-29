@@ -13,7 +13,7 @@ import {
     JsonData,
     JsonConsumable,
 } from "./StorageTypes";
-import { Settings } from "../../../Domain/Settings";
+import { Settings, emptySettings } from "../../../Domain/Settings";
 import { Consumable } from "../../../Domain/Consumable";
 import isJsonData from "./Validator";
 import { isUnit } from "../../../Domain/Unit";
@@ -126,20 +126,6 @@ function setChecksum(json: string): void {
     window.sessionStorage.setItem("foodlog-checksum", json);
 }
 
-function loadJson(): JsonData {
-    const json = window.localStorage.getItem("foodlog");
-    if (json) {
-        const parsed = JSON.parse(json);
-        if (isJsonData(parsed)) {
-            setChecksum(json);
-            return parsed;
-        } else {
-            throw new Error("Data does not conform to schema");
-        }
-    }
-    throw new Error("Data could not be loaded");
-}
-
 function jsonConsumable(consumable: Consumable): JsonConsumable {
     return {
         type: consumable.type,
@@ -175,6 +161,29 @@ function serialize(state: AppState): JsonData {
         consumptions,
         settings: state.settings,
     };
+}
+
+function initLocalStorage(): void {
+    const json = window.localStorage.getItem("foodlog");
+    if (!json) {
+        const init = JSON.stringify(serialize({ consumptions: {}, foods: {}, recipes: {}, settings: emptySettings }));
+        window.localStorage.setItem("foodlog", init);
+    }
+}
+
+function loadJson(): JsonData {
+    initLocalStorage();
+    const json = window.localStorage.getItem("foodlog");
+    if (json) {
+        const parsed = JSON.parse(json);
+        if (isJsonData(parsed)) {
+            setChecksum(json);
+            return parsed;
+        } else {
+            throw new Error("Data does not conform to schema");
+        }
+    }
+    throw new Error("Data could not be loaded");
 }
 
 function checksumIsOk(): boolean {

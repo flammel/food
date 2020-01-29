@@ -8,7 +8,7 @@ export default function SettingsPage(): React.ReactElement {
     const [settings, setSettings] = useState<Settings>(emptySettings);
 
     useEffect(() => {
-        const fetchSettings = async () => {
+        const fetchSettings = async (): Promise<void> => {
             const result = await api.settings.load();
             setSettings(result);
         };
@@ -17,7 +17,7 @@ export default function SettingsPage(): React.ReactElement {
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const update = async () => {
+        const update = async (): Promise<void> => {
             await api.settings.update(settings);
         };
         update();

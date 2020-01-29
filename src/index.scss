@@ -2,7 +2,6 @@
 @import "./View/Foods/Foods";
 @import "./View/ComboBox/ComboBox";
 @import "./View/Recipes/Recipes";
-// @import "./Statistics/Statistics";
 
 :root {
     --padding-s: 0.375rem;
@@ -25,7 +24,7 @@
     --color-divider: #bdbdbd;
 
     --icon-size: 1rem;
-    --top-bar-height: 3rem;
+    --top-bar-height: 3.5rem;
     --top-bar-font-size: 1.1rem;
 }
 
@@ -138,7 +137,7 @@ body {
     align-items: center;
     border-bottom: 1px solid var(--color-divider);
     height: var(--top-bar-height);
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)!important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
 
     &__nav-button,
     &__action-button {
@@ -150,6 +149,7 @@ body {
         height: var(--top-bar-height);
         width: var(--top-bar-height);
         padding: 0;
+        color: var(--color-primary-text);
     }
 
     &__nav-icon,
@@ -195,8 +195,9 @@ body {
         font-size: var(--text-largest);
         color: var(--color-primary-text);
         text-decoration: none;
-        padding: var(--padding-m);
+        padding: 0 var(--padding-m);
         display: block;
+        line-height: var(--top-bar-height);
     }
 
     &__divider {
