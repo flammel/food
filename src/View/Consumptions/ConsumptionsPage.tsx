@@ -110,6 +110,7 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
                     </div>
                 </div>
             </div>
+            <div className="consumptions">
             {consumptions.length === 0 ? (
                 <p className="no-items">
                     No consumptions for this date. <Link to={"/log/" + dateToString(date) + "/add"}>Create one?</Link>
@@ -146,6 +147,7 @@ export default function ConsumptionsPage(props: Props): React.ReactElement {
                     </Link>
                 );
             })}
+            </div>
             <FloatingActionButton target={"/log/" + dateToString(date) + "/add"} />
         </>
     );

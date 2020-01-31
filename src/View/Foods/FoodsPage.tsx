@@ -30,6 +30,7 @@ export default function FoodsPage(): React.ReactElement {
                     No foods. <Link to="/foods/add">Create one?</Link>
                 </p>
             ) : null}
+            <div className="foods">
             {foods.map((food) => {
                 return (
                     <Link to={"/foods/" + food.id} className="food" key={food.id}>
@@ -56,6 +57,7 @@ export default function FoodsPage(): React.ReactElement {
                     </Link>
                 );
             })}
+            </div>
             <FloatingActionButton target="/foods/add" />
         </>
     );

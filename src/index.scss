@@ -313,7 +313,8 @@ a {
     }
     &--only-macros {
         grid-template-rows: 1fr;
-        grid-template-areas: "macros macros";
+        grid-template-columns: 1fr;
+        grid-template-areas: "macros";
     }
 }
 
@@ -483,5 +484,44 @@ a {
     height: 10rem;
     &--brush {
         height: calc(10rem + 32px);
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .consumption {
+        display: flex;
+        &__macros {
+            display: contents;
+        }
+        &__consumable {
+            flex: 1 0;
+        }
+        &__quantity {
+            flex: 0 0 5rem;
+        }
+        &__macro {
+            flex: 0 0 5rem;
+            &::before {
+                display: none;
+            }
+        }
+    }
+    .food {
+        display: flex;
+        &__macros {
+            display: contents;
+        }
+        &__consumable {
+            flex: 1 0;
+        }
+        &__quantity {
+            flex: 0 0 5rem;
+        }
+        &__macro {
+            flex: 0 0 5rem;
+            &::before {
+                display: none;
+            }
+        }
     }
 }
