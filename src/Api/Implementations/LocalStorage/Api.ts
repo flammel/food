@@ -16,8 +16,11 @@ let currentAppState = loadAppState();
 function setState(diff: (prev: AppState) => Partial<AppState>): Promise<void> {
     return new Promise((res) => {
         const diffed = diff(currentAppState);
-        currentAppState = { ...currentAppState, ...diffed };
-        storeAppState(currentAppState);
+        const newAppState = { ...currentAppState, ...diffed };
+        try {
+            storeAppState(newAppState);
+            currentAppState = newAppState;
+        } catch (e) {}
         res();
     });
 }

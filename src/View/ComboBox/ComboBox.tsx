@@ -1,5 +1,6 @@
 import React, { MutableRefObject, useState, useEffect } from "react";
 import Downshift, { GetItemPropsOptions } from "downshift";
+import { IconChevronDown, IconX } from "../Icons";
 
 interface ComboBoxProps<ItemType> {
     onSelect: (item: ItemType | null) => void;
@@ -109,18 +110,11 @@ export default function ComboBox<ItemType>(props: ComboBoxProps<ItemType>): Reac
                                 }}
                                 type="button"
                             >
-                                <svg className="combo__icon" viewBox="0 0 12 16" version="1.1" aria-hidden="true">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z"
-                                    ></path>
-                                </svg>
+                                <IconX className="combo__icon" />
                             </button>
                         ) : (
                             <button className="combo__button" {...getToggleButtonProps()} type="button">
-                                <svg className="combo__icon" viewBox="0 0 10 16" version="1.1" aria-hidden="true">
-                                    <path fillRule="evenodd" d="M5 11L0 6l1.5-1.5L5 8.25 8.5 4.5 10 6l-5 5z"></path>
-                                </svg>
+                                <IconChevronDown className="combo__icon" />
                             </button>
                         )}
                     </div>

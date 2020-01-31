@@ -20,15 +20,19 @@ export const SnackbarContext = React.createContext<SnackbarState>({
     },
     setFab: () => {
         return;
-    }
+    },
 });
 
 export const SnackbarProvider: React.FunctionComponent = ({ children }): React.ReactElement => {
     const [snackbar, setSnackbar] = React.useState<React.ReactElement | null>(null);
     const location = useLocation();
     const [fab, setFab] = React.useState<boolean>(false);
-    const hide = () => {setFab(false), setSnackbar(null)};
-    React.useEffect(() => {setFab(false);}, [location]);
+    const hide = () => {
+        setFab(false), setSnackbar(null);
+    };
+    React.useEffect(() => {
+        setFab(false);
+    }, [location]);
     React.useEffect(() => {
         if (snackbar === null) {
             return;
@@ -43,11 +47,7 @@ export const SnackbarProvider: React.FunctionComponent = ({ children }): React.R
         hide,
         setFab: () => setFab(true),
     };
-    return (
-        <SnackbarContext.Provider value={state}>
-            {children}
-        </SnackbarContext.Provider>
-    );
+    return <SnackbarContext.Provider value={state}>{children}</SnackbarContext.Provider>;
 };
 
 interface SnackbarProps {

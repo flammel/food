@@ -6,6 +6,7 @@ import { emptyFood, Brand } from "../../Domain/Food";
 import Formatter from "../../Formatter";
 import TopBar, { BackButton, Action, Title } from "../TopBar/TopBar";
 import { SnackbarContext, Snackbar } from "../Snackbar";
+import NumberInput from "../NumberInput";
 
 interface FoodFormPageUrlParams {
     id: string;
@@ -16,13 +17,6 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
     const api = useContext(ApiContext);
     const snackbar = useContext(SnackbarContext);
     const [food, setFood] = useState(emptyFood);
-    const [formValues, setFormValues] = useState({
-        defaultQuantity: "1",
-        calories: "",
-        carbs: "",
-        fat: "",
-        protein: "",
-    });
     const [editing, setEditing] = useState(false);
 
     const editingId = props.match.params.id;
@@ -31,13 +25,6 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
             const fetchFn = async (): Promise<void> => {
                 const loaded = await api.foods.read(editingId);
                 setFood(loaded);
-                setFormValues({
-                    defaultQuantity: Formatter.quantity(loaded.defaultQuantity),
-                    calories: Formatter.calories(loaded.calories),
-                    carbs: Formatter.macro(loaded.carbs),
-                    fat: Formatter.macro(loaded.fat),
-                    protein: Formatter.macro(loaded.protein),
-                });
                 setEditing(true);
             };
             fetchFn();
@@ -50,19 +37,11 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const values = {
-            ...food,
-            defaultQuantity: parseInt(formValues.defaultQuantity),
-            calories: parseInt(formValues.calories),
-            carbs: parseFloat(formValues.carbs),
-            fat: parseFloat(formValues.fat),
-            protein: parseFloat(formValues.protein),
-        };
         const persist = async (): Promise<void> => {
             if (editing) {
-                await api.foods.update(values);
+                await api.foods.update(food);
             } else {
-                await api.foods.create(values);
+                await api.foods.create(food);
             }
             props.history.push("/foods");
         };
@@ -129,105 +108,51 @@ export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactE
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Default Quantity</label>
-                    <input
-                        className="input-group__input"
-                        type="number"
-                        min="0"
-                        step="1"
-                        required
-                        value={formValues.defaultQuantity}
-                        onChange={(e) => {
-                            const defaultQuantity = e.target.value;
-                            setFormValues((prev) => ({ ...prev, defaultQuantity }));
-                        }}
-                        onBlur={(e) => {
-                            const defaultQuantity = Formatter.quantity(parseInt(e.target.value));
-                            setFormValues((prev) => ({ ...prev, defaultQuantity }));
-                        }}
+                    <NumberInput
+                        name="defaultQuantity"
+                        decimal={false}
+                        value={food.defaultQuantity}
+                        onChange={(defaultQuantity) => setFood((prev) => ({ ...prev, defaultQuantity }))}
                     />
                     <span className="input-group__suffix">g</span>
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Calories</label>
-                    <input
-                        className="input-group__input"
-                        type="number"
-                        min="0"
-                        step="1"
-                        placeholder="0"
-                        required
-                        value={formValues.calories}
-                        onChange={(e) => {
-                            const calories = e.target.value;
-                            setFormValues((prev) => ({ ...prev, calories }));
-                        }}
-                        onBlur={(e) => {
-                            const calories = Formatter.calories(parseInt(e.target.value));
-                            setFormValues((prev) => ({ ...prev, calories }));
-                        }}
+                    <NumberInput
+                        name="calories"
+                        decimal={false}
+                        value={food.calories}
+                        onChange={(calories) => setFood((prev) => ({ ...prev, calories }))}
                     />
                     <span className="input-group__suffix">kcal/100 g</span>
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Carbs</label>
-                    <input
-                        className="input-group__input"
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        placeholder="0.0"
-                        required
-                        value={formValues.carbs}
-                        onChange={(e) => {
-                            const carbs = e.target.value;
-                            setFormValues((prev) => ({ ...prev, carbs }));
-                        }}
-                        onBlur={(e) => {
-                            const carbs = Formatter.macro(parseFloat(e.target.value));
-                            setFormValues((prev) => ({ ...prev, carbs }));
-                        }}
+                    <NumberInput
+                        name="carbs"
+                        decimal={true}
+                        value={food.carbs}
+                        onChange={(carbs) => setFood((prev) => ({ ...prev, carbs }))}
                     />
                     <span className="input-group__suffix">g/100 g</span>
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Fat</label>
-                    <input
-                        className="input-group__input"
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        placeholder="0.0"
-                        required
-                        value={formValues.fat}
-                        onChange={(e) => {
-                            const fat = e.target.value;
-                            setFormValues((prev) => ({ ...prev, fat }));
-                        }}
-                        onBlur={(e) => {
-                            const fat = Formatter.macro(parseFloat(e.target.value));
-                            setFormValues((prev) => ({ ...prev, fat }));
-                        }}
+                    <NumberInput
+                        name="fat"
+                        decimal={true}
+                        value={food.fat}
+                        onChange={(fat) => setFood((prev) => ({ ...prev, fat }))}
                     />
                     <span className="input-group__suffix">g/100 g</span>
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Protein</label>
-                    <input
-                        className="input-group__input"
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        placeholder="0.0"
-                        required
-                        value={formValues.protein}
-                        onChange={(e) => {
-                            const protein = e.target.value;
-                            setFormValues((prev) => ({ ...prev, protein }));
-                        }}
-                        onBlur={(e) => {
-                            const protein = Formatter.macro(parseFloat(e.target.value));
-                            setFormValues((prev) => ({ ...prev, protein }));
-                        }}
+                    <NumberInput
+                        name="protein"
+                        decimal={true}
+                        value={food.protein}
+                        onChange={(protein) => setFood((prev) => ({ ...prev, protein }))}
                     />
                     <span className="input-group__suffix">g/100 g</span>
                 </div>

@@ -59,6 +59,10 @@ body {
     padding-bottom: 6rem;
 }
 
+a {
+    color: var(--color-primary);
+}
+
 .container {
     padding: var(--padding-m);
 }
@@ -425,9 +429,6 @@ body {
 
 .no-items {
     text-align: center;
-    a {
-        color: var(--color-primary);
-    }
 }
 
 .snackbar {
@@ -436,7 +437,7 @@ body {
     bottom: 1rem;
     right: 1rem;
     display: flex;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     color: #fff;
     &__text {
         flex-grow: 1;
@@ -452,5 +453,35 @@ body {
     }
     &--fab {
         bottom: 6rem;
+    }
+}
+
+.data-table {
+    display: grid;
+    column-gap: var(--padding-m);
+    row-gap: var(--padding-s);
+    &__row {
+        display: contents;
+    }
+    &__cell {
+        &--header {
+            font-weight: bold;
+        }
+    }
+}
+
+.statistics-table {
+    grid-template-columns: max-content repeat(4, 1fr);
+    font-size: 0.9rem;
+    margin-top: var(--padding-l);
+    .data-table__cell--id-date {
+        text-align: left;
+    }
+}
+
+.statistics-chart {
+    height: 10rem;
+    &--brush {
+        height: calc(10rem + 32px);
     }
 }

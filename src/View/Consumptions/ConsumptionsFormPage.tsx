@@ -11,6 +11,7 @@ import { nilUUID } from "../../Domain/UUID";
 import TopBar, { Action, BackButton, Title } from "../TopBar/TopBar";
 import { Instance } from "flatpickr/dist/types/instance";
 import { Snackbar, SnackbarContext } from "../Snackbar";
+import NumberInput from "../NumberInput";
 
 interface ConsumptionUrlParams {
     date: string;
@@ -130,17 +131,11 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
                 </div>
                 <div className="input-group">
                     <label className="input-group__label">Quantity</label>
-                    <input
-                        className="input-group__input"
-                        type="number"
-                        min="0"
-                        step="0.01"
+                    <NumberInput
                         name="quantity"
-                        value={Formatter.quantity(consumption.quantity)}
-                        onChange={(e) => {
-                            const quantity = parseInt(e.target.value);
-                            setConsumption((prev) => ({ ...prev, quantity }));
-                        }}
+                        decimal={false}
+                        value={consumption.quantity}
+                        onChange={(quantity) => setConsumption((prev) => ({ ...prev, quantity }))}
                     />
                     <span className="input-group__suffix">
                         {Formatter.consumableUnit(consumption.consumable, consumption.quantity)}

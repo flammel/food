@@ -3,6 +3,7 @@ import { Settings, emptySettings } from "../../Domain/Settings";
 import { ApiContext } from "../../Api/Context";
 import TopBar, { MenuButton, Title } from "../TopBar/TopBar";
 import { SnackbarContext, Snackbar } from "../Snackbar";
+import NumberInput from "../NumberInput";
 
 export default function SettingsPage(): React.ReactElement {
     const api = useContext(ApiContext);
@@ -21,20 +22,9 @@ export default function SettingsPage(): React.ReactElement {
         e.preventDefault();
         const update = async (): Promise<void> => {
             await api.settings.update(settings);
-            snackbar.show(<Snackbar text="Settings saved" />)
+            snackbar.show(<Snackbar text="Settings saved" />);
         };
         update();
-    };
-
-    const onChange = (
-        partial: (newValue: number) => Partial<Settings>,
-    ): ((e: React.ChangeEvent<HTMLInputElement>) => void) => {
-        return (e) => {
-            const newValue = parseInt(e.currentTarget.value);
-            if (newValue >= 0) {
-                setSettings((prev) => ({ ...prev, ...partial(newValue) }));
-            }
-        };
     };
 
     return (
@@ -50,15 +40,11 @@ export default function SettingsPage(): React.ReactElement {
                         <label htmlFor="inputTargetCalories" className="input-group__label">
                             Calories
                         </label>
-                        <input
-                            type="number"
-                            step="1"
-                            min="0"
-                            className="input-group__input"
-                            id="inputTargetCalories"
-                            placeholder="Calories"
+                        <NumberInput
+                            name="targetCalories"
+                            decimal={false}
                             value={settings.targetCalories}
-                            onChange={onChange((newValue) => ({ targetCalories: newValue }))}
+                            onChange={(targetCalories) => setSettings((prev) => ({ ...prev, targetCalories }))}
                         />
                         <div className="input-group__suffix">kcal</div>
                     </div>
@@ -66,15 +52,11 @@ export default function SettingsPage(): React.ReactElement {
                         <label htmlFor="inputTargetFat" className="input-group__label">
                             Fat
                         </label>
-                        <input
-                            type="number"
-                            step="1"
-                            min="0"
-                            className="input-group__input"
-                            id="inputTargetFat"
-                            placeholder="Fat"
+                        <NumberInput
+                            name="targetFat"
+                            decimal={false}
                             value={settings.targetFat}
-                            onChange={onChange((newValue) => ({ targetFat: newValue }))}
+                            onChange={(targetFat) => setSettings((prev) => ({ ...prev, targetFat }))}
                         />
                         <div className="input-group__suffix">g</div>
                     </div>
@@ -82,15 +64,11 @@ export default function SettingsPage(): React.ReactElement {
                         <label htmlFor="inputTargetCarbs" className="input-group__label">
                             Carbs
                         </label>
-                        <input
-                            type="number"
-                            step="1"
-                            min="0"
-                            className="input-group__input"
-                            id="inputTargetCarbs"
-                            placeholder="Carbs"
+                        <NumberInput
+                            name="targetCarbs"
+                            decimal={false}
                             value={settings.targetCarbs}
-                            onChange={onChange((newValue) => ({ targetCarbs: newValue }))}
+                            onChange={(targetCarbs) => setSettings((prev) => ({ ...prev, targetCarbs }))}
                         />
                         <div className="input-group__suffix">g</div>
                     </div>
@@ -98,15 +76,11 @@ export default function SettingsPage(): React.ReactElement {
                         <label htmlFor="inputTargetProtein" className="input-group__label">
                             Protein
                         </label>
-                        <input
-                            type="number"
-                            step="1"
-                            min="0"
-                            className="input-group__input"
-                            id="inputTargetProtein"
-                            placeholder="Protein"
+                        <NumberInput
+                            name="targetProtein"
+                            decimal={false}
                             value={settings.targetProtein}
-                            onChange={onChange((newValue) => ({ targetProtein: newValue }))}
+                            onChange={(targetProtein) => setSettings((prev) => ({ ...prev, targetProtein }))}
                         />
                         <div className="input-group__suffix">g</div>
                     </div>
