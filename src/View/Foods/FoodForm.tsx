@@ -1,79 +1,76 @@
 import React, { useState, useContext, useEffect } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { ApiContext } from "../../Api/Context";
 import ComboBox from "../ComboBox/ComboBox";
-import { emptyFood, Brand } from "../../Domain/Food";
+import { Brand, Food } from "../../Domain/Food";
 import Formatter from "../../Formatter";
 import TopBar, { BackButton, Action, Title } from "../TopBar/TopBar";
 import { SnackbarContext, Snackbar } from "../Snackbar";
 import NumberInput from "../NumberInput";
 
-interface FoodFormPageUrlParams {
-    id: string;
+interface FoodFormProps {
+    food: Food;
+    editing: boolean;
+    reload: () => void;
 }
-type FoodFormPagePageProps = RouteComponentProps<FoodFormPageUrlParams>;
 
-export default function FoodFormPage(props: FoodFormPagePageProps): React.ReactElement {
+export default function FoodFormPage(props: FoodFormProps): React.ReactElement {
     const api = useContext(ApiContext);
     const snackbar = useContext(SnackbarContext);
-    const [food, setFood] = useState(emptyFood);
-    const [editing, setEditing] = useState(false);
+    const history = useHistory();
+    const [food, setFood] = useState(props.food);
 
-    const editingId = props.match.params.id;
-    useEffect(() => {
-        if (editingId) {
-            const fetchFn = async (): Promise<void> => {
-                const loaded = await api.foods.read(editingId);
-                setFood(loaded);
-                setEditing(true);
-            };
-            fetchFn();
-        }
-    }, [editingId]);
-
-    const brandSearch = async (search: string): Promise<Brand[]> => {
-        return await api.brands.autocomplete(search);
-    };
-
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        const persist = async (): Promise<void> => {
-            if (editing) {
-                await api.foods.update(food);
-            } else {
-                await api.foods.create(food);
-            }
-            props.history.push("/foods");
-        };
-        persist();
-    };
+    useEffect(() => setFood(props.food), [props.food.id]);
 
     const onDelete = (): void => {
         const deleteFn = async (): Promise<void> => {
             await api.foods.delete(food);
-            props.history.push("/foods");
+            history.push("/foods");
+            props.reload();
             snackbar.show(
                 <Snackbar
                     text={"Deleted " + Formatter.food(food)}
-                    action={{ text: "Undo", fn: () => api.foods.undoDelete(food) }}
+                    action={{
+                        text: "Undo",
+                        fn: () => {
+                            api.foods.undoDelete(food);
+                            props.reload();
+                        },
+                    }}
                 />,
             );
         };
         deleteFn();
     };
+    const brandSearch = async (search: string): Promise<Brand[]> => {
+        return await api.brands.autocomplete(search);
+    };
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        const persist = async (): Promise<void> => {
+            if (props.editing) {
+                await api.foods.update(food);
+            } else {
+                await api.foods.create(food);
+            }
+            history.push("/foods");
+            props.reload();
+        };
+        persist();
+    };
 
     return (
         <>
             <TopBar>
-                <BackButton />
-                <Title>{editing ? "Edit Food" : "New Food"}</Title>
-                {editing ? <Action icon="delete" action={onDelete} /> : null}
+                <BackButton to="/foods" />
+                <Title>{props.editing ? "Edit Food" : "New Food"}</Title>
+                {props.editing ? <Action icon="delete" action={onDelete} /> : null}
             </TopBar>
             <form onSubmit={onSubmit} className="form">
                 <div className="input-group">
                     <label className="input-group__label">Name</label>
                     <input
-                        autoFocus={editing ? false : true}
+                        autoFocus={props.editing ? false : true}
                         className="input-group__input"
                         type="text"
                         required

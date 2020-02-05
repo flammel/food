@@ -62,7 +62,9 @@ export function NavDrawer(): React.ReactElement {
                     <NavItem to="/" isActive={(url) => url.substr(0, 5) === "/log/" || url === "/"}>
                         Log
                     </NavItem>
-                    <NavItem to="/foods">Foods</NavItem>
+                    <NavItem to="/foods" isActive={(url) => url.substr(0, 6) === "/foods"}>
+                        Foods
+                    </NavItem>
                     <NavItem to="/recipes" isActive={(url) => url.substr(0, 8) === "/recipes"}>
                         Recipes
                     </NavItem>

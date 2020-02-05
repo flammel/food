@@ -9,12 +9,12 @@ interface NumberInputProps {
 }
 
 export default function NumberInput(props: NumberInputProps): React.ReactElement {
-    const format = (x: number) => x.toFixed(props.decimal ? 1 : 0);
+    const format = (x: number): string => x.toFixed(props.decimal ? 1 : 0);
     const [value, setValue] = useState<string>(format(props.value));
 
     useEffect(() => setValue(format(props.value)), [props.value]);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setValue(e.target.value);
     };
 

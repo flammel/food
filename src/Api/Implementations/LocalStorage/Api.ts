@@ -14,14 +14,15 @@ import { getStatistics, datesWithConsumptions, consumptionsByDate, sortedRecipes
 let currentAppState = loadAppState();
 
 function setState(diff: (prev: AppState) => Partial<AppState>): Promise<void> {
-    return new Promise((res) => {
+    return new Promise((resolve) => {
         const diffed = diff(currentAppState);
         const newAppState = { ...currentAppState, ...diffed };
         try {
             storeAppState(newAppState);
             currentAppState = newAppState;
-        } catch (e) {}
-        res();
+        } finally {
+            resolve();
+        }
     });
 }
 

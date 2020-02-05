@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import flatpickr from "flatpickr";
 import { ApiContext } from "../../Api/Context";
 import ComboBox from "../ComboBox/ComboBox";
-import { emptyConsumption, nutritionData } from "../../Domain/Consumption";
+import { nutritionData, Consumption } from "../../Domain/Consumption";
 import { Consumable, emptyConsumable } from "../../Domain/Consumable";
 import { dateToString } from "../../Utilities";
 import Formatter from "../../Formatter";
@@ -13,32 +13,23 @@ import { Instance } from "flatpickr/dist/types/instance";
 import { Snackbar, SnackbarContext } from "../Snackbar";
 import NumberInput from "../NumberInput";
 
-interface ConsumptionUrlParams {
-    date: string;
-    id: string;
+interface ConsumptionFormProps {
+    consumption: Consumption;
+    editing: boolean;
+    date: Date;
+    reload: () => void;
 }
-type ConsumptionPageProps = RouteComponentProps<ConsumptionUrlParams>;
 
-export default function ConsumptionFormPage(props: ConsumptionPageProps): React.ReactElement {
+export default function ConsumptionForm(props: ConsumptionFormProps): React.ReactElement {
     const api = useContext(ApiContext);
     const snackbar = useContext(SnackbarContext);
-    const date = new Date(props.match.params.date || new Date().valueOf());
-    const [consumption, setConsumption] = useState(emptyConsumption(date));
-    const [editing, setEditing] = useState(false);
+    const history = useHistory();
     const datePickerRef = useRef<HTMLInputElement>(null);
     const flatpickrInstance = useRef<Instance>();
+    const [consumption, setConsumption] = useState<Consumption>(props.consumption);
 
-    const editingId = props.match.params.id;
-    useEffect(() => {
-        if (editingId) {
-            const fetchFn = async (): Promise<void> => {
-                const loaded = await api.consumptions.read(editingId);
-                setConsumption(loaded);
-                setEditing(true);
-            };
-            fetchFn();
-        }
-    }, [editingId]);
+    useEffect(() => setConsumption(props.consumption), [props.consumption.id]);
+    useEffect(() => setConsumption((prev) => ({ ...prev, date: props.date })), [props.date]);
 
     const consumableSearch = async (search: string): Promise<Consumable[]> => {
         return await api.consumables.autocomplete(search);
@@ -57,12 +48,13 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const persist = async (): Promise<void> => {
-            if (editing) {
+            if (props.editing) {
                 await api.consumptions.update(consumption);
             } else {
                 await api.consumptions.create(consumption);
             }
-            props.history.push("/log/" + dateToString(date));
+            props.reload();
+            history.push("/log/" + dateToString(props.date));
         };
         persist();
     };
@@ -70,11 +62,18 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
     const onDelete = (): void => {
         const deleteFn = async (): Promise<void> => {
             await api.consumptions.delete(consumption);
-            props.history.push("/log/" + dateToString(date));
+            history.push("/log/" + dateToString(props.date));
+            props.reload();
             snackbar.show(
                 <Snackbar
                     text={"Deleted " + Formatter.consumable(consumption.consumable)}
-                    action={{ text: "Undo", fn: () => api.consumptions.undoDelete(consumption) }}
+                    action={{
+                        text: "Undo",
+                        fn: () => {
+                            api.consumptions.undoDelete(consumption);
+                            props.reload();
+                        },
+                    }}
                 />,
             );
         };
@@ -83,7 +82,7 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
 
     useEffect(() => {
         flatpickrInstance.current = flatpickr(datePickerRef.current as Node, {
-            defaultDate: date,
+            defaultDate: props.date,
             position: "below",
             disableMobile: true,
             onChange: (selected) => {
@@ -98,9 +97,9 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
     return (
         <>
             <TopBar>
-                <BackButton />
-                <Title>{editing ? "Edit Consumption" : "New Consumption"}</Title>
-                {editing ? <Action icon="delete" action={onDelete} /> : null}
+                <BackButton to={"/log/" + dateToString(props.date)} />
+                <Title>{props.editing ? "Edit Consumption" : "New Consumption"}</Title>
+                {props.editing ? <Action icon="delete" action={onDelete} /> : null}
             </TopBar>
             <form onSubmit={onSubmit} className="form">
                 <div className="input-group">
@@ -141,18 +140,18 @@ export default function ConsumptionFormPage(props: ConsumptionPageProps): React.
                         {Formatter.consumableUnit(consumption.consumable, consumption.quantity)}
                     </span>
                 </div>
-                <div className="consumption consumption--only-macros">
-                    <div className="consumption__macros">
-                        <div className="consumption__macro" data-label="Calories">
+                <div className="consumption card card--only-macros">
+                    <div className="card__macros">
+                        <div className="card__macro" data-label="Calories">
                             {Formatter.calories(macros.calories)}
                         </div>
-                        <div className="consumption__macro" data-label="Carbs">
+                        <div className="card__macro" data-label="Carbs">
                             {Formatter.macro(macros.carbs)}
                         </div>
-                        <div className="consumption__macro" data-label="Fat">
+                        <div className="card__macro" data-label="Fat">
                             {Formatter.macro(macros.fat)}
                         </div>
-                        <div className="consumption__macro" data-label="Protein">
+                        <div className="card__macro" data-label="Protein">
                             {Formatter.macro(macros.protein)}
                         </div>
                     </div>

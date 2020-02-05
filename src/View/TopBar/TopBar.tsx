@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { NavDrawerContext } from "../Nav";
-import { IconHamburger, IconArrowLeft, IconTrash } from "../Icons";
+import { IconHamburger, IconArrowLeft, IconTrash, IconX } from "../Icons";
 
 type Action = "delete";
 
@@ -44,17 +44,20 @@ export function MenuButton(): React.ReactElement {
     );
 }
 
-export function BackButton(): React.ReactElement {
+export function BackButton({ to }: { to: string }): React.ReactElement {
     const history = useHistory();
     return (
-        <button
-            className="top-bar__nav-button"
-            onClick={() => {
-                history.goBack();
-            }}
-        >
-            <IconArrowLeft className="top-bar__nav-icon" />
-        </button>
+        <>
+            <button
+                className="top-bar__nav-button"
+                onClick={() => {
+                    history.push(to);
+                }}
+            >
+                <IconArrowLeft className="top-bar__nav-icon no-desktop" />
+                <IconX className="top-bar__nav-icon no-mobile" />
+            </button>
+        </>
     );
 }
 

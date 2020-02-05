@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
-    emptyRecipe,
     emptyIngredient,
     addIngredient,
     updateIngredient,
     deleteIngredient,
     Ingredient,
+    Recipe,
 } from "../../Domain/Recipe";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 import { ApiContext } from "../../Api/Context";
 import { Food, emptyFood } from "../../Domain/Food";
 import TopBar, { BackButton, Action, Title } from "../TopBar/TopBar";
@@ -17,34 +17,29 @@ import { Snackbar, SnackbarContext } from "../Snackbar";
 import NumberInput from "../NumberInput";
 import { IconCircledPlus, IconCircledMinus } from "../Icons";
 
-export default function RecipeForm(): React.ReactElement {
+interface RecipeFormProps {
+    recipe: Recipe;
+    editing: boolean;
+    reload: () => void;
+}
+
+export default function RecipeFormPage(props: RecipeFormProps): React.ReactElement {
     const history = useHistory();
     const snackbar = useContext(SnackbarContext);
-    const params = useParams<{ id: string }>();
     const api = useContext(ApiContext);
-    const [recipe, setRecipe] = useState(emptyRecipe);
-    const [editing, setEditing] = useState(false);
+    const [recipe, setRecipe] = useState(props.recipe);
 
-    const editingId = params.id;
-    useEffect(() => {
-        if (editingId) {
-            const fetchRecipe = async (): Promise<void> => {
-                const loaded = await api.recipes.read(editingId);
-                setRecipe(loaded);
-                setEditing(true);
-            };
-            fetchRecipe();
-        }
-    }, [editingId]);
+    useEffect(() => setRecipe(props.recipe), [props.recipe.id]);
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const persist = async (): Promise<void> => {
-            if (editing) {
+            if (props.editing) {
                 await api.recipes.update(recipe);
             } else {
                 await api.recipes.create(recipe);
             }
+            props.reload();
             history.push("/recipes");
         };
         persist();
@@ -68,10 +63,17 @@ export default function RecipeForm(): React.ReactElement {
         const deleteFn = async (): Promise<void> => {
             await api.recipes.delete(recipe);
             history.push("/recipes");
+            props.reload();
             snackbar.show(
                 <Snackbar
                     text={"Deleted " + Formatter.recipe(recipe)}
-                    action={{ text: "Undo", fn: () => api.recipes.undoDelete(recipe) }}
+                    action={{
+                        text: "Undo",
+                        fn: () => {
+                            api.recipes.undoDelete(recipe);
+                            props.reload();
+                        },
+                    }}
                 />,
             );
         };
@@ -93,9 +95,9 @@ export default function RecipeForm(): React.ReactElement {
     return (
         <>
             <TopBar>
-                <BackButton />
-                <Title>{editing ? "Edit Recipe" : "New Recipe"}</Title>
-                {editing ? <Action icon="delete" action={onDelete} /> : null}
+                <BackButton to="/recipes" />
+                <Title>{props.editing ? "Edit Recipe" : "New Recipe"}</Title>
+                {props.editing ? <Action icon="delete" action={onDelete} /> : null}
             </TopBar>
 
             <form onSubmit={onSubmit} className="form recipe-form">

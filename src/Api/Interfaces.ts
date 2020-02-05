@@ -7,7 +7,7 @@ import { Statistics } from "../Domain/Statistics";
 
 interface CrudApi<DataType, IdType> {
     create: (data: DataType) => Promise<void>;
-    read: (id: IdType) => Promise<DataType>;
+    read: (id: IdType) => Promise<DataType | null>;
     update: (data: DataType) => Promise<void>;
     delete: (data: DataType) => Promise<void>;
     undoDelete: (data: DataType) => Promise<void>;

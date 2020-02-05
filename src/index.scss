@@ -185,6 +185,25 @@ a {
     }
 }
 
+.side {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    background: #fff;
+    display: block;
+    transform: translate3d(100%, 0, 0);
+    transition: all 0.2s;
+    visibility: hidden;
+
+    &--visible {
+        visibility: visible;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
 .nav-drawer {
     position: fixed;
     top: 0;
@@ -192,7 +211,7 @@ a {
     overflow-y: auto;
     background: #fff;
     width: 80vw;
-    height: 100vh;
+    min-height: 100vh;
     z-index: 10;
     transform: translate3d(-100%, 0, 0);
     transition: all 0.3s;
@@ -262,9 +281,7 @@ a {
     background: #3d8eb9;
 }
 
-.consumption,
-.food,
-.recipe {
+.card {
     display: grid;
     grid-template-columns: 1fr max-content;
     grid-template-rows: repeat(2, max-content);
@@ -305,6 +322,9 @@ a {
     &__servings {
         grid-area: quantity;
         text-align: right;
+    }
+    &--header {
+        display: none;
     }
     &--totals {
         padding-top: 2rem;
@@ -430,6 +450,7 @@ a {
 
 .no-items {
     text-align: center;
+    grid-column: 1 / -1;
 }
 
 .snackbar {
@@ -438,8 +459,13 @@ a {
     bottom: 1rem;
     right: 1rem;
     display: flex;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: #fff;
+    justify-content: center;
+    &__inner {
+        display: flex;
+        flex: 0 1 500px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: #fff;
+    }
     &__text {
         flex-grow: 1;
         margin: 0;
@@ -487,41 +513,116 @@ a {
     }
 }
 
+@media screen and (max-width: 767px) {
+    .no-mobile {
+        display: none;
+    }
+}
+
 @media screen and (min-width: 768px) {
-    .consumption {
-        display: flex;
-        &__macros {
+    .no-desktop {
+        display: none;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    .cards {
+        display: grid;
+
+        &.recipes,
+        &.consumptions {
+            grid-template-columns: 10fr repeat(5, minmax(max-content, 2fr));
+        }
+        &.foods {
+            grid-template-columns: 7fr minmax(max-content, 3fr) repeat(5, minmax(max-content, 2fr));
+        }
+
+        .card {
             display: contents;
-        }
-        &__consumable {
-            flex: 1 0;
-        }
-        &__quantity {
-            flex: 0 0 5rem;
-        }
-        &__macro {
-            flex: 0 0 5rem;
-            &::before {
-                display: none;
+            & > *,
+            &__macros > * {
+                border-bottom: 1px solid var(--color-divider);
+                padding: var(--padding-m);
+            }
+            &__quantity,
+            &__name,
+            &__consumable,
+            &__servings {
+                grid-area: auto;
+                text-align: left;
+            }
+            &__macros {
+                display: contents;
+            }
+            &__macro {
+                align-items: flex-start;
+                &::before {
+                    display: none;
+                }
+            }
+            &--inactive {
+                color: var(--color-text-light);
+            }
+            &--header {
+                display: contents;
+                font-weight: bold;
             }
         }
     }
-    .food {
+    .card--only-macros.card--totals {
+        grid-template-columns: 50%;
+        justify-content: center;
+    }
+    #app {
         display: flex;
-        &__macros {
-            display: contents;
+        flex-direction: row;
+        widows: 100vw;
+    }
+    .main .top-bar {
+        padding-left: var(--padding-m);
+        padding-right: var(--padding-m);
+        &__nav-button {
+            display: none;
         }
-        &__consumable {
-            flex: 1 0;
+    }
+    .scrim--visible {
+        display: none;
+    }
+    .nav-drawer {
+        position: relative;
+        visibility: visible;
+        transform: none;
+        flex: 0 0 200px;
+        border-right: 1px solid var(--color-divider);
+        box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.1);
+    }
+    .main {
+        flex: 5 1 500px;
+    }
+    .side {
+        display: none;
+        position: relative;
+        flex: 1 0 320px;
+        border-left: 1px solid var(--color-divider);
+        box-shadow: -1px 0 3px 0 rgba(0, 0, 0, 0.1);
+        min-height: 100vh;
+        &--visible {
+            display: block;
         }
-        &__quantity {
-            flex: 0 0 5rem;
+    }
+    .snackbar {
+        z-index: 20;
+        bottom: 1.8rem;
+        left: 5rem;
+        right: 5rem;
+        &--fab {
+            bottom: 1.8rem;
         }
-        &__macro {
-            flex: 0 0 5rem;
-            &::before {
-                display: none;
-            }
-        }
+    }
+
+    body {
+        padding-bottom: 0;
     }
 }

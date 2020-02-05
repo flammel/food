@@ -27,7 +27,7 @@ export const SnackbarProvider: React.FunctionComponent = ({ children }): React.R
     const [snackbar, setSnackbar] = React.useState<React.ReactElement | null>(null);
     const location = useLocation();
     const [fab, setFab] = React.useState<boolean>(false);
-    const hide = () => {
+    const hide = (): void => {
         setFab(false), setSnackbar(null);
     };
     React.useEffect(() => {
@@ -37,7 +37,7 @@ export const SnackbarProvider: React.FunctionComponent = ({ children }): React.R
         if (snackbar === null) {
             return;
         }
-        const timer = setTimeout(hide, 5000);
+        const timer = setTimeout(hide, 500000);
         return () => clearTimeout(timer);
     }, [snackbar]);
     const state = {
@@ -64,12 +64,14 @@ export function Snackbar(props: SnackbarProps): React.ReactElement {
 
     return (
         <div className={"snackbar " + (ctx.fab ? " snackbar--fab" : "")}>
-            <p className="snackbar__text">{props.text}</p>
-            {props.action ? (
-                <button className="snackbar__action" onClick={onClick(props.action.fn)}>
-                    {props.action.text}
-                </button>
-            ) : null}
+            <div className="snackbar__inner">
+                <p className="snackbar__text">{props.text}</p>
+                {props.action ? (
+                    <button className="snackbar__action" onClick={onClick(props.action.fn)}>
+                        {props.action.text}
+                    </button>
+                ) : null}
+            </div>
         </div>
     );
 }
